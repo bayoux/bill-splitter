@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseInterceptors,
+} from '@nestjs/common';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { DishesService } from './dishes.service';
 import { Dish } from './dish.entity';
 
@@ -17,6 +27,7 @@ export class DishesController {
   }
 
   @Post()
+  @UseInterceptors(AnyFilesInterceptor())
   create(@Body() newDish: Partial<Dish>) {
     return this.dishesService.create(newDish);
   }
@@ -24,5 +35,11 @@ export class DishesController {
   @Delete(':id')
   delete(@Param('id') id: string) {
     return this.dishesService.delete(+id);
+  }
+
+  @Patch(':id')
+  @UseInterceptors(AnyFilesInterceptor())
+  update(@Param('id') id: string, @Body() updatedDish: Partial<Dish>) {
+    return this.dishesService.update(+id, updatedDish);
   }
 }

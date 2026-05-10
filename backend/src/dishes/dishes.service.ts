@@ -25,4 +25,10 @@ export class DishesService {
   async delete(id: number) {
     await this.dishRepository.delete(id);
   }
+
+  async update(id: number, dish: Partial<Dish>): Promise<Dish | null> {
+    await this.dishRepository.update(id, dish);
+    return this.findOne(id);
+  }
+
 }

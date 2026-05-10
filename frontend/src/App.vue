@@ -30,13 +30,6 @@
 <script setup></script>
 
 <style scoped lang="scss">
-body {
-  background: #f7f5f0;
-  color: #1a1a1a;
-  font-family: 'DM Sans', sans-serif;
-  min-height: 100vh;
-}
-
 .header {
   padding: 20px 0;
   position: sticky;
@@ -56,7 +49,7 @@ body {
 
   &__icon {
     font-size: 20px;
-    color: #2d5a27;
+    color: var(--color-primary);
   }
 }
 
@@ -65,7 +58,6 @@ h1 {
   font-size: 32px;
   font-weight: 400;
   letter-spacing: -0.5px;
-  color: #1a1a1a;
 }
 
 .tagline {
@@ -79,7 +71,6 @@ h1 {
   display: flex;
   gap: 10px;
   margin-bottom: 25px;
-  position: sticky;
   flex-wrap: wrap;
 
   &__link {
@@ -90,25 +81,24 @@ h1 {
     gap: 8px;
     padding: 8px 50px;
     border-radius: 16px;
-    background: #ffffff;
-    border: 1.5px solid #e0ddd6;
-    color: #1a1a1a;
+    background: var(--color-white);
+    border: 1.5px solid var(--color-border);
+    color: var(--color-charcoal);
     text-decoration: none;
     font-size: 14px;
     font-weight: 500;
     transition: all 0.2s ease;
-    position: sticky;
 
     &:hover {
-      border-color: #2d5a27;
-      color: #2d5a27;
-      background: #e8f0e7;
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+      background: var(--color-primary-light);
     }
 
     &.router-link-active {
-      background: #2d5a27;
-      border-color: #2d5a27;
-      color: #fff;
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: var(--color-white);
     }
   }
 
@@ -120,9 +110,9 @@ h1 {
 .main {
   flex: 1;
   width: 100%;
-  background: #ffffff;
+  background: var(--color-white);
   border-radius: 16px;
-  border: 1px solid #e0ddd6;
+  border: 1px solid var(--color-border);
   padding: 20px 25px;
 }
 </style>

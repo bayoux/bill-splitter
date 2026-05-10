@@ -1,59 +1,44 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
+import type { Dish } from '@/types/dish';
 import { useDishes } from '@/composables/useDishes';
 
-const { dishes, loading, error } = useDishes();
+const { dishes, loading, error, addDish, deleteDish, editDish } = useDishes();
 
-const dishName = ref<string>('');
-const price = ref<string>('');
-const shareLink = ref<string>('');
+const dishName = ref('');
+const price = ref('');
+const shareLink = ref('');
+const editingId = ref<number | null>(null);
+const editName = ref('');
+const editPrice = ref('');
 
-async function addDish() {
+function startEdit(dish: Dish) {
+  editingId.value = dish.id;
+  editName.value = dish.name;
+  editPrice.value = String(dish.price);
+}
+
+function cancelEdit() {
+  editingId.value = null;
+  editName.value = '';
+  editPrice.value = '';
+}
+
+async function handleEdit() {
+  if (!editingId.value) return;
+  await editDish(editingId.value, editName.value, Number(editPrice.value));
+  cancelEdit();
+}
+
+async function handleAdd() {
   if (dishName.value === '' || price.value === '') {
     error.value = 'Поля не должны быть пустыми';
     return;
   }
-
-  console.log('its work');
-
-  try {
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/dishes`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: dishName.value,
-        price: price.value,
-      }),
-    });
-
-    const data = await res.json();
-    dishes.value = [...dishes.value, data];
-  } catch (error) {
-    error.value = error.message;
-  } finally {
-    dishName.value = '';
-    price.value = '';
-  }
-}
-
-async function deleteDish(id: number) {
-  try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/dishes/${id}`,
-      {
-        method: 'DELETE',
-      },
-    );
-
-    if (!response.ok) {
-      return new Error('Ошибка удаления');
-    }
-
-    dishes.value = dishes.value.filter((dish) => dish.id !== id);
-    console.log('блюдо удалено');
-  } catch (error) {
-    console.error('не удалось удалить: ', error);
-  }
+  error.value = '';
+  await addDish(dishName.value, Number(price.value));
+  dishName.value = '';
+  price.value = '';
 }
 
 function copyLink() {
@@ -65,40 +50,45 @@ function copyLink() {
 
 <template>
   <div class="add-dish-page">
-    <div class="add-dish-page-header">
+    <div class="add-dish-page__header">
       <h3 class="add-dish-page__title">Добавить блюдо</h3>
 
       <input
         type="text"
         v-model="dishName"
-        placeholder="название блюда: "
+        placeholder="название блюда:"
         required
       />
-      <input type="number" v-model="price" placeholder="цена: " required />
+      <input v-model="price" type="number" placeholder="цена:" required />
 
       <p class="add-dish-page-error">{{ error }}</p>
-      <button class="add-dish-page__button" @click="addDish" type="button">
+      <button class="add-dish-page__button" @click="handleAdd()">
         добавить
       </button>
     </div>
 
-    <div class="dish-list">
-      <h3 class="dish-list__title">Список блюд:</h3>
+    <h3 class="dish-list__title">Список блюд:</h3>
+    <p v-if="loading">Загрузка...</p>
 
-      <p v-if="loading">Загрузка...</p>
+    <ul class="dish-list">
+      <li class="dish-item" v-for="dish in dishes" :key="dish.id">
+        <template v-if="editingId === dish.id">
+          <input v-model="editName" type="text" />
+          <input v-model="editPrice" type="number" />
+          <button @click="handleEdit()">✓</button>
+          <button @click="cancelEdit()">✕</button>
+        </template>
 
-      <div class="dish-item list-item" v-for="dish in dishes" :key="dish.id">
-        <p class="dish-item name">{{ dish.name }}</p>
-        <p class="dish-item price">{{ dish.price }} сом</p>
-        <button
-          class="dish-item__delete-btn"
-          @click="deleteDish(dish.id)"
-          type="button"
-        >
-          X
-        </button>
-      </div>
-    </div>
+        <template v-else>
+          <p class="dish-item__name">{{ dish.name }}</p>
+          <p class="dish-item__price">{{ dish.price }} сом</p>
+          <button @click="startEdit(dish)" type="button">
+            <i class="ti ti-edit"></i>
+          </button>
+          <button @click="deleteDish(dish.id)" type="button">X</button>
+        </template>
+      </li>
+    </ul>
 
     <button class="share-btn" @click="copyLink" type="button">
       Поделиться с гостями
@@ -114,40 +104,52 @@ function copyLink() {
   margin: 0 auto;
   max-width: 100vw;
   padding: 20px;
-}
 
-.add-dish {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
+  &__header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
   &__button {
     width: 30%;
     margin-left: auto;
   }
-}
 
-.add-dish-error {
-  color: red;
-  font-size: 13px;
-  padding: 0 10px;
+  &__error {
+    color: red;
+    font-size: 13px;
+  }
 }
 
 .dish-list {
   width: 100%;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 
   &__title {
+    margin-top: 15px;
     padding-bottom: 30px;
   }
 }
 
 .dish-item {
-  &__delete-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 35px;
-    height: 27px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  border: 1px solid black;
+  border-radius: 8px;
+  padding: 10px;
+
+  &__name {
+    flex: 1;
+  }
+
+  &__price {
+    min-width: 80px;
+    text-align: right;
   }
 }
 

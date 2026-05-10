@@ -4,14 +4,14 @@
   --color-primary: #2d5a27;
   --color-bg: #f7f5f0;
   --color-white: #ffffff;
+  --color-charcoal: #333;
+  --color-border: #e0ddd6;
+  --color-primary-light: #e8f0e7;
   --border-radius: 10px;
-
   --font-main: 'DM Sans';
 }
 
-*,
-*::before,
-*::after {
+* {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -20,7 +20,7 @@
 body {
   font-family: var(--font-main), sans-serif;
   background-color: var(--color-white);
-  color: #333;
+  color: var(--color-charcoal);
 }
 
 #app {
@@ -30,13 +30,8 @@ body {
   font-weight: normal;
 }
 
-h3 {
-  padding-bottom: 30px;
-}
-
 input {
   width: 100%;
-  height: 35px;
   margin-bottom: 20px;
   font-size: 15px;
   padding: 8px 10px;
@@ -53,26 +48,4 @@ button {
   border: 1px solid var(--color-primary);
   background-color: var(--color-primary);
   cursor: pointer;
-}
-
-.list-item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  width: 100%;
-  height: 35px;
-  gap: 20px;
-  margin-bottom: 20px;
-  font-size: 15px;
-  padding: 8px 10px;
-  border-radius: var(--border-radius);
-  border: 1px solid var(--color-primary);
-}
-
-.name {
-  margin-right: auto;
-}
-
-.price {
-  margin-left: auto;
 }
