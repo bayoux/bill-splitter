@@ -12,7 +12,7 @@ const total = computed(() =>
 
 const qrSrc = computed(
   () =>
-    `${import.meta.env.VITE_QR_API_URL}?size=200x200&data=Итого:${total.value}сом`,
+    `${import.meta.env.VITE_QR_API_URL}?size=200x200&data=${encodeURIComponent(`Итого:${total.value}сом`)}`,
 );
 </script>
 
@@ -22,7 +22,7 @@ const qrSrc = computed(
 
     <p v-if="loading">Загрузка...</p>
 
-    <ul class="guest-page__list">
+    <ul v-else class="guest-page__list">
       <li class="guest-page__item" v-for="dish in dishes" :key="dish.id">
         <input
           v-model="selectedDishes"
@@ -35,10 +35,10 @@ const qrSrc = computed(
       </li>
     </ul>
 
-    <div v-if="selectedDishes.length > 0" class="total-section">
-      <div class="total-section__value">Итого: {{ total }} сом</div>
-      <div class="total-section__qr-wrapper">
-        <img class="total-section__qr-code" alt="qrCode" :src="qrSrc" />
+    <div v-if="selectedDishes.length > 0" class="guest-page__total">
+      <div class="guest-page__total-value">Итого: {{ total }} сом</div>
+      <div class="guest-page__total-qr">
+        <img class="guest-page__qr-code" alt="qrCode" :src="qrSrc" />
       </div>
     </div>
   </div>
@@ -83,14 +83,14 @@ const qrSrc = computed(
     min-width: 80px;
     text-align: right;
   }
-}
 
-.total-section {
-  display: flex;
-  flex-direction: column;
-  margin-top: 24px;
+  &__total {
+    display: flex;
+    flex-direction: column;
+    margin-top: 24px;
+  }
 
-  &__value {
+  &__total-value {
     width: 30%;
     margin-left: auto;
     font-size: 15px;
@@ -103,7 +103,7 @@ const qrSrc = computed(
     margin-bottom: 30px;
   }
 
-  &__qr-wrapper {
+  &__total-qr {
     display: flex;
     align-items: center;
     justify-content: center;

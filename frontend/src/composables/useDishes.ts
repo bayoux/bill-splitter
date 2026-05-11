@@ -2,19 +2,35 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import type { Dish } from '@/types/dish';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export function useDishes() {
   const dishes = ref<Dish[]>([]);
   const loading = ref(false);
   const error = ref('');
 
+  function handleError(name: string, price: number) {
+    if (!name.trim()) {
+      error.value = 'Название не должно быть пустым';
+      return false;
+    }
+    if (price <= 0) {
+      error.value = 'Цена должна быть больше нуля';
+      return false;
+    }
+    error.value = '';
+    return true;
+  }
+
+  async function getDishes() {
+    const { data } = await axios.get<Dish[]>(`${API_URL}/dishes`);
+    dishes.value = data;
+  }
+
   onMounted(async () => {
     loading.value = true;
-
     try {
-      const { data } = await axios.get<Dish[]>(
-        `${import.meta.env.VITE_API_URL}/dishes`,
-      );
-      dishes.value = data.reverse();
+      await getDishes();
     } catch (e) {
       error.value =
         e instanceof Error ? e.message : 'не удалось загрузить данные';
@@ -24,19 +40,12 @@ export function useDishes() {
   });
 
   async function addDish(name: string, price: number) {
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('price', String(price));
     try {
-      const formData = new FormData();
-      formData.append('name', name);
-      formData.append('price', String(price));
-
-      await axios.post<Dish[]>(
-        `${import.meta.env.VITE_API_URL}/dishes`,
-        formData,
-      );
-      const { data } = await axios.get<Dish[]>(
-        `${import.meta.env.VITE_API_URL}/dishes`,
-      );
-      dishes.value = data.reverse();
+      await axios.post<Dish[]>(`${API_URL}/dishes`, formData);
+      await getDishes();
     } catch (e) {
       error.value =
         e instanceof Error ? e.message : 'не удалось добавить блюдо';
@@ -45,30 +54,20 @@ export function useDishes() {
 
   async function deleteDish(id: number) {
     try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/dishes/${id}`);
-      const { data } = await axios.get<Dish[]>(
-        `${import.meta.env.VITE_API_URL}/dishes`,
-      );
-      dishes.value = data;
+      await axios.delete(`${API_URL}/dishes/${id}`);
+      await getDishes();
     } catch (e) {
       error.value = e instanceof Error ? e.message : 'не удалось удалить';
     }
   }
 
-  async function editDish(id: number, name: string, price: number) {
+  async function editDish({ id, name, price }: Dish) {
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('price', String(price));
     try {
-      const formData = new FormData();
-      formData.append('name', name);
-      formData.append('price', String(price));
-
-      await axios.patch(
-        `${import.meta.env.VITE_API_URL}/dishes/${id}`,
-        formData,
-      );
-      const { data } = await axios.get<Dish[]>(
-        `${import.meta.env.VITE_API_URL}/dishes`,
-      );
-      dishes.value = data;
+      await axios.patch(`${API_URL}/dishes/${id}`, formData);
+      await getDishes();
     } catch (e) {
       error.value =
         e instanceof Error ? e.message : 'не удалось обновить блюдо';
@@ -82,5 +81,6 @@ export function useDishes() {
     addDish,
     deleteDish,
     editDish,
+    handleError,
   };
 }

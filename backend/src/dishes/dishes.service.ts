@@ -11,7 +11,9 @@ export class DishesService {
   ) {}
 
   async findAll(): Promise<Dish[]> {
-    return await this.dishRepository.find();
+    return await this.dishRepository.find({
+      order: { id: 'DESC' },
+    });
   }
 
   async findOne(id: number): Promise<Dish | null> {
@@ -30,5 +32,4 @@ export class DishesService {
     await this.dishRepository.update(id, dish);
     return this.findOne(id);
   }
-
 }

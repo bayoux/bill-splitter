@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   UseInterceptors,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { DishesService } from './dishes.service';
@@ -22,8 +23,8 @@ export class DishesController {
   }
 
   @Get(':id')
-  getOne(@Param('id') id: string) {
-    return this.dishesService.findOne(+id);
+  getOne(@Param('id', ParseIntPipe) id: number) {
+    return this.dishesService.findOne(id);
   }
 
   @Post()
@@ -33,13 +34,16 @@ export class DishesController {
   }
 
   @Delete(':id')
-  delete(@Param('id') id: string) {
-    return this.dishesService.delete(+id);
+  delete(@Param('id', ParseIntPipe) id: number) {
+    return this.dishesService.delete(id);
   }
 
   @Patch(':id')
   @UseInterceptors(AnyFilesInterceptor())
-  update(@Param('id') id: string, @Body() updatedDish: Partial<Dish>) {
-    return this.dishesService.update(+id, updatedDish);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updatedDish: Partial<Dish>,
+  ) {
+    return this.dishesService.update(id, updatedDish);
   }
 }
