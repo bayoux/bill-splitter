@@ -6,12 +6,13 @@ import {
   Param,
   Patch,
   Post,
-  UseInterceptors,
   ParseIntPipe,
+  HttpStatus,
+  HttpCode,
 } from '@nestjs/common';
-import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { DishesService } from './dishes.service';
-import { Dish } from './dish.entity';
+import { CreateDishDto } from './dto/create-dish.dto';
+import { UpdateDishDto } from './dto/update-dish.dto';
 
 @Controller('dishes')
 export class DishesController {
@@ -28,22 +29,19 @@ export class DishesController {
   }
 
   @Post()
-  @UseInterceptors(AnyFilesInterceptor())
-  create(@Body() newDish: Partial<Dish>) {
-    return this.dishesService.create(newDish);
+  @HttpCode(HttpStatus.CREATED)
+  create(@Body() dto: CreateDishDto) {
+    return this.dishesService.create(dto);
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   delete(@Param('id', ParseIntPipe) id: number) {
     return this.dishesService.delete(id);
   }
 
   @Patch(':id')
-  @UseInterceptors(AnyFilesInterceptor())
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updatedDish: Partial<Dish>,
-  ) {
-    return this.dishesService.update(id, updatedDish);
+  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateDishDto) {
+    return this.dishesService.update(id, dto);
   }
 }
