@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useDishes } from '@/composables/useDishes';
+import { useQrCode } from '@/composables/useQrCode';
 import type { Dish } from '@/types/dish';
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL;
 const { dishes, loading, getDishes } = useDishes();
+const { qrSrc } = useQrCode();
+
+const API_URL = import.meta.env.VITE_API_URL;
 const selectedDishes = ref<Dish[]>([]);
-const qrSrc = ref('');
 const total = computed(() =>
   selectedDishes.value.reduce((sum, dish) => sum + Number(dish.price), 0),
 );

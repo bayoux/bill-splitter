@@ -40,7 +40,7 @@ input {
   background-color: var(--color-bg);
 }
 
-button ,label{
+button {
   text-align: center;
   font-size: 15px;
   padding: 8px 10px;

@@ -22,6 +22,6 @@ export class QrCodeService {
   }
 
   async deleteQr() {
-    await this.qrCodeRepository.delete({});
+    await this.qrCodeRepository.clear();
   }
 }

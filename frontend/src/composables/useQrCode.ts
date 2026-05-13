@@ -7,10 +7,10 @@ export function useQrCode() {
   const qrSrc = ref('');
   const error = ref('');
 
-  onMounted(async () => {
+  async function getQrCode() {
     const { data } = await axios.get(`${API_URL}/qr-code`);
     if (data?.qrPath) qrSrc.value = `${API_URL}/${data.qrPath}`;
-  });
+  }
 
   async function onQrUpload(e: Event) {
     const file = (e.target as HTMLInputElement).files[0];
@@ -25,5 +25,10 @@ export function useQrCode() {
     }
   }
 
-  return { qrSrc, onQrUpload };
+  async function deleteQrCode() {
+    await axios.delete(`${API_URL}/qr-code`);
+    qrSrc.value = '';
+  }
+
+  return { qrSrc, onQrUpload, getQrCode, deleteQrCode };
 }

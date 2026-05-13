@@ -6,6 +6,7 @@ import { useQrCode } from '@/composables/useQrCode';
 
 const { dishes, loading, error, getDishes, addDish, deleteDish, editDish } =
   useDishes();
+const { deleteQrCode } = useQrCode();
 
 const dishName = ref('');
 const price = ref('');
@@ -133,6 +134,7 @@ function copyLink() {
     />
     <div class="add-dish-page__qr">
       <img v-if="qrSrc" class="add-dish-page__image-qr" :src="qrSrc" alt="QR" />
+      <button v-if="qrSrc" @click="deleteQrCode">удалить QR</button>
     </div>
 
     <button class="add-dish-page__share" @click="copyLink">
@@ -211,6 +213,18 @@ function copyLink() {
   &__item-delete,
   &__item-confirm,
   &__item-cancel {
+    cursor: pointer;
+  }
+
+  label {
+    text-align: center;
+    font-size: 15px;
+    padding: 8px 10px;
+    margin-bottom: 15px;
+    border-radius: var(--border-radius);
+    color: var(--color-white);
+    border: 1px solid var(--color-primary);
+    background-color: var(--color-primary);
     cursor: pointer;
   }
 
