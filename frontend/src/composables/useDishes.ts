@@ -9,7 +9,7 @@ export function useDishes() {
   const loading = ref(false);
   const error = ref('');
 
-  function handleError(name: string, price: number) {
+  function validateDish(name: string, price: number) {
     if (!name.trim()) {
       error.value = 'Название не должно быть пустым';
       return false;
@@ -27,19 +27,9 @@ export function useDishes() {
     dishes.value = data;
   }
 
-  onMounted(async () => {
-    loading.value = true;
-    try {
-      await getDishes();
-    } catch (e) {
-      error.value =
-        e instanceof Error ? e.message : 'не удалось загрузить данные';
-    } finally {
-      loading.value = false;
-    }
-  });
-
   async function addDish(name: string, price: number) {
+    if (!validateDish(name, price)) return;
+    loading.value = true;
     const formData = new FormData();
     formData.append('name', name);
     formData.append('price', String(price));
@@ -49,19 +39,25 @@ export function useDishes() {
     } catch (e) {
       error.value =
         e instanceof Error ? e.message : 'не удалось добавить блюдо';
+    } finally {
+      loading.value = false;
     }
   }
 
   async function deleteDish(id: number) {
+    loading.value = true;
     try {
       await axios.delete(`${API_URL}/dishes/${id}`);
       await getDishes();
     } catch (e) {
       error.value = e instanceof Error ? e.message : 'не удалось удалить';
+    } finally {
+      loading.value = false;
     }
   }
 
   async function editDish({ id, name, price }: Dish) {
+    loading.value = true;
     const formData = new FormData();
     formData.append('name', name);
     formData.append('price', String(price));
@@ -71,6 +67,8 @@ export function useDishes() {
     } catch (e) {
       error.value =
         e instanceof Error ? e.message : 'не удалось обновить блюдо';
+    } finally {
+      loading.value = false;
     }
   }
 
@@ -78,9 +76,9 @@ export function useDishes() {
     dishes,
     loading,
     error,
+    getDishes,
     addDish,
     deleteDish,
     editDish,
-    handleError,
   };
 }

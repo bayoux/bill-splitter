@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import type { Dish } from '@/types/dish';
 import { useDishes } from '@/composables/useDishes';
 import { useQrCode } from '@/composables/useQrCode';
 
-const { dishes, loading, error, addDish, deleteDish, editDish, handleError } =
+const { dishes, loading, error, getDishes, addDish, deleteDish, editDish } =
   useDishes();
 
 const dishName = ref('');
@@ -14,6 +14,18 @@ const editingId = ref<number | null>(null);
 const editName = ref('');
 const editPrice = ref('');
 const { qrSrc, onQrUpload } = useQrCode();
+
+onMounted(async () => {
+  loading.value = true;
+  try {
+    await getDishes();
+  } catch (e) {
+    error.value =
+      e instanceof Error ? e.message : 'не удалось загрузить данные';
+  } finally {
+    loading.value = false;
+  }
+});
 
 function startEdit(dish: Dish) {
   editingId.value = dish.id;
@@ -39,7 +51,6 @@ async function handleEdit() {
 
 async function handleAdd() {
   const parsedPrice = Number(price.value);
-  if (!handleError(dishName.value, parsedPrice)) return;
   await addDish(dishName.value, parsedPrice);
   dishName.value = '';
   price.value = '';

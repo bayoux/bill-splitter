@@ -3,17 +3,24 @@ import { ref, computed, onMounted } from 'vue';
 import { useDishes } from '@/composables/useDishes';
 import type { Dish } from '@/types/dish';
 import axios from 'axios';
-const API_URL = import.meta.env.VITE_API_URL;
 
-const { dishes, loading } = useDishes();
+const API_URL = import.meta.env.VITE_API_URL;
+const { dishes, loading, getDishes } = useDishes();
 const selectedDishes = ref<Dish[]>([]);
 const qrSrc = ref('');
-
 const total = computed(() =>
   selectedDishes.value.reduce((sum, dish) => sum + Number(dish.price), 0),
 );
 
 onMounted(async () => {
+  loading.value = true;
+  try {
+    await getDishes();
+  } catch (e) {
+    console.error(e);
+  } finally {
+    loading.value = false;
+  }
   const { data } = await axios.get(`${API_URL}/qr-code`);
   if (data?.qrPath) {
     const normalizedPath = data.qrPath.replace(/\\/g, '/');
