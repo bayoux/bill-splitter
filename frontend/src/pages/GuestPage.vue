@@ -1,19 +1,26 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useDishes } from '@/composables/useDishes';
 import type { Dish } from '@/types/dish';
+import axios from 'axios';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const { dishes, loading } = useDishes();
 const selectedDishes = ref<Dish[]>([]);
+const qrSrc = ref('');
 
 const total = computed(() =>
   selectedDishes.value.reduce((sum, dish) => sum + Number(dish.price), 0),
 );
 
-const qrSrc = computed(
-  () =>
-    `${import.meta.env.VITE_QR_API_URL}?size=200x200&data=${encodeURIComponent(`Итого:${total.value}сом`)}`,
-);
+onMounted(async () => {
+  const { data } = await axios.get(`${API_URL}/qr-code`);
+  if (data?.qrPath) {
+    const normalizedPath = data.qrPath.replace(/\\/g, '/');
+    qrSrc.value = `${API_URL}/${normalizedPath}`;
+    console.log(qrSrc.value);
+  }
+});
 </script>
 
 <template>
@@ -37,8 +44,13 @@ const qrSrc = computed(
 
     <div v-if="selectedDishes.length > 0" class="guest-page__total">
       <div class="guest-page__total-value">Итого: {{ total }} сом</div>
-      <div class="guest-page__total-qr">
-        <img class="guest-page__qr-code" alt="qrCode" :src="qrSrc" />
+      <div class="guest-page__qr">
+        <img
+          v-if="qrSrc"
+          class="guest-page__image-qr"
+          alt="qrCode"
+          :src="qrSrc"
+        />
       </div>
     </div>
   </div>
@@ -91,22 +103,28 @@ const qrSrc = computed(
   }
 
   &__total-value {
+    text-align-last: end;
     width: 30%;
     margin-left: auto;
     font-size: 15px;
-    padding: 8px 10px;
+    font-weight: bold;
+    padding: 8px 0 8px 10px;
     border-radius: var(--border-radius);
-    color: var(--color-white);
-    border: 1px solid var(--color-primary);
-    background-color: var(--color-primary);
-    cursor: pointer;
+    color: var(--color-charcoal);
     margin-bottom: 30px;
   }
 
-  &__total-qr {
+  &__qr {
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+  }
+
+  &__image-qr {
+    width: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 </style>

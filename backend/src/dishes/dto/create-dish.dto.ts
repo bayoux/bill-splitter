@@ -6,6 +6,7 @@ import {
   MaxLength,
   Min,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class CreateDishDto {
   @IsString()
@@ -17,6 +18,7 @@ export class CreateDishDto {
     { maxDecimalPlaces: 2 },
     { message: 'Цена должна быть числом с точностью до 2 знаков' },
   )
+  @Transform(({ value }) => Number(value))
   @IsPositive({ message: 'Цена должна быть положительным числом' })
   @Min(0.01, { message: 'Минимальная цена 0.01' })
   price!: number;

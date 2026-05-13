@@ -3,6 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DishesModule } from './dishes/dishes.module';
 import { Dish } from './dishes/dish.entity';
 import { ConfigModule } from '@nestjs/config';
+import { QrCodeModule } from './qr-code/qr-code.module';
+import { QrCode } from './qr-code/qr-сode.entity';
 
 @Module({
   imports: [
@@ -14,10 +16,11 @@ import { ConfigModule } from '@nestjs/config';
       username: process.env.DB_USERNAME!,
       password: process.env.DB_PASSWORD!,
       database: process.env.DB_NAME!,
-      entities: [Dish],
-      synchronize: false,
+      entities: [Dish, QrCode],
+      synchronize: true,
     }),
     DishesModule,
+    QrCodeModule,
   ],
 })
 export class AppModule {}

@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import type { Dish } from '@/types/dish';
 import { useDishes } from '@/composables/useDishes';
+import { useQrCode } from '@/composables/useQrCode';
 
 const { dishes, loading, error, addDish, deleteDish, editDish, handleError } =
   useDishes();
@@ -12,6 +13,7 @@ const shareLink = ref('');
 const editingId = ref<number | null>(null);
 const editName = ref('');
 const editPrice = ref('');
+const { qrSrc, onQrUpload } = useQrCode();
 
 function startEdit(dish: Dish) {
   editingId.value = dish.id;
@@ -110,6 +112,18 @@ function copyLink() {
       </li>
     </ul>
 
+    <label class="add-dish-page__button" for="qr-upload">загрузить QR</label>
+    <input
+      id="qr-upload"
+      type="file"
+      accept="image/*"
+      @change="onQrUpload"
+      style="display: none"
+    />
+    <div class="add-dish-page__qr">
+      <img v-if="qrSrc" class="add-dish-page__image-qr" :src="qrSrc" alt="QR" />
+    </div>
+
     <button class="add-dish-page__share" @click="copyLink">
       Поделиться с гостями
     </button>
@@ -187,6 +201,19 @@ function copyLink() {
   &__item-confirm,
   &__item-cancel {
     cursor: pointer;
+  }
+
+  &__qr {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__image-qr {
+    width: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   &__share {

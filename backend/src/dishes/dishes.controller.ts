@@ -9,10 +9,12 @@ import {
   ParseIntPipe,
   HttpStatus,
   HttpCode,
+  UseInterceptors,
 } from '@nestjs/common';
 import { DishesService } from './dishes.service';
 import { CreateDishDto } from './dto/create-dish.dto';
 import { UpdateDishDto } from './dto/update-dish.dto';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('dishes')
 export class DishesController {
@@ -30,6 +32,7 @@ export class DishesController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @UseInterceptors(AnyFilesInterceptor())
   create(@Body() dto: CreateDishDto) {
     return this.dishesService.create(dto);
   }
