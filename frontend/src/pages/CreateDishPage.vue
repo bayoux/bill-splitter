@@ -6,7 +6,7 @@ import { useQrCode } from '@/composables/useQrCode';
 
 const { dishes, loading, error, getDishes, addDish, deleteDish, editDish } =
   useDishes();
-const { deleteQrCode } = useQrCode();
+const { qrSrc, onQrUpload, deleteQrCode } = useQrCode();
 
 const dishName = ref('');
 const price = ref('');
@@ -14,10 +14,10 @@ const shareLink = ref('');
 const editingId = ref<number | null>(null);
 const editName = ref('');
 const editPrice = ref('');
-const { qrSrc, onQrUpload } = useQrCode();
 
 onMounted(async () => {
   loading.value = true;
+
   try {
     await getDishes();
   } catch (e) {
@@ -42,17 +42,21 @@ function cancelEdit() {
 
 async function handleEdit() {
   if (!editingId.value) return;
+
   await editDish({
     id: editingId.value,
     name: editName.value,
     price: Number(editPrice.value),
   });
+
   cancelEdit();
 }
 
 async function handleAdd() {
   const parsedPrice = Number(price.value);
+
   await addDish(dishName.value, parsedPrice);
+
   dishName.value = '';
   price.value = '';
 }
@@ -134,11 +138,17 @@ function copyLink() {
     />
     <div class="add-dish-page__qr">
       <img v-if="qrSrc" class="add-dish-page__image-qr" :src="qrSrc" alt="QR" />
-      <button v-if="qrSrc" @click="deleteQrCode">удалить QR</button>
+      <button
+        v-if="qrSrc"
+        class="add-dish-page__delete-qr"
+        @click="deleteQrCode"
+      >
+        удалить QR
+      </button>
     </div>
 
     <button class="add-dish-page__share" @click="copyLink">
-      Поделиться с гостями
+      поделиться с гостями
     </button>
     <p v-if="shareLink" class="add-dish-page__share-link">{{ shareLink }}</p>
   </div>
@@ -178,7 +188,9 @@ function copyLink() {
     font-size: 13px;
   }
 
-  &__button {
+  &__button,
+  &__delete-qr,
+  &__share {
     width: 30%;
     margin-left: auto;
   }
@@ -232,6 +244,8 @@ function copyLink() {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+    margin-bottom: 15px;
   }
 
   &__image-qr {
@@ -239,11 +253,6 @@ function copyLink() {
     display: flex;
     justify-content: center;
     align-items: center;
-  }
-
-  &__share {
-    width: 30%;
-    margin-left: auto;
   }
 
   &__share-link {
