@@ -1,8 +1,6 @@
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
+import { ref } from 'vue';
 import type { Dish } from '@/types/dish';
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { api } from '@/api/instance';
 
 export function useDishes() {
   const dishes = ref<Dish[]>([]);
@@ -23,18 +21,21 @@ export function useDishes() {
   }
 
   async function getDishes() {
-    const { data } = await axios.get<Dish[]>(`${API_URL}/dishes`);
+    const { data } = await api.get<Dish[]>('/dishes');
     dishes.value = data;
   }
 
   async function addDish(name: string, price: number) {
     if (!validateDish(name, price)) return;
+
     loading.value = true;
+
     const formData = new FormData();
     formData.append('name', name);
     formData.append('price', String(price));
+
     try {
-      await axios.post<Dish[]>(`${API_URL}/dishes`, formData);
+      await api.post<Dish[]>('/dishes', formData);
       await getDishes();
     } catch (e) {
       error.value =
@@ -46,8 +47,9 @@ export function useDishes() {
 
   async function deleteDish(id: number) {
     loading.value = true;
+
     try {
-      await axios.delete(`${API_URL}/dishes/${id}`);
+      await api.delete(`/dishes/${id}`);
       await getDishes();
     } catch (e) {
       error.value = e instanceof Error ? e.message : 'не удалось удалить';
@@ -58,11 +60,13 @@ export function useDishes() {
 
   async function editDish({ id, name, price }: Dish) {
     loading.value = true;
+
     const formData = new FormData();
     formData.append('name', name);
     formData.append('price', String(price));
+
     try {
-      await axios.patch(`${API_URL}/dishes/${id}`, formData);
+      await api.patch(`/dishes/${id}`, formData);
       await getDishes();
     } catch (e) {
       error.value =
