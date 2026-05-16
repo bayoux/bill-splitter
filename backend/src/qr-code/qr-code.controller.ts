@@ -10,8 +10,7 @@ import {
 } from '@nestjs/common';
 import { QrCodeService } from './qr-code.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname, join } from 'path';
+import { memoryStorage } from 'multer';
 
 @Controller('qr-code')
 export class QrCodeController {
@@ -25,16 +24,11 @@ export class QrCodeController {
   @HttpCode(HttpStatus.CREATED)
   @UseInterceptors(
     FileInterceptor('file', {
-      storage: diskStorage({
-        destination: join(process.cwd(), 'uploads'),
-        filename: (req, file, cb) => {
-          cb(null, `qr-${Date.now()}${extname(file.originalname)}`);
-        },
-      }),
+      storage: memoryStorage(),
     }),
   )
   create(@UploadedFile() file: any) {
-    return this.qrCodeService.uploadQr(file.path);
+    return this.qrCodeService.uploadQr(file);
   }
 
   @Delete()

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QrCode } from './qr-сode.entity';
 import { Not, Repository } from 'typeorm';
-import { basename } from 'path';
+import { uploadToS3 } from './s3.service';
 
 @Injectable()
 export class QrCodeService {
@@ -15,10 +15,10 @@ export class QrCodeService {
     return await this.qrCodeRepository.findOne({ where: { id: Not(0) } });
   }
 
-  async uploadQr(qrPath: string): Promise<QrCode> {
+  async uploadQr(file: Express.Multer.File): Promise<QrCode> {
     await this.qrCodeRepository.clear();
-    const filename = basename(qrPath);
-    return await this.qrCodeRepository.save({ qrPath: `uploads/${filename}` });
+    const url = await uploadToS3(file);
+    return await this.qrCodeRepository.save({ qrPath: url });
   }
 
   async deleteQr() {
