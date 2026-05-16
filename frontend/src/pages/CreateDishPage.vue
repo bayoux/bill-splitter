@@ -6,7 +6,7 @@ import { useQrCode } from '@/composables/useQrCode';
 
 const { dishes, loading, error, getDishes, addDish, deleteDish, editDish } =
   useDishes();
-const { qrSrc, onQrUpload, deleteQrCode } = useQrCode();
+const { qrSrc, onQrUpload, deleteQrCode, getQrCode } = useQrCode();
 
 const dishName = ref('');
 const price = ref('');
@@ -16,16 +16,8 @@ const editName = ref('');
 const editPrice = ref('');
 
 onMounted(async () => {
-  loading.value = true;
-
-  try {
-    await getDishes();
-  } catch (e) {
-    error.value =
-      e instanceof Error ? e.message : 'не удалось загрузить данные';
-  } finally {
-    loading.value = false;
-  }
+  await getDishes();
+  await getQrCode();
 });
 
 function startEdit(dish: Dish) {

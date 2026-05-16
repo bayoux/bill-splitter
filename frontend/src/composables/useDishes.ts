@@ -21,14 +21,21 @@ export function useDishes() {
   }
 
   async function getDishes() {
-    const { data } = await api.get<Dish[]>('/dishes');
-    dishes.value = data;
+    loading.value = true;
+
+    try {
+      const { data } = await api.get<Dish[]>('/dishes');
+      dishes.value = data;
+    } catch (e) {
+      error.value =
+        e instanceof Error ? e.message : 'не удалось загрузить данные';
+    } finally {
+      loading.value = false;
+    }
   }
 
   async function addDish(name: string, price: number) {
     if (!validateDish(name, price)) return;
-
-    loading.value = true;
 
     const formData = new FormData();
     formData.append('name', name);
@@ -40,27 +47,19 @@ export function useDishes() {
     } catch (e) {
       error.value =
         e instanceof Error ? e.message : 'не удалось добавить блюдо';
-    } finally {
-      loading.value = false;
     }
   }
 
   async function deleteDish(id: number) {
-    loading.value = true;
-
     try {
       await api.delete(`/dishes/${id}`);
       await getDishes();
     } catch (e) {
       error.value = e instanceof Error ? e.message : 'не удалось удалить';
-    } finally {
-      loading.value = false;
     }
   }
 
   async function editDish({ id, name, price }: Dish) {
-    loading.value = true;
-
     const formData = new FormData();
     formData.append('name', name);
     formData.append('price', String(price));
@@ -71,8 +70,6 @@ export function useDishes() {
     } catch (e) {
       error.value =
         e instanceof Error ? e.message : 'не удалось обновить блюдо';
-    } finally {
-      loading.value = false;
     }
   }
 
