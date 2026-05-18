@@ -44,6 +44,7 @@ export class DishesController {
   }
 
   @Patch(':id')
+  @UseInterceptors(AnyFilesInterceptor())
   update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateDishDto) {
     return this.dishesService.update(id, dto);
   }
