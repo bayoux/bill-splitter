@@ -63,10 +63,10 @@ onMounted(async () => {
 .guest-page {
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 1.25rem;
 
   &__title {
-    margin-bottom: 16px;
+    margin-bottom: 1rem;
   }
 
   &__list {
@@ -80,13 +80,13 @@ onMounted(async () => {
   &__item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 8px;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
   }
 
   &__checkbox {
-    width: 20px;
-    height: 20px;
+    width: 1.25rem;
+    height: 1.25rem;
     margin: 0;
   }
 
@@ -95,26 +95,26 @@ onMounted(async () => {
   }
 
   &__price {
-    min-width: 80px;
+    min-width: 5rem;
     text-align: right;
   }
 
   &__total {
     display: flex;
     flex-direction: column;
-    margin-top: 24px;
+    margin-top: 1.5rem;
   }
 
   &__total-value {
     text-align-last: end;
     width: 30%;
     margin-left: auto;
-    font-size: 15px;
+    font-size: 0.9375rem;
     font-weight: bold;
-    padding: 8px 0 8px 10px;
+    padding: 0.5rem 0 0.5rem 0.625rem;
     border-radius: var(--border-radius);
     color: var(--color-charcoal);
-    margin-bottom: 30px;
+    margin-bottom: 1.875rem;
   }
 
   &__qr {
@@ -124,7 +124,7 @@ onMounted(async () => {
   }
 
   &__image-qr {
-    width: 300px;
+    width: 18.75rem;
     display: flex;
     justify-content: center;
     align-items: center;

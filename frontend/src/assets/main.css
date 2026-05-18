@@ -7,7 +7,8 @@
   --color-charcoal: #333;
   --color-border: #e0ddd6;
   --color-primary-light: #e8f0e7;
-  --border-radius: 10px;
+  --color-gray: #7a7a7a;
+  --border-radius: 0.625rem;
   --font-main: 'DM Sans';
 }
 
@@ -21,10 +22,11 @@ body {
   font-family: var(--font-main), sans-serif;
   background-color: var(--color-white);
   color: var(--color-charcoal);
+  font-size: 16px;
 }
 
 #app {
-  max-width: 900px;
+  max-width: 56.25rem;
   margin: 0 auto;
   padding: 2rem;
   font-weight: normal;
@@ -32,9 +34,9 @@ body {
 
 input {
   width: 100%;
-  margin-bottom: 20px;
-  font-size: 15px;
-  padding: 8px 10px;
+  margin-bottom: 1.25rem;
+  font-size: 0.9375rem;
+  padding: 0.5rem 0.625rem;
   border-radius: var(--border-radius);
   border: 1px solid var(--color-primary);
   background-color: var(--color-bg);
@@ -42,8 +44,8 @@ input {
 
 button {
   text-align: center;
-  font-size: 15px;
-  padding: 8px 10px;
+  font-size: 0.9375rem;
+  padding: 0.5rem 0.625rem;
   border-radius: var(--border-radius);
   color: var(--color-white);
   border: 1px solid var(--color-primary);

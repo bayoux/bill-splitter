@@ -127,7 +127,7 @@ function copyLink() {
   flex-direction: column;
   margin: 0 auto;
   max-width: 100vw;
-  padding: 20px;
+  padding: 1.25rem;
 
   &__header {
     display: flex;
@@ -141,18 +141,18 @@ function copyLink() {
   }
 
   &__subtitle {
-    margin-top: 15px;
-    padding-bottom: 30px;
+    margin-top: 0.9375rem;
+    padding-bottom: 1.875rem;
   }
 
   &__input {
     width: 100%;
-    margin-bottom: 10px;
+    margin-bottom: 0.625rem;
   }
 
   &__error {
     color: red;
-    font-size: 13px;
+    font-size: 0.8125rem;
   }
 
   &__button,
@@ -172,11 +172,11 @@ function copyLink() {
   &__item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
     border: 1px solid black;
-    border-radius: 8px;
-    padding: 5px 10px;
+    border-radius: 0.5rem;
+    padding: 0.3125rem 0.625rem;
   }
 
   &__item-name {
@@ -184,7 +184,7 @@ function copyLink() {
   }
 
   &__item-price {
-    min-width: 80px;
+    min-width: 5rem;
     text-align: right;
   }
 
@@ -197,9 +197,9 @@ function copyLink() {
 
   label {
     text-align: center;
-    font-size: 15px;
-    padding: 8px 10px;
-    margin-bottom: 15px;
+    font-size: 0.9375rem;
+    padding: 0.5rem 0.625rem;
+    margin-bottom: 0.9375rem;
     border-radius: var(--border-radius);
     color: var(--color-white);
     border: 1px solid var(--color-primary);
@@ -212,19 +212,19 @@ function copyLink() {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    margin-bottom: 15px;
+    margin-bottom: 0.9375rem;
   }
 
   &__image-qr {
-    width: 300px;
+    width: 18.75rem;
     display: flex;
     justify-content: center;
     align-items: center;
   }
 
   &__share-link {
-    margin-top: 8px;
-    font-size: 13px;
+    margin-top: 0.5rem;
+    font-size: 0.8125rem;
   }
 }
 </style>
