@@ -7,10 +7,10 @@ export function useQrCode() {
 
   async function getQrCode() {
     const { data } = await api.get(`/qr-code`);
+    console.log('data:', data);
 
     if (data?.qrPath) {
-      const normalizedPath = data.qrPath.replace(/\\/g, '/');
-      qrSrc.value = `${api.defaults.baseURL}/${normalizedPath}`;
+      qrSrc.value = data?.qrPath;
       console.log(qrSrc.value);
     }
   }
@@ -23,7 +23,7 @@ export function useQrCode() {
 
     try {
       const { data } = await api.post(`/qr-code`, formData);
-      if (data?.qrPath) qrSrc.value = `${api.defaults.baseURL}/${data.qrPath}`;
+      if (data?.qrPath) qrSrc.value = data.qrPath;
     } catch (e) {
       error.value =
         e instanceof Error ? e.message : 'не удалось загрузить QR код';

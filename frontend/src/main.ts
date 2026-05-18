@@ -1,5 +1,5 @@
 import './assets/main.css';
-
+import '@tabler/icons-webfont/dist/tabler-icons.css';
 import { createApp } from 'vue';
 import App from './App.vue';
 import router from '@/router/index';
