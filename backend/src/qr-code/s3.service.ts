@@ -17,7 +17,8 @@ function createS3Client() {
 export async function uploadToS3(file: Express.Multer.File): Promise<string> {
   const S3 = createS3Client();
 
-  const key = `qr-${Date.now()}.png`;
+  const ext = file.originalname.split('.').pop();
+  const key = `qr-${Date.now()}.${ext}`;
 
   await S3.send(
     new PutObjectCommand({
