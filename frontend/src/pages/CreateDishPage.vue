@@ -37,28 +37,6 @@ function copyLink() {
 
 <template>
   <div class="add-dish-page">
-    <div class="add-dish-page__header">
-      <h3 class="add-dish-page__title">Добавить блюдо</h3>
-
-      <input
-        class="add-dish-page__input"
-        type="text"
-        v-model="dishName"
-        placeholder="название блюда:"
-        required
-      />
-      <input
-        class="add-dish-page__input"
-        v-model="price"
-        type="number"
-        placeholder="цена:"
-        required
-      />
-
-      <p class="add-dish-page__error">{{ error }}</p>
-      <button class="add-dish-page__button" @click="handleAdd">добавить</button>
-    </div>
-
     <h3 class="add-dish-page__subtitle">Список блюд:</h3>
     <p v-if="loading">Загрузка...</p>
 
@@ -95,8 +73,11 @@ function copyLink() {
       </li>
     </ul>
 
-    <label class="add-dish-page__button" for="qr-upload">загрузить QR</label>
+    <label class="add-dish-page__upload-label" for="qr-upload"
+      >загрузить QR</label
+    >
     <input
+      class="add-dish-page__file-input"
       id="qr-upload"
       type="file"
       accept="image/*"
@@ -121,7 +102,7 @@ function copyLink() {
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .add-dish-page {
   display: flex;
   flex-direction: column;
@@ -136,8 +117,8 @@ function copyLink() {
   }
 
   &__title {
-    margin-top: 15px;
-    padding-bottom: 30px;
+    margin-top: 0.9375rem;
+    padding-bottom: 1.875rem;
   }
 
   &__subtitle {
@@ -195,7 +176,9 @@ function copyLink() {
     cursor: pointer;
   }
 
-  label {
+  &__upload-label {
+    width: 30%;
+    margin-left: auto;
     text-align: center;
     font-size: 0.9375rem;
     padding: 0.5rem 0.625rem;
@@ -205,6 +188,10 @@ function copyLink() {
     border: 1px solid var(--color-primary);
     background-color: var(--color-primary);
     cursor: pointer;
+  }
+
+  &__file-input {
+    display: none;
   }
 
   &__qr {

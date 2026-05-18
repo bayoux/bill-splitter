@@ -13,16 +13,8 @@ const total = computed(() =>
 );
 
 onMounted(async () => {
-  loading.value = true;
-
-  try {
-    await getDishes();
-    await getQrCode();
-  } catch (e) {
-    console.error(e);
-  } finally {
-    loading.value = false;
-  }
+  await getDishes();
+  await getQrCode();
 });
 </script>
 
@@ -59,7 +51,7 @@ onMounted(async () => {
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .guest-page {
   display: flex;
   flex-direction: column;
