@@ -1,48 +1,23 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import type { Dish } from '@/types/dish';
 import { useDishes } from '@/composables/useDishes';
 import { useQrCode } from '@/composables/useQrCode';
+import { useEditDish } from '@/composables/useEditDish';
 
 const { dishes, loading, error, getDishes, addDish, deleteDish, editDish } =
   useDishes();
 const { qrSrc, onQrUpload, deleteQrCode, getQrCode } = useQrCode();
+const { editingId, editName, editPrice, startEdit, cancelEdit, handleEdit } =
+  useEditDish(editDish);
 
 const dishName = ref('');
 const price = ref('');
 const shareLink = ref('');
-const editingId = ref<number | null>(null);
-const editName = ref('');
-const editPrice = ref('');
 
 onMounted(async () => {
   await getDishes();
   await getQrCode();
 });
-
-function startEdit(dish: Dish) {
-  editingId.value = dish.id;
-  editName.value = dish.name;
-  editPrice.value = String(dish.price);
-}
-
-function cancelEdit() {
-  editingId.value = null;
-  editName.value = '';
-  editPrice.value = '';
-}
-
-async function handleEdit() {
-  if (!editingId.value) return;
-
-  await editDish({
-    id: editingId.value,
-    name: editName.value,
-    price: Number(editPrice.value),
-  });
-
-  cancelEdit();
-}
 
 async function handleAdd() {
   const parsedPrice = Number(price.value);
@@ -114,7 +89,7 @@ function copyLink() {
             class="add-dish-page__item-delete"
             @click="deleteDish(dish.id)"
           >
-            X
+            <i class="ti ti-x"></i>
           </button>
         </template>
       </li>
