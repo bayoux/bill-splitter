@@ -1,33 +1,17 @@
+<script setup>
+import AddDishHeader from '@/components/dishes/AddDishHeader.vue';
+import AddDishNav from '@/components/dishes/AddDishNav.vue';
+</script>
+
 <template>
   <div class="page">
-    <header class="page__header">
-      <div class="page__header-inner">
-        <div class="page__header-logo">
-          <span class="page__header-logo-icon">✦</span>
-          <h1 class="page__header-logo-title">Bill Splitter</h1>
-        </div>
-        <p class="page__header-tagline">Разделите счет честно и без споров</p>
-      </div>
-    </header>
-
-    <nav class="page__nav">
-      <RouterLink to="/create" class="page__nav-link">
-        <span class="page__nav-icon"><i class="ti ti-plus"></i></span>
-        Добавить блюдо
-      </RouterLink>
-      <RouterLink to="/guest" class="page__nav-link">
-        <span class="page__nav-icon">◉</span>
-        Что я ел
-      </RouterLink>
-    </nav>
-
+    <AddDishHeader />
+    <AddDishNav />
     <main class="page__main">
       <RouterView />
     </main>
   </div>
 </template>
-
-<script setup></script>
 
 <style lang="scss">
 .page {
