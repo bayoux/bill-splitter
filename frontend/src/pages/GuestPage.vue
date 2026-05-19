@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { useDishes } from '@/composables/useDishes';
+import { ref, computed, onMounted, inject } from 'vue';
+import { DishesContext } from '@/composables/useDishes';
 import { useQrCode } from '@/composables/useQrCode';
 import type { Dish } from '@/types/dish';
 
-const { dishes, loading, getDishes } = useDishes();
+const { dishes, loading } = inject<DishesContext>('dishes')!;
 const { qrSrc, getQrCode } = useQrCode();
 
 const selectedDishes = ref<Dish[]>([]);
@@ -13,7 +13,6 @@ const total = computed(() =>
 );
 
 onMounted(async () => {
-  await getDishes();
   await getQrCode();
 });
 </script>

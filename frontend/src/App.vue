@@ -1,6 +1,15 @@
 <script setup>
 import AddDishHeader from '@/components/dishes/AddDishHeader.vue';
 import AddDishNav from '@/components/dishes/AddDishNav.vue';
+import { useDishes } from '@/composables/useDishes.ts';
+import { onMounted, provide } from 'vue';
+
+const useDishesData = useDishes();
+provide('dishes', useDishesData);
+
+onMounted(async () => {
+  await useDishesData.getDishes();
+});
 </script>
 
 <template>

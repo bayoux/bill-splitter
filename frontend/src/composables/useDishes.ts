@@ -83,3 +83,5 @@ export function useDishes() {
     editDish,
   };
 }
+
+export type DishesContext = ReturnType<typeof useDishes>;

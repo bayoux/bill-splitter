@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { useDishes } from '@/composables/useDishes';
+import { inject, onMounted, ref } from 'vue';
 import { useQrCode } from '@/composables/useQrCode';
 import { useEditDish } from '@/composables/useEditDish';
+import { DishesContext } from '@/composables/useDishes';
 
-const { dishes, loading, error, getDishes, addDish, deleteDish, editDish } =
-  useDishes();
+const { dishes, loading, error, addDish, deleteDish, editDish } =
+  inject<DishesContext>('dishes')!;
 const { qrSrc, onQrUpload, deleteQrCode, getQrCode } = useQrCode();
 const { editingId, editName, editPrice, startEdit, cancelEdit, handleEdit } =
   useEditDish(editDish);
@@ -15,7 +15,6 @@ const price = ref('');
 const shareLink = ref('');
 
 onMounted(async () => {
-  await getDishes();
   await getQrCode();
 });
 
@@ -37,6 +36,27 @@ function copyLink() {
 
 <template>
   <div class="add-dish-page">
+    <div class="add-dish-page__header">
+      <h3 class="add-dish-page__title">Добавить блюдо</h3>
+
+      <input
+        class="add-dish-page__input"
+        type="text"
+        v-model="dishName"
+        placeholder="название блюда:"
+        required
+      />
+      <input
+        class="add-dish-page__input"
+        v-model="price"
+        type="number"
+        placeholder="цена:"
+        required
+      />
+
+      <p class="add-dish-page__error">{{ error }}</p>
+      <button class="add-dish-page__button" @click="handleAdd">добавить</button>
+    </div>
     <h3 class="add-dish-page__subtitle">Список блюд:</h3>
     <p v-if="loading">Загрузка...</p>
 
