@@ -180,13 +180,6 @@ function copyLink() {
     text-align: right;
   }
 
-  &__item-edit,
-  &__item-delete,
-  &__item-confirm,
-  &__item-cancel {
-    cursor: pointer;
-  }
-
   &__upload-label {
     width: 30%;
     margin-left: auto;
@@ -197,6 +190,7 @@ function copyLink() {
     border-radius: var(--border-radius);
     color: var(--color-white);
     background-color: var(--color-primary);
+
   }
 
   &__file-input {
