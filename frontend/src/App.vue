@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Header from '@/components/Header.vue';
-import Nav from '@/components/Nav.vue';
+import AddHeader from '@/components/AddHeader.vue';
+import AddNav from '@/components/AddNav.vue';
 import { useDishes } from '@/composables/useDishes';
 import { onMounted, provide } from 'vue';
 
@@ -14,8 +14,8 @@ onMounted(async () => {
 
 <template>
   <div class="page">
-    <Header />
-    <Nav />
+    <AddHeader />
+    <AddNav />
     <main class="page__main">
       <RouterView />
     </main>
