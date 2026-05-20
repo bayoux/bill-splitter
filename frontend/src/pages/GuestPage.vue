@@ -58,7 +58,7 @@ onMounted(async () => {
 .guest-page {
   display: flex;
   flex-direction: column;
-  padding: 1.25rem;
+  padding: 1.5rem;
 
   &__title {
     margin-bottom: 1rem;
@@ -79,13 +79,13 @@ onMounted(async () => {
   &__item {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 1rem;
     margin-bottom: 0.5rem;
   }
 
   &__checkbox {
-    width: 1.25rem;
-    height: 1.25rem;
+    width: 1.3rem;
+    height: 1.3rem;
     margin: 0;
   }
 
@@ -108,12 +108,12 @@ onMounted(async () => {
     text-align-last: end;
     width: 30%;
     margin-left: auto;
-    font-size: 0.9375rem;
+    font-size: 1rem;
     font-weight: bold;
-    padding: 0.5rem 0 0.5rem 0.625rem;
+    padding: 0.5rem 0 0.5rem 0.6rem;
     border-radius: var(--border-radius);
     color: var(--color-charcoal);
-    margin-bottom: 1.875rem;
+    margin-bottom: 1.8rem;
   }
 
   &__qr {
@@ -123,7 +123,7 @@ onMounted(async () => {
   }
 
   &__image-qr {
-    width: 18.75rem;
+    width: 18rem;
     display: flex;
     justify-content: center;
     align-items: center;

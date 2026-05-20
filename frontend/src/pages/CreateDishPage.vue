@@ -128,7 +128,7 @@ function copyLink() {
   flex-direction: column;
   margin: 0 auto;
   max-width: 100vw;
-  padding: 1.25rem;
+  padding: 1.5rem;
 
   &__header {
     display: flex;
@@ -136,24 +136,15 @@ function copyLink() {
     align-items: flex-start;
   }
 
-  &__title {
-    margin-top: 0.9375rem;
-    padding-bottom: 1.875rem;
-  }
-
+  &__title,
   &__subtitle {
-    margin-top: 0.9375rem;
-    padding-bottom: 1.875rem;
-  }
-
-  &__input {
-    width: 100%;
-    margin-bottom: 0.625rem;
+    margin-top: 1rem;
+    padding-bottom: 1rem;
   }
 
   &__error {
-    color: red;
-    font-size: 0.8125rem;
+    color: var(--color-red);
+    font-size: 0.8rem;
   }
 
   &__button,
@@ -173,11 +164,11 @@ function copyLink() {
   &__item {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1.25rem;
-    border: 1px solid black;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid var(--color-input-border);
     border-radius: 0.5rem;
-    padding: 0.3125rem 0.625rem;
+    padding: 0.3rem 0.6rem;
   }
 
   &__item-name {
@@ -200,14 +191,12 @@ function copyLink() {
     width: 30%;
     margin-left: auto;
     text-align: center;
-    font-size: 0.9375rem;
-    padding: 0.5rem 0.625rem;
-    margin-bottom: 0.9375rem;
+    font-size: 1rem;
+    padding: 0.5rem 0.6rem;
+    margin-bottom: 1rem;
     border-radius: var(--border-radius);
     color: var(--color-white);
-    border: 1px solid var(--color-primary);
     background-color: var(--color-primary);
-    cursor: pointer;
   }
 
   &__file-input {
@@ -219,11 +208,11 @@ function copyLink() {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    margin-bottom: 0.9375rem;
+    margin-bottom: 1rem;
   }
 
   &__image-qr {
-    width: 18.75rem;
+    width: 18rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -231,7 +220,7 @@ function copyLink() {
 
   &__share-link {
     margin-top: 0.5rem;
-    font-size: 0.8125rem;
+    font-size: 0.8rem;
   }
 }
 </style>
