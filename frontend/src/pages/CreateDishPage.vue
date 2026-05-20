@@ -3,16 +3,17 @@ import { inject, onMounted, ref } from 'vue';
 import { useQrCode } from '@/composables/useQrCode';
 import { useEditDish } from '@/composables/useEditDish';
 import { DishesContext } from '@/composables/useDishes';
+import { useShareLink } from '@/composables/useShareLink';
 
 const { dishes, loading, error, addDish, deleteDish, editDish } =
   inject<DishesContext>('dishes')!;
 const { qrSrc, onQrUpload, deleteQrCode, getQrCode } = useQrCode();
 const { editingId, editName, editPrice, startEdit, cancelEdit, handleEdit } =
   useEditDish(editDish);
+const { shareLink, copyLink } = useShareLink();
 
 const dishName = ref('');
 const price = ref('');
-const shareLink = ref('');
 
 onMounted(async () => {
   await getQrCode();
@@ -25,12 +26,6 @@ async function handleAdd() {
 
   dishName.value = '';
   price.value = '';
-}
-
-function copyLink() {
-  shareLink.value = `${window.location.origin}/guest`;
-  navigator.clipboard.writeText(shareLink.value);
-  alert('Ссылка скопирована!');
 }
 </script>
 
@@ -190,7 +185,6 @@ function copyLink() {
     border-radius: var(--border-radius);
     color: var(--color-white);
     background-color: var(--color-primary);
-
   }
 
   &__file-input {

@@ -54,3 +54,18 @@ button {
   background-color: var(--color-primary);
   cursor: pointer;
 }
+
+.Vue-Toastification__toast {
+  font-size: 0.9rem;
+  border-radius: var(--border-radius)!important;
+}
+
+.Vue-Toastification__toast--success {
+  background: var(--color-primary)!important;
+  color: white;
+}
+
+.Vue-Toastification__toast--error {
+  background: var(--color-red)!important;
+  color: white;
+}
