@@ -1,7 +1,7 @@
-<script setup>
+<script setup lang="ts">
 import Header from '@/components/Header.vue';
 import Nav from '@/components/Nav.vue';
-import { useDishes } from '@/composables/useDishes.ts';
+import { useDishes } from '@/composables/useDishes';
 import { onMounted, provide } from 'vue';
 
 const useDishesData = useDishes();
