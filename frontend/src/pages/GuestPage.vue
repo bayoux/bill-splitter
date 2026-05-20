@@ -4,7 +4,7 @@ import { DishesContext } from '@/composables/useDishes';
 import { useQrCode } from '@/composables/useQrCode';
 import type { Dish } from '@/types/dish';
 
-const { dishes, loading } = inject<DishesContext>('dishes')!;
+const { dishes, loading, getDishes } = inject<DishesContext>('dishes')!;
 const { qrSrc, getQrCode } = useQrCode();
 
 const selectedDishes = ref<Dish[]>([]);
@@ -20,6 +20,10 @@ onMounted(async () => {
 <template>
   <div class="guest-page">
     <h3 class="guest-page__title">Выберите что вы ели</h3>
+
+    <button class="guest-page__refresh" @click="getDishes()">
+      обновить список
+    </button>
 
     <p v-if="loading">Загрузка...</p>
 
@@ -58,6 +62,10 @@ onMounted(async () => {
 
   &__title {
     margin-bottom: 1rem;
+  }
+
+  &__refresh {
+    margin-bottom: 1.2rem;
   }
 
   &__list {
