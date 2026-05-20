@@ -7,11 +7,9 @@ export function useQrCode() {
 
   async function getQrCode() {
     const { data } = await api.get(`/qr-code`);
-    console.log('data:', data);
 
     if (data?.qrPath) {
       qrSrc.value = data?.qrPath;
-      console.log(qrSrc.value);
     }
   }
 
