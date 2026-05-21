@@ -11,7 +11,7 @@
   </header>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .page {
   &__header {
     padding: 1.5rem 0;

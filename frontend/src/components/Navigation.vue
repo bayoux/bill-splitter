@@ -12,7 +12,7 @@
   </nav>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .page {
   &__nav {
     display: flex;
