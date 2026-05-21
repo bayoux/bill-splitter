@@ -37,7 +37,7 @@
   }
 
   &__header-logo-title {
-    font-family: 'DM Serif Display', serif;
+    font-family: var(--font-heading), serif;
     font-size: 2rem;
     font-weight: 400;
     letter-spacing: -0.03rem;

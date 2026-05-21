@@ -12,6 +12,7 @@
   --color-gray: #7a7a7a;
   --border-radius: 0.6rem;
   --font-main: 'DM Sans';
+  --font-heading: 'DM Serif Display';
 }
 
 * {
@@ -51,10 +52,10 @@ input {
 
 .Vue-Toastification__toast--success {
   background: var(--color-primary)!important;
-  color: white;
+  color: var(--color-white);
 }
 
 .Vue-Toastification__toast--error {
   background: var(--color-red)!important;
-  color: white;
+  color: var(--color-white);
 }
