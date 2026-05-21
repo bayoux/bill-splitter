@@ -3,6 +3,7 @@ import { ref, computed, onMounted, inject } from 'vue';
 import { DishesContext } from '@/composables/useDishes';
 import { useQrCode } from '@/composables/useQrCode';
 import type { Dish } from '@/types/dish';
+import BaseButton from '@/components/BaseButton.vue';
 
 const { dishes, loading, getDishes } = inject<DishesContext>('dishes')!;
 const { qrSrc, getQrCode } = useQrCode();
@@ -21,9 +22,9 @@ onMounted(async () => {
   <div class="guest-page">
     <h3 class="guest-page__title">Выберите что вы ели</h3>
 
-    <button class="guest-page__refresh" @click="getDishes()">
-      обновить список
-    </button>
+    <BaseButton variant="secondary" @click="getDishes()"
+      >обновить список</BaseButton
+    >
 
     <p v-if="loading">Загрузка...</p>
 
@@ -62,10 +63,6 @@ onMounted(async () => {
 
   &__title {
     margin-bottom: 1rem;
-  }
-
-  &__refresh {
-    margin-bottom: 1.2rem;
   }
 
   &__list {

@@ -4,6 +4,7 @@ import { useQrCode } from '@/composables/useQrCode';
 import { useEditDish } from '@/composables/useEditDish';
 import { DishesContext } from '@/composables/useDishes';
 import { useShareLink } from '@/composables/useShareLink';
+import BaseButton from '@/components/BaseButton.vue';
 
 const { dishes, loading, error, addDish, deleteDish, editDish } =
   inject<DishesContext>('dishes')!;
@@ -50,7 +51,7 @@ async function handleAdd() {
       />
 
       <p class="add-dish-page__error">{{ error }}</p>
-      <button class="add-dish-page__button" @click="handleAdd">добавить</button>
+      <BaseButton variant="primary" @click="handleAdd">добавить</BaseButton>
     </div>
     <h3 class="add-dish-page__subtitle">Список блюд:</h3>
     <p v-if="loading">Загрузка...</p>
@@ -64,26 +65,19 @@ async function handleAdd() {
             v-model="editPrice"
             type="number"
           />
-          <button class="add-dish-page__item-confirm" @click="handleEdit">
-            ✓
-          </button>
-          <button class="add-dish-page__item-cancel" @click="cancelEdit">
-            ✕
-          </button>
+          <BaseButton variant="icon" @click="handleEdit"> ✓ </BaseButton>
+          <BaseButton variant="icon" @click="cancelEdit"> ✕ </BaseButton>
         </template>
 
         <template v-else>
           <p class="add-dish-page__item-name">{{ dish.name }}</p>
           <p class="add-dish-page__item-price">{{ dish.price }} сом</p>
-          <button class="add-dish-page__item-edit" @click="startEdit(dish)">
+          <BaseButton variant="icon" @click="startEdit(dish)">
             <i class="ti ti-edit"></i>
-          </button>
-          <button
-            class="add-dish-page__item-delete"
-            @click="deleteDish(dish.id)"
-          >
+          </BaseButton>
+          <BaseButton variant="icon" @click="deleteDish(dish.id)">
             <i class="ti ti-x"></i>
-          </button>
+          </BaseButton>
         </template>
       </li>
     </ul>
@@ -101,18 +95,14 @@ async function handleAdd() {
     />
     <div class="add-dish-page__qr">
       <img v-if="qrSrc" class="add-dish-page__image-qr" :src="qrSrc" alt="QR" />
-      <button
-        v-if="qrSrc"
-        class="add-dish-page__delete-qr"
-        @click="deleteQrCode"
-      >
+      <BaseButton variant="danger" v-if="qrSrc" @click="deleteQrCode">
         удалить QR
-      </button>
+      </BaseButton>
     </div>
 
-    <button class="add-dish-page__share" @click="copyLink">
+    <BaseButton variant="primary" @click="copyLink">
       поделиться с гостями
-    </button>
+    </BaseButton>
     <p v-if="shareLink" class="add-dish-page__share-link">{{ shareLink }}</p>
   </div>
 </template>
@@ -140,13 +130,6 @@ async function handleAdd() {
   &__error {
     color: var(--color-red);
     font-size: 0.8rem;
-  }
-
-  &__button,
-  &__delete-qr,
-  &__share {
-    width: 30%;
-    margin-left: auto;
   }
 
   &__list {
@@ -179,7 +162,7 @@ async function handleAdd() {
     width: 30%;
     margin-left: auto;
     text-align: center;
-    font-size: 1rem;
+    font-size: 0.9rem;
     padding: 0.5rem 0.6rem;
     margin-bottom: 1rem;
     border-radius: var(--border-radius);

@@ -44,17 +44,6 @@ input {
   background-color: var(--color-bg);
 }
 
-button {
-  text-align: center;
-  font-size: 0.9rem;
-  padding: 0.5rem 0.6rem;
-  border-radius: var(--border-radius);
-  color: var(--color-white);
-  border: 1px solid var(--color-primary);
-  background-color: var(--color-primary);
-  cursor: pointer;
-}
-
 .Vue-Toastification__toast {
   font-size: 0.9rem;
   border-radius: var(--border-radius)!important;
