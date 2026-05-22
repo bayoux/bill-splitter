@@ -53,7 +53,7 @@ async function handleAdd() {
       <p class="add-dish-page__error">{{ error }}</p>
       <BaseButton variant="primary" @click="handleAdd">добавить</BaseButton>
     </div>
-    <h3 class="add-dish-page__subtitle">Список блюд:</h3>
+    <h3 class="add-dish-page__title">Список блюд:</h3>
     <p v-if="loading">Загрузка...</p>
 
     <ul class="add-dish-page__list">
@@ -70,8 +70,8 @@ async function handleAdd() {
         </template>
 
         <template v-else>
-          <p class="add-dish-page__item-name">{{ dish.name }}</p>
-          <p class="add-dish-page__item-price">{{ dish.price }} сом</p>
+          <p class="add-dish-page__name">{{ dish.name }}</p>
+          <p class="add-dish-page__price">{{ dish.price }} сом</p>
           <BaseButton variant="icon" @click="startEdit(dish)">
             <i class="ti ti-edit"></i>
           </BaseButton>
@@ -93,8 +93,8 @@ async function handleAdd() {
       @change="onQrUpload"
       style="display: none"
     />
-    <div class="add-dish-page__qr">
-      <img v-if="qrSrc" class="add-dish-page__image-qr" :src="qrSrc" alt="QR" />
+    <div class="qr">
+      <img v-if="qrSrc" class="image-qr" :src="qrSrc" alt="QR" />
       <BaseButton variant="danger" v-if="qrSrc" @click="deleteQrCode">
         удалить QR
       </BaseButton>
@@ -121,8 +121,7 @@ async function handleAdd() {
     align-items: flex-start;
   }
 
-  &__title,
-  &__subtitle {
+  &__title {
     margin-top: 1rem;
     padding-bottom: 1rem;
   }
@@ -149,11 +148,11 @@ async function handleAdd() {
     padding: 0.3rem 0.6rem;
   }
 
-  &__item-name {
+  &__name {
     flex: 1;
   }
 
-  &__item-price {
+  &__price {
     min-width: 5rem;
     text-align: right;
   }
@@ -172,21 +171,6 @@ async function handleAdd() {
 
   &__file-input {
     display: none;
-  }
-
-  &__qr {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    margin-bottom: 1rem;
-  }
-
-  &__image-qr {
-    width: 18rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
   }
 
   &__share-link {

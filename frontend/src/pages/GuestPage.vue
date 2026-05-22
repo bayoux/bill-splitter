@@ -43,13 +43,8 @@ onMounted(async () => {
 
     <div v-if="selectedDishes.length > 0" class="guest-page__total">
       <div class="guest-page__total-value">Итого: {{ total }} сом</div>
-      <div class="guest-page__qr">
-        <img
-          v-if="qrSrc"
-          class="guest-page__image-qr"
-          alt="qrCode"
-          :src="qrSrc"
-        />
+      <div class="qr">
+        <img v-if="qrSrc" class="image-qr" alt="qrCode" :src="qrSrc" />
       </div>
     </div>
   </div>
@@ -111,19 +106,6 @@ onMounted(async () => {
     border-radius: var(--border-radius);
     color: var(--color-charcoal);
     margin-bottom: 1.8rem;
-  }
-
-  &__qr {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  &__image-qr {
-    width: 18rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
   }
 }
 </style>

@@ -45,6 +45,21 @@ input {
   background-color: var(--color-bg);
 }
 
+.qr {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.image-qr {
+  width: 18rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .Vue-Toastification__toast {
   font-size: 0.9rem;
   border-radius: var(--border-radius)!important;
