@@ -1,6 +1,8 @@
 <script setup lang="ts">
-defineProps({
-  variant: String,
+type ButtonVariants = 'primary' | 'secondary' | 'danger' | 'icon' | 'ghost';
+
+withDefaults(defineProps<{ variant: ButtonVariants }>(), {
+  variant: 'primary',
 });
 </script>
 
@@ -12,38 +14,49 @@ defineProps({
 
 <style lang="scss">
 .base-btn {
-  text-align: center;
-  font-size: 0.9rem;
-  padding: 0.5rem 0.6rem;
-  border-radius: var(--border-radius);
-  border: 1px solid var(--color-primary);
-  color: var(--color-white);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  font-size: var(--font-size);
+  padding: 0.6rem 1rem;
+  border-radius: var(--border-radius-lg);
+  border: 0.1rem solid transparent;
   cursor: pointer;
 
-  /* добавить, загрузить qr, поделиться */
   &--primary {
     background-color: var(--color-primary);
-    width: 30%;
-    margin-left: auto;
+    color: var(--color-white);
+
+    &:hover {
+      border-color: var(--color-dark);
+    }
   }
 
-  /* обновить*/
   &--secondary {
-    background-color: var(--color-primary);
-    margin-bottom: 1.2rem;
+    background-color: var(--color-secondary);
+    color: var(--color-muted-purple);
+
+    &:hover {
+      border-color: var(--color-primary);
+    }
   }
 
-  /* удалить */
-  &--danger {
-    background-color: var(--color-primary);
-    width: 30%;
-    margin-left: auto;
-  }
-
-  /* редактировать и удалить в списке блюд */
   &--icon {
-    background-color: var(--color-primary);
-    padding: 0.2rem 0.4rem;
+    padding: 0.2rem;
+    background-color: var(--color-white);
+    border: none;
+    color: var(--color-muted-dark);
+  }
+
+  &--ghost {
+    background-color: var(--color-white);
+    color: var(--color-primary);
+    font-weight: var(--font-weight-medium);
+
+    &:hover {
+      border-color: var(--color-primary);
+    }
   }
 }
 </style>
