@@ -1,24 +1,25 @@
 <script setup lang="ts">
-import { inject, onMounted, ref } from 'vue';
-import { useQrCode } from '@/composables/useQrCode';
+import { inject, ref } from 'vue';
 import { useEditDish } from '@/composables/useEditDish';
 import { DishesContext } from '@/composables/useDishes';
-import { useShareLink } from '@/composables/useShareLink';
 import BaseButton from '@/components/BaseButton.vue';
+import QrUpload from '@/components/QrUpload.vue';
+import {
+  IconPlus,
+  IconBowlSpoonFilled,
+  IconPencilFilled,
+  IconTrashFilled,
+} from '@tabler/icons-vue';
 
-const { dishes, loading, error, addDish, deleteDish, editDish } =
+const { dishes, loading, addDish, deleteDish, editDish } =
   inject<DishesContext>('dishes')!;
-const { qrSrc, onQrUpload, deleteQrCode, getQrCode } = useQrCode();
+
 const { editingId, editName, editPrice, startEdit, cancelEdit, handleEdit } =
   useEditDish(editDish);
-const { shareLink, copyLink } = useShareLink();
 
 const dishName = ref('');
 const price = ref('');
-
-onMounted(async () => {
-  await getQrCode();
-});
+const editPopup = ref(false);
 
 async function handleAdd() {
   const parsedPrice = Number(price.value);
@@ -32,78 +33,115 @@ async function handleAdd() {
 
 <template>
   <div class="add-dish-page">
+    <QrUpload />
     <div class="add-dish-page__header">
-      <h3 class="add-dish-page__title">Добавить блюдо</h3>
-
       <input
-        class="add-dish-page__input"
+        class="add-dish-page__input add-dish-page__input--name"
         type="text"
         v-model="dishName"
-        placeholder="название блюда:"
+        placeholder="Название блюда"
         required
       />
       <input
-        class="add-dish-page__input"
+        class="add-dish-page__input add-dish-page__input--price"
         v-model="price"
         type="number"
-        placeholder="цена:"
+        placeholder="Цена"
         required
       />
 
-      <p class="add-dish-page__error">{{ error }}</p>
-      <BaseButton variant="primary" @click="handleAdd">добавить</BaseButton>
+      <BaseButton
+        variant="primary"
+        class="add-dish-page__button add-dish-page__button--add"
+        @click="handleAdd"
+      >
+        <IconPlus stroke="2" />
+        Добавить
+      </BaseButton>
     </div>
-    <h3 class="add-dish-page__title">Список блюд:</h3>
+
     <p v-if="loading">Загрузка...</p>
 
     <ul class="add-dish-page__list">
       <li class="add-dish-page__item" v-for="dish in dishes" :key="dish.id">
         <template v-if="editingId === dish.id">
-          <input class="add-dish-page__input" v-model="editName" type="text" />
-          <input
-            class="add-dish-page__input"
-            v-model="editPrice"
-            type="number"
-          />
-          <BaseButton variant="icon" @click="handleEdit"> ✓ </BaseButton>
-          <BaseButton variant="icon" @click="cancelEdit"> ✕ </BaseButton>
+          <div
+            v-if="editPopup"
+            class="add-dish-page__overlay"
+            @click="
+              editPopup = false;
+              cancelEdit();
+            "
+          >
+            <div class="add-dish-page__edit-popup" @click.stop>
+              <div class="add-dish-page__edit-actions">
+                <h3 class="add-dish-page__title">Редактировать</h3>
+                <div class="add-dish-page__fields">
+                  <input
+                    class="add-dish-page__input add-dish-page__input--edit-name"
+                    type="text"
+                    v-model="editName"
+                    placeholder="Название блюда"
+                    required
+                  />
+                  <input
+                    class="add-dish-page__input add-dish-page__input--edit-price"
+                    v-model="editPrice"
+                    type="number"
+                    placeholder="Цена"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="add-dish-page__edit-buttons">
+                <BaseButton
+                  class="add-dish-page__button add-dish-page__button--cancel"
+                  variant="ghost"
+                  @click="
+                    cancelEdit();
+                    editPopup = false;
+                  "
+                >
+                  Отменить
+                </BaseButton>
+                <BaseButton
+                  class="add-dish-page__button add-dish-page__button--save"
+                  variant="primary"
+                  @click="handleEdit"
+                >
+                  Сохранить
+                </BaseButton>
+              </div>
+            </div>
+          </div>
         </template>
 
         <template v-else>
-          <p class="add-dish-page__name">{{ dish.name }}</p>
-          <p class="add-dish-page__price">{{ dish.price }} сом</p>
-          <BaseButton variant="icon" @click="startEdit(dish)">
-            <i class="ti ti-edit"></i>
+          <IconBowlSpoonFilled
+            class="add-dish-page__icon add-dish-page__icon--bowl"
+          />
+
+          <div class="add-dish-page__info">
+            <p class="add-dish-page__name">{{ dish.name }}</p>
+            <p class="add-dish-page__price">{{ dish.price }} сом</p>
+          </div>
+
+          <BaseButton
+            variant="icon"
+            @click="
+              startEdit(dish);
+              editPopup = true;
+            "
+          >
+            <IconPencilFilled />
           </BaseButton>
           <BaseButton variant="icon" @click="deleteDish(dish.id)">
-            <i class="ti ti-x"></i>
+            <IconTrashFilled />
           </BaseButton>
         </template>
       </li>
     </ul>
-
-    <label class="add-dish-page__upload-label" for="qr-upload"
-      >загрузить QR</label
-    >
-    <input
-      class="add-dish-page__file-input"
-      id="qr-upload"
-      type="file"
-      accept="image/*"
-      @change="onQrUpload"
-      style="display: none"
-    />
-    <div class="qr">
-      <img v-if="qrSrc" class="image-qr" :src="qrSrc" alt="QR" />
-      <BaseButton variant="danger" v-if="qrSrc" @click="deleteQrCode">
-        удалить QR
-      </BaseButton>
-    </div>
-
-    <BaseButton variant="primary" @click="copyLink">
-      поделиться с гостями
-    </BaseButton>
-    <p v-if="shareLink" class="add-dish-page__share-link">{{ shareLink }}</p>
   </div>
 </template>
 
@@ -111,71 +149,157 @@ async function handleAdd() {
 .add-dish-page {
   display: flex;
   flex-direction: column;
+  flex: 1;
+  width: 100%;
+  max-width: 36rem;
   margin: 0 auto;
-  max-width: 100vw;
-  padding: 1.5rem;
+  padding: 1rem 1rem 0;
+
+  &__icon {
+    color: var(--color-primary);
+    &--bowl {
+      width: var(--icon-sm);
+      height: var(--icon-sm);
+    }
+  }
 
   &__header {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  &__title {
-    margin-top: 1rem;
-    padding-bottom: 1rem;
-  }
-
-  &__error {
-    color: var(--color-red);
-    font-size: 0.8rem;
+    align-items: center;
+    margin: 1rem 0;
+    gap: 0.5rem;
+    width: 100%;
   }
 
   &__list {
-    width: 100%;
     list-style: none;
     padding: 0;
     margin: 0;
+    overflow: hidden;
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--color-secondary);
   }
 
   &__item {
+    width: 100%;
+    min-height: 4rem;
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin-bottom: 1rem;
-    border: 1px solid var(--color-input-border);
-    border-radius: 0.5rem;
-    padding: 0.3rem 0.6rem;
+    border-bottom: 0.1rem solid var(--color-secondary);
+    background-color: var(--color-white);
+    padding: 0.6rem 1rem;
+  }
+
+  &__info {
+    width: 100%;
+    max-width: 26rem;
+    display: flex;
+    flex-direction: column;
   }
 
   &__name {
-    flex: 1;
+    color: var(--color-dark);
   }
 
   &__price {
-    min-width: 5rem;
-    text-align: right;
+    color: var(--color-muted-purple);
   }
 
-  &__upload-label {
-    width: 30%;
-    margin-left: auto;
-    text-align: center;
-    font-size: 0.9rem;
-    padding: 0.5rem 0.6rem;
-    margin-bottom: 1rem;
-    border-radius: var(--border-radius);
-    color: var(--color-white);
-    background-color: var(--color-primary);
+  &__overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
   }
 
-  &__file-input {
-    display: none;
+  &__edit-popup {
+    background: var(--color-white);
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 26rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
   }
 
-  &__share-link {
-    margin-top: 0.5rem;
-    font-size: 0.8rem;
+  &__edit-actions {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  &__title {
+    padding-left: 0.5rem;
+    padding-bottom: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--color-dark);
+  }
+
+  &__fields {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  &__input {
+    max-width: 23rem;
+    min-height: 3.5rem;
+    border-radius: var(--border-radius-lg);
+    border: 0.1rem solid transparent;
+
+    &--name {
+      width: 0;
+      flex: 2;
+      max-width: 15rem;
+    }
+
+    &--price {
+      width: 0;
+      flex: 1;
+    }
+
+    &--edit-name,
+    &--edit-price {
+      background-color: var(--color-light-lavender);
+    }
+
+    &:hover {
+      border-color: var(--color-primary);
+    }
+
+    &::placeholder {
+      color: var(--color-dark);
+      opacity: 1;
+    }
+  }
+  &__edit-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+
+  &__button {
+    width: 100%;
+    min-height: 3.5rem;
+
+    &--add {
+      max-width: 8.2rem;
+    }
+    &--cancel {
+      max-width: 6.2rem;
+      min-height: 2.5rem;
+    }
+
+    &--save {
+      max-width: 6.4rem;
+    }
   }
 }
 </style>
