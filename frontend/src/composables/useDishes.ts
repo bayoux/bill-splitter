@@ -1,22 +1,22 @@
 import { ref } from 'vue';
 import type { Dish } from '@/types/dish';
 import { api } from '@/api/instance';
+import { useToast } from 'vue-toastification';
 
 export function useDishes() {
   const dishes = ref<Dish[]>([]);
   const loading = ref(false);
-  const error = ref('');
+  const toast = useToast();
 
   function validateDish(name: string, price: number) {
     if (!name.trim()) {
-      error.value = 'Название не должно быть пустым';
+      toast.error('Название не должно быть пустым');
       return false;
     }
     if (price <= 0) {
-      error.value = 'Цена должна быть больше нуля';
+      toast.error('Цена должна быть больше нуля');
       return false;
     }
-    error.value = '';
     return true;
   }
 
@@ -27,8 +27,9 @@ export function useDishes() {
       const { data } = await api.get<Dish[]>('/dishes');
       dishes.value = data;
     } catch (e) {
-      error.value =
-        e instanceof Error ? e.message : 'не удалось загрузить данные';
+      toast.error(
+        e instanceof Error ? e.message : 'не удалось загрузить данные',
+      );
     } finally {
       loading.value = false;
     }
@@ -45,8 +46,7 @@ export function useDishes() {
       await api.post<Dish[]>('/dishes', formData);
       await getDishes();
     } catch (e) {
-      error.value =
-        e instanceof Error ? e.message : 'не удалось добавить блюдо';
+      toast.error(e instanceof Error ? e.message : 'не удалось добавить блюдо');
     }
   }
 
@@ -55,7 +55,7 @@ export function useDishes() {
       await api.delete(`/dishes/${id}`);
       await getDishes();
     } catch (e) {
-      error.value = e instanceof Error ? e.message : 'не удалось удалить';
+      toast.error(e instanceof Error ? e.message : 'не удалось удалить');
     }
   }
 
@@ -68,15 +68,13 @@ export function useDishes() {
       await api.patch(`/dishes/${id}`, formData);
       await getDishes();
     } catch (e) {
-      error.value =
-        e instanceof Error ? e.message : 'не удалось обновить блюдо';
+      toast.error(e instanceof Error ? e.message : 'не удалось обновить блюдо');
     }
   }
 
   return {
     dishes,
     loading,
-    error,
     getDishes,
     addDish,
     deleteDish,
