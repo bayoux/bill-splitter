@@ -7,4 +7,7 @@ export class QrCode {
 
   @Column({ nullable: true })
   qrPath!: string;
+
+  @Column({ nullable: true })
+  fileSize!: number;
 }

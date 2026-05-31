@@ -19,8 +19,9 @@ export class QrCodeService {
     await this.qrCodeRepository.clear();
 
     const url = await uploadToS3(file);
+    const fileSize = file.size;
 
-    return await this.qrCodeRepository.save({ qrPath: url });
+    return await this.qrCodeRepository.save({ qrPath: url, fileSize });
   }
 
   async deleteQr() {
