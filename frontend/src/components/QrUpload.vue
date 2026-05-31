@@ -95,7 +95,7 @@ onMounted(async () => {
   }
 
   &__icon {
-    color: var(--color-primary);
+    color: var(--color-icon);
     &--upload {
       width: var(--icon-lg);
       height: var(--icon-lg);
@@ -103,14 +103,14 @@ onMounted(async () => {
   }
 
   &__qr-title {
-    font-size: 1rem;
+    font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
     margin-bottom: 0.3rem;
     color: var(--color-muted-purple);
   }
 
   &__qr-subtitle {
-    font-size: 0.8rem;
+    font-size: var(--font-size-sm);
     font-weight: var(--font-weight-regular);
     color: var(--color-muted-purple);
   }
@@ -188,9 +188,9 @@ onMounted(async () => {
   }
 
   &__qr-size {
-    font-size: 0.8rem;
+    font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
-    letter-spacing: 0.1rem;
+    letter-spacing: 0.01rem;
     color: var(--color-muted-purple);
   }
 
