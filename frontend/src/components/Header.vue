@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import { IconMoonFilled, IconSparkle } from '@tabler/icons-vue';
+import { IconMoonFilled, IconSunFilled, IconSparkle } from '@tabler/icons-vue';
 import BaseButton from '@/components/BaseButton.vue';
+import { useTheme } from '@/composables/useTheme';
+
+const { toggleTheme, isDark } = useTheme();
 </script>
 
 <template>
@@ -12,9 +15,13 @@ import BaseButton from '@/components/BaseButton.vue';
 
     <p class="header__tagline">Разделите счет честно и без споров</p>
 
-    <BaseButton variant="icon" class="header__theme-toggle">
-      <!--onclick-->
-      <IconMoonFilled />
+    <BaseButton
+      variant="icon"
+      @click="toggleTheme()"
+      class="header__theme-toggle"
+    >
+      <IconSunFilled v-if="isDark" />
+      <IconMoonFilled v-else />
     </BaseButton>
   </header>
 </template>
@@ -39,13 +46,13 @@ import BaseButton from '@/components/BaseButton.vue';
   }
 
   &__icon {
-    color: var(--color-primary);
+    color: var(--color-icon);
   }
 
   &__title {
     font-family: var(--font-heading), serif;
     color: var(--color-primary);
-    font-size: 2rem;
+    font-size: var(--font-size-lg);
     font-weight: var(--font-weight-regular);
     letter-spacing: -0.03rem;
   }
