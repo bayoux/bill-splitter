@@ -156,7 +156,7 @@ async function handleAdd() {
   padding: 1rem 1rem 0;
 
   &__icon {
-    color: var(--color-primary);
+    color: var(--color-icon);
     &--bowl {
       width: var(--icon-sm);
       height: var(--icon-sm);
@@ -177,7 +177,7 @@ async function handleAdd() {
     margin: 0;
     overflow: hidden;
     border-radius: var(--border-radius-md);
-    border: 1px solid var(--color-secondary);
+    border: 0.1rem solid var(--color-secondary);
   }
 
   &__item {
@@ -219,6 +219,7 @@ async function handleAdd() {
   &__edit-popup {
     background: var(--color-white);
     border-radius: var(--border-radius-lg);
+    border: 0.1rem solid var(--color-light-lavender);
     padding: 1.5rem;
     width: 100%;
     max-width: 26rem;
@@ -237,7 +238,7 @@ async function handleAdd() {
   &__title {
     padding-left: 0.5rem;
     padding-bottom: 0.5rem;
-    font-size: 1.5rem;
+    font-size: var(--font-size-md);
     font-weight: 400;
     color: var(--color-dark);
   }
@@ -253,6 +254,7 @@ async function handleAdd() {
     min-height: 3.5rem;
     border-radius: var(--border-radius-lg);
     border: 0.1rem solid transparent;
+    color: var(--color-dark);
 
     &--name {
       width: 0;
