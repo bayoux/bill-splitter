@@ -1,6 +1,7 @@
 import { ref } from 'vue';
 import { api } from '@/api/instance';
 import { useToast } from 'vue-toastification';
+import { formatSize } from '@/utils/formatSize';
 
 export function useQrCode() {
   const qrSrc = ref('');
@@ -14,13 +15,15 @@ export function useQrCode() {
 
     if (data?.qrPath) {
       qrSrc.value = data?.qrPath;
+      fileName.value = data.qrPath.split('/').pop();
+      fileSize.value = formatSize(data.fileSize);
     }
   }
 
   async function onQrUpload(e: Event) {
     const file = (e.target as HTMLInputElement).files[0];
     fileName.value = file.name;
-    fileSize.value = (file.size / 1024 / 1024).toFixed(1) + 'Mb';
+    fileSize.value = formatSize(file.size);
 
     const formData = new FormData();
     formData.append('file', file);
