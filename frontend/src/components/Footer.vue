@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import BaseButton from '@/components/BaseButton.vue';
-import { IconClipboardFilled } from '@tabler/icons-vue';
+import { IconCircleDot, IconClipboardFilled } from '@tabler/icons-vue';
 import { useShareLink } from '@/composables/useShareLink';
+import { useRouter } from 'vue-router';
+import Toast, { useToast } from 'vue-toastification';
 
 const { copyLink } = useShareLink();
+const toast = useToast();
+const router = useRouter();
 </script>
 
 <template>
@@ -17,7 +21,14 @@ const { copyLink } = useShareLink();
       Скопировать ссылку
     </BaseButton>
 
-    <BaseButton variant="primary" class="footer__button footer__button--save">
+    <BaseButton
+      variant="primary"
+      @click="
+        router.push('/guest');
+        toast.success('Сохранено');
+      "
+      class="footer__button footer__button--save"
+    >
       Сохранить
     </BaseButton>
   </footer>
