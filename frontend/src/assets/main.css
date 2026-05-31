@@ -1,29 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap');
-
-:root {
-  --color-primary: #6750A4;
-  --color-secondary: #E8DEF8;
-  --color-background: #F7F2FA;
-  --color-light-lavender:#ECE6F0;
-  --color-light-purple-gray: #CAC4D0;
-  --color-muted-purple: #4A4459;
-  --color-muted-dark:#49454F;
-  --color-white: #ffffff;
-  --color-dark: #1D1B20;
-  --color-black: #000000;
-  --color-red: #ff0000;
-  --color-green: #4CAF50;
-  --border-radius-md: 1rem;
-  --border-radius-lg: 2rem;
-  --font-main: 'DM Sans';
-  --font-heading: 'DM Serif Display';
-  --font-weight-regular: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-size: 0.9rem;
-  --icon-lg: 3.5rem;
-  --icon-sm: 1.2rem;
-}
+@import './themes.css';
 
 * {
   box-sizing: border-box;
@@ -70,10 +46,13 @@ input {
   margin-bottom: 1rem;
 }
 
-
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
 
 .Vue-Toastification__toast {
-  font-size: var(--font-size);
+  font-size: var(--font-size-sm);
   border-radius: var(--border-radius-md)!important;
 }
 
