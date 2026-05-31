@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import Header from '@/components/Header.vue';
-import Navigation from '@/components/Navigation.vue';
 import { useDishes } from '@/composables/useDishes';
 import { onMounted, provide } from 'vue';
 import Footer from '@/components/Footer.vue';
+import { useRoute, useRouter } from 'vue-router';
 
 const useDishesData = useDishes();
+const route = useRoute();
 provide('dishes', useDishesData);
 
 onMounted(async () => {
@@ -19,7 +20,7 @@ onMounted(async () => {
     <main class="page__main">
       <RouterView />
     </main>
-    <Footer />
+    <Footer v-if="route.path === '/create'" />
   </div>
 </template>
 
