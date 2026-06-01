@@ -4,6 +4,7 @@ import { DishesContext } from '@/composables/useDishes';
 import { useQrCode } from '@/composables/useQrCode';
 import type { Dish } from '@/types/dish';
 import BaseButton from '@/components/BaseButton.vue';
+import { IconReload } from '@tabler/icons-vue';
 
 const { dishes, loading, getDishes } = inject<DishesContext>('dishes')!;
 const { qrSrc, getQrCode } = useQrCode();
@@ -28,8 +29,6 @@ onMounted(async () => {
       </div>
     </div>
 
-    <BaseButton variant="secondary" @click="getDishes()">Обновить </BaseButton>
-
     <p v-if="loading">Загрузка...</p>
 
     <ul v-else class="guest-page__list">
@@ -46,6 +45,11 @@ onMounted(async () => {
         </div>
       </li>
     </ul>
+
+    <BaseButton variant="secondary" @click="getDishes()">
+      <IconReload stroke="{2}" />
+      Обновить список
+    </BaseButton>
   </div>
 </template>
 
@@ -91,11 +95,10 @@ onMounted(async () => {
   &__list {
     list-style: none;
     padding: 0;
-    margin-top: 1rem;
+    margin: 1rem 0;
     overflow: hidden;
     background-color: var(--color-white);
     border-radius: var(--border-radius-md);
-    border: 1px solid var(--color-secondary);
   }
 
   &__item {
@@ -106,6 +109,10 @@ onMounted(async () => {
     gap: 1rem;
     padding: 0.6rem 1rem 0.6rem 1rem;
     border-bottom: 0.1rem solid var(--color-secondary);
+
+    &:last-child {
+      border-bottom: none;
+    }
   }
 
   &__checkbox {

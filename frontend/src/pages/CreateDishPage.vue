@@ -30,10 +30,10 @@ async function handleAdd() {
   price.value = '';
 }
 </script>
-
 <template>
   <div class="add-dish-page">
     <QrUpload />
+
     <div class="add-dish-page__header">
       <input
         class="add-dish-page__input add-dish-page__input--name"
@@ -64,84 +64,88 @@ async function handleAdd() {
 
     <ul class="add-dish-page__list">
       <li class="add-dish-page__item" v-for="dish in dishes" :key="dish.id">
-        <template v-if="editingId === dish.id">
-          <div
-            v-if="editPopup"
-            class="add-dish-page__overlay"
-            @click="
-              editPopup = false;
-              cancelEdit();
-            "
-          >
-            <div class="add-dish-page__edit-popup" @click.stop>
-              <div class="add-dish-page__edit-actions">
-                <h3 class="add-dish-page__title">Редактировать</h3>
-                <div class="add-dish-page__fields">
-                  <input
-                    class="add-dish-page__input add-dish-page__input--edit-name"
-                    type="text"
-                    v-model="editName"
-                    placeholder="Название блюда"
-                    required
-                  />
-                  <input
-                    class="add-dish-page__input add-dish-page__input--edit-price"
-                    v-model="editPrice"
-                    type="number"
-                    placeholder="Цена"
-                    required
-                  />
-                </div>
-              </div>
+        <IconBowlSpoonFilled
+          class="add-dish-page__icon add-dish-page__icon--bowl"
+        />
 
-              <div class="add-dish-page__edit-buttons">
-                <BaseButton
-                  class="add-dish-page__button add-dish-page__button--cancel"
-                  variant="ghost"
-                  @click="
-                    cancelEdit();
-                    editPopup = false;
-                  "
-                >
-                  Отменить
-                </BaseButton>
-                <BaseButton
-                  class="add-dish-page__button add-dish-page__button--save"
-                  variant="primary"
-                  @click="handleEdit"
-                >
-                  Сохранить
-                </BaseButton>
-              </div>
-            </div>
-          </div>
-        </template>
+        <div class="add-dish-page__info">
+          <p class="add-dish-page__name">{{ dish.name }}</p>
+          <p class="add-dish-page__price">{{ dish.price }} сом</p>
+        </div>
 
-        <template v-else>
-          <IconBowlSpoonFilled
-            class="add-dish-page__icon add-dish-page__icon--bowl"
-          />
-
-          <div class="add-dish-page__info">
-            <p class="add-dish-page__name">{{ dish.name }}</p>
-            <p class="add-dish-page__price">{{ dish.price }} сом</p>
-          </div>
-
-          <BaseButton
-            variant="icon"
-            @click="
-              startEdit(dish);
-              editPopup = true;
-            "
-          >
-            <IconPencilFilled />
-          </BaseButton>
-          <BaseButton variant="icon" @click="deleteDish(dish.id)">
-            <IconTrashFilled />
-          </BaseButton>
-        </template>
+        <BaseButton
+          variant="icon"
+          style="flex-shrink: 0"
+          @click="
+            startEdit(dish);
+            editPopup = true;
+          "
+        >
+          <IconPencilFilled />
+        </BaseButton>
+        <BaseButton
+          variant="icon"
+          style="flex-shrink: 0"
+          @click="deleteDish(dish.id)"
+        >
+          <IconTrashFilled />
+        </BaseButton>
       </li>
     </ul>
+
+    <div
+      v-if="editPopup && editingId"
+      class="add-dish-page__overlay"
+      @click="
+        editPopup = false;
+        cancelEdit();
+      "
+    >
+      <div class="add-dish-page__edit-popup" @click.stop>
+        <div class="add-dish-page__edit-actions">
+          <h3 class="add-dish-page__title">Редактировать</h3>
+          <div class="add-dish-page__fields">
+            <input
+              class="add-dish-page__input add-dish-page__input--edit-name"
+              type="text"
+              v-model="editName"
+              placeholder="Название блюда"
+              required
+            />
+            <input
+              class="add-dish-page__input add-dish-page__input--edit-price"
+              v-model="editPrice"
+              type="number"
+              placeholder="Цена"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="add-dish-page__edit-buttons">
+          <BaseButton
+            class="add-dish-page__button add-dish-page__button--cancel"
+            variant="ghost"
+            @click="
+              cancelEdit();
+              editPopup = false;
+            "
+          >
+            Отменить
+          </BaseButton>
+          <BaseButton
+            class="add-dish-page__button add-dish-page__button--save"
+            variant="primary"
+            @click="
+              handleEdit();
+              editPopup = false;
+            "
+          >
+            Сохранить
+          </BaseButton>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -192,7 +196,8 @@ async function handleAdd() {
   }
 
   &__info {
-    width: 100%;
+    flex: 1;
+    min-width: 0;
     max-width: 26rem;
     display: flex;
     flex-direction: column;
@@ -200,10 +205,14 @@ async function handleAdd() {
 
   &__name {
     color: var(--color-dark);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__price {
     color: var(--color-muted-purple);
+    white-space: nowrap;
   }
 
   &__overlay {
@@ -250,7 +259,6 @@ async function handleAdd() {
   }
 
   &__input {
-    max-width: 23rem;
     min-height: 3.5rem;
     border-radius: var(--border-radius-lg);
     border: 0.1rem solid transparent;
@@ -301,6 +309,26 @@ async function handleAdd() {
 
     &--save {
       max-width: 6.4rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    &__header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.7rem;
+    }
+
+    &__input--name,
+    &__input--price {
+      width: 100%;
+      max-width: 100%;
+      flex: none;
+    }
+
+    &__button--add {
+      max-width: 100%;
+      width: 100%;
     }
   }
 }

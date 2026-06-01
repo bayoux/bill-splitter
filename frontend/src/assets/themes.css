@@ -19,7 +19,7 @@
     --font-weight-regular: 400;
     --font-weight-medium: 500;
     --font-weight-semibold: 600;
-    --font-size-sm: 0.9rem;
+    --font-size-sm: 1rem;
     --font-size-md: 1.5rem;
     --font-size-lg: 2rem;
     --icon-lg: 3.5rem;
@@ -30,6 +30,7 @@
     --color-primary: #D0BCFE;
     --color-secondary: #4A4458;
     --color-background: #1D1B20;
+    --color-light-purple-gray: #49454F;
     --color-light-lavender: #2B2930;
     --color-muted-purple: #E8DEF8;
     --color-muted-dark: #CAC4D0;

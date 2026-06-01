@@ -204,5 +204,16 @@ onMounted(async () => {
       font-weight: var(--font-weight-medium);
     }
   }
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 1rem;
+
+    &__button--delete {
+      margin-left: 0;
+      align-self: flex-end;
+    }
+  }
 }
 </style>

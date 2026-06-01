@@ -51,5 +51,9 @@ const router = useRouter();
     border-radius: var(--border-radius-lg);
     height: 3.5rem;
   }
+
+  @media (max-width: 480px) {
+    padding: 1rem 0.5rem 2rem;
+  }
 }
 </style>
