@@ -27,7 +27,9 @@ export class DishesService {
   }
 
   async delete(id: number) {
-    await this.dishRepository.delete(id);
+    const result = await this.dishRepository.delete(id);
+    if (result.affected === 0)
+      throw new NotFoundException(`Dish ${id} not found`);
   }
 
   async update(id: number, dish: Partial<Dish>): Promise<Dish | null> {
