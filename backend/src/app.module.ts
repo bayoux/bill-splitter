@@ -17,7 +17,7 @@ import { QrCode } from './qr-code/qr-сode.entity';
       password: process.env.DB_PASSWORD!,
       database: process.env.DB_NAME!,
       entities: [Dish, QrCode],
-      synchronize: true,
+      synchronize: process.env.NODE_ENV !== 'production',
     }),
     DishesModule,
     QrCodeModule,
