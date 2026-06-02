@@ -4,7 +4,7 @@ import { DishesModule } from './dishes/dishes.module';
 import { Dish } from './dishes/dish.entity';
 import { ConfigModule } from '@nestjs/config';
 import { QrCodeModule } from './qr-code/qr-code.module';
-import { QrCode } from './qr-code/qr-сode.entity';
+import { QrCode } from './qr-code/qr-code.entity';
 
 @Module({
   imports: [
