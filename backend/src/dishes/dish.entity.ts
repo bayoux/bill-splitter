@@ -8,6 +8,14 @@ export class Dish {
   @Column({ type: 'varchar', length: 255 })
   name!: string;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    transformer: {
+      to: (v: number) => v,
+      from: (v: string) => parseFloat(v),
+    },
+  })
   price!: number;
 }
