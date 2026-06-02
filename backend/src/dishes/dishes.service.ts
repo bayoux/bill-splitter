@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Dish } from './dish.entity';
@@ -16,8 +16,10 @@ export class DishesService {
     });
   }
 
-  async findOne(id: number): Promise<Dish | null> {
-    return await this.dishRepository.findOneBy({ id });
+  async findOne(id: number): Promise<Dish> {
+    const dish = await this.dishRepository.findOneBy({ id });
+    if (!dish) throw new NotFoundException(`Dish ${id} not found}`);
+    return dish;
   }
 
   async create(dish: Partial<Dish>): Promise<Dish> {
