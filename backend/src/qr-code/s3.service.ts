@@ -4,23 +4,21 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3';
 
-function createS3Client() {
-  return new S3Client({
-    region: process.env.AWS_REGION!,
-    credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-    },
-  });
-}
+const s3Client = new S3Client({
+  region: process.env.AWS_REGION!,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+  },
+});
 
-export async function uploadToS3(file: Express.Multer.File): Promise<string> {
-  const S3 = createS3Client();
-
+export async function uploadToS3(
+  file: Express.Multer.File,
+): Promise<{ url: string; key: string }> {
   const ext = file.originalname.split('.').pop();
   const key = `qr-${Date.now()}.${ext}`;
 
-  await S3.send(
+  await s3Client.send(
     new PutObjectCommand({
       Bucket: process.env.AWS_BUCKET_NAME,
       Key: key,
@@ -29,13 +27,14 @@ export async function uploadToS3(file: Express.Multer.File): Promise<string> {
     }),
   );
 
-  return `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+  return {
+    url: `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`,
+    key,
+  };
 }
 
 export async function deleteFromS3(key: string) {
-  const S3 = createS3Client();
-
-  await S3.send(
+  await s3Client.send(
     new DeleteObjectCommand({
       Bucket: process.env.AWS_BUCKET_NAME,
       Key: key,
