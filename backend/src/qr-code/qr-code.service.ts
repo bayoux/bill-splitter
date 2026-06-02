@@ -16,20 +16,20 @@ export class QrCodeService {
   }
 
   async uploadQr(file: Express.Multer.File): Promise<QrCode> {
-    await this.qrCodeRepository.clear();
-
-    const url = await uploadToS3(file);
+    const { url, key } = await uploadToS3(file);
     const fileSize = file.size;
 
-    return await this.qrCodeRepository.save({ qrPath: url, fileSize });
+    return await this.qrCodeRepository.manager.transaction(async (manager) => {
+      await manager.clear(QrCode);
+      return await manager.save(QrCode, { qrPath: url, fileSize, s3Key: key });
+    });
   }
 
   async deleteQr() {
     const getQr = await this.getQr();
 
-    if (getQr?.qrPath) {
-      const key = getQr.qrPath.split('/').pop();
-      await deleteFromS3(key!);
+    if (getQr?.s3Key) {
+      await deleteFromS3(getQr.s3Key);
     }
 
     await this.qrCodeRepository.clear();
