@@ -12,7 +12,7 @@ export class QrCodeService {
   ) {}
 
   async getQr(): Promise<QrCode | null> {
-    return await this.qrCodeRepository.findOne({ where: { id: Not(0) } });
+    return await this.qrCodeRepository.findOne({ order: { id: 'DESC' } });
   }
 
   async uploadQr(file: Express.Multer.File): Promise<QrCode> {
