@@ -25,9 +25,14 @@ export class QrCodeController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: memoryStorage(),
+      limits: { fileSize: 5 * 1024 * 1024 },
+      fileFilter: (_, file, cb) => {
+        const allowed = ['image/jpeg', 'image/png', 'image/webp'];
+        cb(null, allowed.includes(file.mimetype));
+      },
     }),
   )
-  create(@UploadedFile() file: any) {
+  create(@UploadedFile() file: Express.Multer.File) {
     return this.qrCodeService.uploadQr(file);
   }
 
