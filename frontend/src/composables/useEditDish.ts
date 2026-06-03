@@ -2,7 +2,7 @@ import { ref } from 'vue';
 import type { Dish } from '@/types/dish';
 
 export function useEditDish(editDish: (dish: Dish) => Promise<void>) {
-  const editingId = ref<number | null>(null);
+  const editingId = ref(null);
   const editName = ref('');
   const editPrice = ref('');
 

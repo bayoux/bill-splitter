@@ -19,7 +19,6 @@ const { editingId, editName, editPrice, startEdit, cancelEdit, handleEdit } =
 
 const dishName = ref('');
 const price = ref('');
-const editPopup = ref(false);
 
 async function handleAdd() {
   const parsedPrice = Number(price.value);
@@ -76,10 +75,7 @@ async function handleAdd() {
         <BaseButton
           variant="icon"
           style="flex-shrink: 0"
-          @click="
-            startEdit(dish);
-            editPopup = true;
-          "
+          @click="startEdit(dish)"
         >
           <IconPencilFilled />
         </BaseButton>
@@ -93,14 +89,7 @@ async function handleAdd() {
       </li>
     </ul>
 
-    <div
-      v-if="editPopup && editingId"
-      class="add-dish-page__overlay"
-      @click="
-        editPopup = false;
-        cancelEdit();
-      "
-    >
+    <div v-if="editingId" class="add-dish-page__overlay" @click="cancelEdit()">
       <div class="add-dish-page__edit-popup" @click.stop>
         <div class="add-dish-page__edit-actions">
           <h3 class="add-dish-page__title">Редактировать</h3>
@@ -126,20 +115,14 @@ async function handleAdd() {
           <BaseButton
             class="add-dish-page__button add-dish-page__button--cancel"
             variant="ghost"
-            @click="
-              cancelEdit();
-              editPopup = false;
-            "
+            @click="cancelEdit()"
           >
             Отменить
           </BaseButton>
           <BaseButton
             class="add-dish-page__button add-dish-page__button--save"
             variant="primary"
-            @click="
-              handleEdit();
-              editPopup = false;
-            "
+            @click="handleEdit()"
           >
             Сохранить
           </BaseButton>
