@@ -22,7 +22,10 @@ export const useQrCodeStore = defineStore('qrCode', () => {
   }
 
   async function onQrUpload(e: Event) {
-    const file = (e.target as HTMLInputElement).files[0];
+    const input = e.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
     fileName.value = file.name;
     fileSize.value = formatSize(file.size);
 
