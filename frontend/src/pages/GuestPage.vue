@@ -1,29 +1,33 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, inject } from 'vue';
 import { DishesContext } from '@/composables/useDishes';
-import { useQrCode } from '@/composables/useQrCode';
 import type { Dish } from '@/types/dish';
 import BaseButton from '@/components/BaseButton.vue';
 import { IconReload } from '@tabler/icons-vue';
+import { useQrCodeStore } from '@/stores/qrCode';
 
 const { dishes, loading, getDishes } = inject<DishesContext>('dishes')!;
-const { qrSrc, getQrCode } = useQrCode();
-
+const qrStore = useQrCodeStore();
 const selectedDishes = ref<Dish[]>([]);
 const total = computed(() =>
   selectedDishes.value.reduce((sum, dish) => sum + Number(dish.price), 0),
 );
 
 onMounted(async () => {
-  await getQrCode();
-  console.log(qrSrc.value);
+  await qrStore.getQrCode();
+  console.log(qrStore.qrSrc);
 });
 </script>
 
 <template>
   <div class="guest-page">
     <div class="guest-page__qr">
-      <img v-if="qrSrc" class="guest-page__qr-img" :src="qrSrc" alt="QR" />
+      <img
+        v-if="qrStore.qrSrc"
+        class="guest-page__qr-img"
+        :src="qrStore.qrSrc"
+        alt="QR"
+      />
       <div class="guest-page__total">
         <h2 class="guest-page__total-value">{{ total }} сом</h2>
       </div>

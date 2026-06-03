@@ -1,9 +1,10 @@
+import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { api } from '@/api/instance';
 import { useToast } from 'vue-toastification';
+import { api } from '@/api/instance';
 import { formatSize } from '@/utils/formatSize';
 
-export function useQrCode() {
+export const useQrCodeStore = defineStore('qrCode', () => {
   const qrSrc = ref('');
   const toast = useToast();
   const fileName = ref('');
@@ -53,4 +54,4 @@ export function useQrCode() {
     deleteQrCode,
     showQrCode,
   };
-}
+});

@@ -29,6 +29,7 @@
     "@tabler/icons-vue": "^3.44.0",
     "@tabler/icons-webfont": "^3.44.0",
     "axios": "^1.16.0",
+    "pinia": "^3.0.4",
     "vue": "^3.5.33",
     "vue-router": "^5.0.6",
     "vue-toastification": "^2.0.0-rc.5"
