@@ -43,9 +43,15 @@ export const useQrCodeStore = defineStore('qrCode', () => {
   }
 
   async function deleteQrCode() {
-    await api.delete(`/qr-code`);
+    try{
+      await api.delete(`/qr-code`);
+      qrSrc.value = '';
+      fileName.value = '';
+      fileSize.value = '';
+    } catch (e){
+      toast.error(e instanceof Error ? e.message : 'Не удалось удалить QR');
+    }
 
-    qrSrc.value = '';
   }
 
   return {
