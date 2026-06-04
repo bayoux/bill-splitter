@@ -1,38 +1,70 @@
-# frontend
+# Frontend
 
-This template should help get you started developing with Vue 3 in Vite.
+Vue 3 SPA для Bill Splitter. Два сценария использования: хост управляет меню, гость выбирает блюда.
 
-## Recommended IDE Setup
+## Запуск
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+```bash
+# Dev сервер
+pnpm dev
 
-## Recommended Browser Setup
-
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
+# Production сборка
+pnpm build
+pnpm preview  # предпросмотр сборки
 ```
 
-### Compile and Hot-Reload for Development
+## Переменные окружения
 
-```sh
-npm run dev
+```bash
+# .env
+VITE_API_URL=http://localhost:3000
 ```
 
-### Compile and Minify for Production
+## Маршруты
 
-```sh
-npm run build
+| Путь      | Страница         | Описание                           |
+| --------- | ---------------- | ---------------------------------- |
+| `/`       | —                | Редирект на `/create`              |
+| `/create` | `CreateDishPage` | Хост: управление меню и QR-кодом   |
+| `/guest`  | `GuestPage`      | Гость: выбор блюд и итоговая сумма |
+
+## Структура
+
 ```
+src/
+├── api/
+│   └── instance.ts          # Axios с базовым URL из VITE_API_URL
+├── assets/
+│   ├── main.css             # Глобальные стили, шрифты, reset
+│   └── themes.css           # CSS-переменные: светлая и тёмная тема
+├── components/
+│   ├── BaseButton.vue       # Кнопка: варианты primary/secondary/ghost/icon
+│   ├── Footer.vue           # Панель действий хоста (копировать ссылку, сохранить)
+│   ├── Header.vue           # Шапка с переключателем темы
+│   └── QrUpload.vue         # Загрузка/просмотр/удаление QR-кода
+├── composables/
+│   ├── useDishes.ts         # CRUD блюд + валидация
+│   ├── useEditDish.ts       # Состояние модалки редактирования
+│   ├── useShareLink.ts      # Копирование ссылки гостя в буфер
+│   └── useTheme.ts          # Тёмная/светлая тема с persist в localStorage
+├── pages/
+│   ├── CreateDishPage.vue   # Страница хоста
+│   └── GuestPage.vue        # Страница гостя
+├── router/
+│   └── index.ts             # Vue Router конфигурация
+├── stores/
+│   └── qrCode.ts            # Pinia store для QR-кода
+├── types/
+│   └── dish.ts              # Интерфейс Dish
+└── utils/
+    └── formatSize.ts        # Форматирование размера файла (bytes → KB/MB)
+```
+
+## Стиль кода
+
+Правила описаны в [CODESTYLE.md](../CODESTYLE.md):
+
+- BEM-классы: `блок__элемент_модификатор`
+- Порядок импортов: vue → external → `@/` → local
+- API-запросы: `async/await` + `try/catch`
+- Props и emits типизированы через интерфейсы

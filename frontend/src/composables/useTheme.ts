@@ -1,5 +1,7 @@
 import { ref } from 'vue';
 
+// Module-level singleton: all components share the same theme state,
+// and it survives component unmount/remount cycles.
 const isDark = ref(localStorage.getItem('theme') === 'dark');
 
 document.documentElement.setAttribute(

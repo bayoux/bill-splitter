@@ -27,6 +27,7 @@ export async function uploadToS3(
     }),
   );
 
+  // Permanent public URL — presigned URLs expire, but QR codes must be accessible indefinitely.
   return {
     url: `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`,
     key,

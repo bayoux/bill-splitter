@@ -23,6 +23,7 @@ export class QrCodeService {
     const { url, key } = await uploadToS3(file);
     const fileSize = file.size;
 
+    // Transaction ensures atomic replace: if save fails, the table is not left empty.
     return await this.qrCodeRepository.manager.transaction(async (manager) => {
       await manager.clear(QrCode);
       return await manager.save(QrCode, { qrPath: url, fileSize, s3Key: key });

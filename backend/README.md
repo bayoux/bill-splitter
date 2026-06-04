@@ -1,98 +1,111 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+NestJS REST API для Bill Splitter. Управляет блюдами и QR-кодами, хранит данные в PostgreSQL, файлы — в AWS S3.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
+## Запуск
 
 ```bash
-$ npm install
+# Dev режим с hot reload
+pnpm dev
+
+# Production сборка
+pnpm build
+node dist/main
 ```
 
-## Compile and run the project
+## Переменные окружения
+
+Скопируй `.env.example` в `.env` и заполни значения:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+cp .env.example .env
 ```
 
-## Run tests
+| Переменная              | Описание              | Пример                  |
+| ----------------------- | --------------------- | ----------------------- |
+| `DB_HOST`               | Хост PostgreSQL       | `localhost`             |
+| `DB_PORT`               | Порт PostgreSQL       | `5432`                  |
+| `DB_USERNAME`           | Пользователь БД       | `postgres`              |
+| `DB_PASSWORD`           | Пароль БД             |                         |
+| `DB_NAME`               | Имя базы данных       | `bill_splitter`         |
+| `AWS_ACCESS_KEY_ID`     | AWS ключ доступа      |                         |
+| `AWS_SECRET_ACCESS_KEY` | AWS секретный ключ    |                         |
+| `AWS_REGION`            | AWS регион            | `us-east-1`             |
+| `AWS_BUCKET_NAME`       | Имя S3 бакета         |                         |
+| `ALLOWED_ORIGIN`        | CORS origin фронтенда | `http://localhost:5173` |
+| `PORT`                  | Порт сервера          | `3000`                  |
+| `NODE_ENV`              | Окружение             | `development`           |
 
-```bash
-# unit tests
-$ npm run test
+## API
 
-# e2e tests
-$ npm run test:e2e
+Base URL: `http://localhost:3000`
 
-# test coverage
-$ npm run test:cov
+### Блюда `/dishes`
+
+| Метод    | Путь          | Описание             | Тело                          |
+| -------- | ------------- | -------------------- | ----------------------------- |
+| `GET`    | `/dishes`     | Список всех блюд     | —                             |
+| `GET`    | `/dishes/:id` | Получить блюдо по ID | —                             |
+| `POST`   | `/dishes`     | Создать блюдо        | `name`, `price` (form-data)   |
+| `PATCH`  | `/dishes/:id` | Обновить блюдо       | `name?`, `price?` (form-data) |
+| `DELETE` | `/dishes/:id` | Удалить блюдо        | —                             |
+
+**Пример блюда:**
+
+```json
+{
+  "id": 1,
+  "name": "Борщ",
+  "price": 150.0
+}
 ```
 
-## Deployment
+**Валидация:**
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+- `name` — строка, не пустая, максимум 255 символов
+- `price` — положительное число, максимум 2 знака после запятой, минимум 0.01
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### QR-код `/qr-code`
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+Хранится только один QR-код. Загрузка нового автоматически удаляет предыдущий.
+
+| Метод    | Путь       | Описание            | Тело                         |
+| -------- | ---------- | ------------------- | ---------------------------- |
+| `GET`    | `/qr-code` | Получить текущий QR | —                            |
+| `POST`   | `/qr-code` | Загрузить новый QR  | `file` (multipart/form-data) |
+| `DELETE` | `/qr-code` | Удалить QR          | —                            |
+
+**Ограничения загрузки:** до 5 МБ, форматы JPEG / PNG / WebP.
+
+**Пример ответа GET:**
+
+```json
+{
+  "id": 1,
+  "qrPath": "https://bucket.s3.region.amazonaws.com/qr-1234.png",
+  "fileSize": 45312,
+  "s3Key": "qr-1234.png"
+}
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Структура
 
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+```
+src/
+├── dishes/
+│   ├── dto/
+│   │   ├── create-dish.dto.ts   # Валидация создания
+│   │   └── update-dish.dto.ts   # Валидация обновления
+│   ├── dish.entity.ts           # TypeORM сущность
+│   ├── dishes.controller.ts     # HTTP обработчики
+│   ├── dishes.module.ts
+│   └── dishes.service.ts        # Бизнес-логика
+├── qr-code/
+│   ├── qr-code.controller.ts    # HTTP обработчики
+│   ├── qr-code.entity.ts        # TypeORM сущность
+│   ├── qr-code.module.ts
+│   ├── qr-code.service.ts       # Бизнес-логика
+│   └── s3.service.ts            # Работа с AWS S3
+├── app.module.ts                # Корневой модуль
+└── main.ts                      # Точка входа
+```
