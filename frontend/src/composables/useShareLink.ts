@@ -1,5 +1,5 @@
-import { useToast } from 'vue-toastification';
 import { ref } from 'vue';
+import { useToast } from 'vue-toastification';
 
 export function useShareLink() {
   const shareLink = ref('');

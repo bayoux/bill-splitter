@@ -1,5 +1,5 @@
-import { defineStore } from 'pinia';
 import { ref } from 'vue';
+import { defineStore } from 'pinia';
 import { useToast } from 'vue-toastification';
 import { api } from '@/api/instance';
 import { formatSize } from '@/utils/formatSize';
@@ -12,12 +12,15 @@ export const useQrCodeStore = defineStore('qrCode', () => {
   const showQrCode = ref(false);
 
   async function getQrCode() {
-    const { data } = await api.get(`/qr-code`);
-
-    if (data?.qrPath) {
-      qrSrc.value = data?.qrPath;
-      fileName.value = data.qrPath.split('/').pop();
-      fileSize.value = formatSize(data.fileSize);
+    try {
+      const { data } = await api.get(`/qr-code`);
+      if (data?.qrPath) {
+        qrSrc.value = data.qrPath;
+        fileName.value = data.qrPath.split('/').pop();
+        fileSize.value = formatSize(data.fileSize);
+      }
+    } catch {
+      toast.error('Не удалось загрузить QR код');
     }
   }
 

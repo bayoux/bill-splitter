@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import Header from '@/components/Header.vue';
-import { useDishes } from '@/composables/useDishes';
 import { onMounted, provide } from 'vue';
-import Footer from '@/components/Footer.vue';
 import { useRoute } from 'vue-router';
+import Header from '@/components/Header.vue';
+import Footer from '@/components/Footer.vue';
+import { useDishes } from '@/composables/useDishes';
 
 const useDishesData = useDishes();
 const route = useRoute();

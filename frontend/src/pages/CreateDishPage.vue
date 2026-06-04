@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { inject, ref } from 'vue';
-import { useEditDish } from '@/composables/useEditDish';
-import { DishesContext } from '@/composables/useDishes';
-import BaseButton from '@/components/BaseButton.vue';
-import QrUpload from '@/components/QrUpload.vue';
 import {
   IconPlus,
   IconBowlSpoonFilled,
   IconPencilFilled,
   IconTrashFilled,
 } from '@tabler/icons-vue';
+import { useEditDish } from '@/composables/useEditDish';
+import { DishesContext } from '@/composables/useDishes';
+import BaseButton from '@/components/BaseButton.vue';
+import QrUpload from '@/components/QrUpload.vue';
 
 const { dishes, loading, addDish, deleteDish, editDish, validateDish } =
   inject<DishesContext>('dishes')!;
@@ -35,14 +35,14 @@ async function handleAdd() {
 
     <div class="add-dish-page__header">
       <input
-        class="add-dish-page__input add-dish-page__input--name"
+        class="add-dish-page__input add-dish-page__input_name"
         type="text"
         v-model="dishName"
         placeholder="Название блюда"
         required
       />
       <input
-        class="add-dish-page__input add-dish-page__input--price"
+        class="add-dish-page__input add-dish-page__input_price"
         v-model="price"
         type="number"
         placeholder="Цена"
@@ -51,7 +51,7 @@ async function handleAdd() {
 
       <BaseButton
         variant="primary"
-        class="add-dish-page__button add-dish-page__button--add"
+        class="add-dish-page__button add-dish-page__button_add"
         @click="handleAdd"
       >
         <IconPlus stroke="2" />
@@ -64,7 +64,7 @@ async function handleAdd() {
     <ul class="add-dish-page__list">
       <li class="add-dish-page__item" v-for="dish in dishes" :key="dish.id">
         <IconBowlSpoonFilled
-          class="add-dish-page__icon add-dish-page__icon--bowl"
+          class="add-dish-page__icon add-dish-page__icon_bowl"
         />
 
         <div class="add-dish-page__info">
@@ -95,14 +95,14 @@ async function handleAdd() {
           <h3 class="add-dish-page__title">Редактировать</h3>
           <div class="add-dish-page__fields">
             <input
-              class="add-dish-page__input add-dish-page__input--edit-name"
+              class="add-dish-page__input add-dish-page__input_edit-name"
               type="text"
               v-model="editName"
               placeholder="Название блюда"
               required
             />
             <input
-              class="add-dish-page__input add-dish-page__input--edit-price"
+              class="add-dish-page__input add-dish-page__input_edit-price"
               v-model="editPrice"
               type="number"
               placeholder="Цена"
@@ -113,14 +113,14 @@ async function handleAdd() {
 
         <div class="add-dish-page__edit-buttons">
           <BaseButton
-            class="add-dish-page__button add-dish-page__button--cancel"
+            class="add-dish-page__button add-dish-page__button_cancel"
             variant="ghost"
             @click="cancelEdit()"
           >
             Отменить
           </BaseButton>
           <BaseButton
-            class="add-dish-page__button add-dish-page__button--save"
+            class="add-dish-page__button add-dish-page__button_save"
             variant="primary"
             @click="handleEdit()"
           >
@@ -144,7 +144,8 @@ async function handleAdd() {
 
   &__icon {
     color: var(--color-icon);
-    &--bowl {
+
+    &_bowl {
       width: var(--icon-sm);
       height: var(--icon-sm);
     }
@@ -201,7 +202,7 @@ async function handleAdd() {
   &__overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: var(--color-overlay);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -247,19 +248,19 @@ async function handleAdd() {
     border: 0.1rem solid transparent;
     color: var(--color-dark);
 
-    &--name {
+    &_name {
       width: 0;
       flex: 2;
       max-width: 15rem;
     }
 
-    &--price {
+    &_price {
       width: 0;
       flex: 1;
     }
 
-    &--edit-name,
-    &--edit-price {
+    &_edit-name,
+    &_edit-price {
       background-color: var(--color-light-lavender);
     }
 
@@ -272,6 +273,7 @@ async function handleAdd() {
       opacity: 1;
     }
   }
+
   &__edit-buttons {
     display: flex;
     justify-content: flex-end;
@@ -282,15 +284,16 @@ async function handleAdd() {
     width: 100%;
     min-height: 3.5rem;
 
-    &--add {
+    &_add {
       max-width: 8.2rem;
     }
-    &--cancel {
+
+    &_cancel {
       max-width: 6.2rem;
       min-height: 2.5rem;
     }
 
-    &--save {
+    &_save {
       max-width: 6.4rem;
     }
   }
@@ -302,14 +305,14 @@ async function handleAdd() {
       gap: 0.7rem;
     }
 
-    &__input--name,
-    &__input--price {
+    &__input_name,
+    &__input_price {
       width: 100%;
       max-width: 100%;
       flex: none;
     }
 
-    &__button--add {
+    &__button_add {
       max-width: 100%;
       width: 100%;
     }

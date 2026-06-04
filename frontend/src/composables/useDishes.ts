@@ -1,7 +1,7 @@
 import { ref } from 'vue';
+import { useToast } from 'vue-toastification';
 import type { Dish } from '@/types/dish';
 import { api } from '@/api/instance';
-import { useToast } from 'vue-toastification';
 
 export function useDishes() {
   const dishes = ref<Dish[]>([]);

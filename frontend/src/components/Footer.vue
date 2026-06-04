@@ -1,10 +1,10 @@
 <script setup lang="ts">
 defineOptions({ name: 'AppFooter' });
-import BaseButton from '@/components/BaseButton.vue';
-import { IconClipboardFilled } from '@tabler/icons-vue';
-import { useShareLink } from '@/composables/useShareLink';
 import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
+import { IconClipboardFilled } from '@tabler/icons-vue';
+import BaseButton from '@/components/BaseButton.vue';
+import { useShareLink } from '@/composables/useShareLink';
 
 const { copyLink } = useShareLink();
 const toast = useToast();
@@ -16,7 +16,7 @@ const router = useRouter();
     <BaseButton
       variant="secondary"
       @click="copyLink"
-      class="footer__button footer__button--copy"
+      class="footer__button footer__button_copy"
     >
       <IconClipboardFilled />
       Скопировать ссылку
@@ -28,7 +28,7 @@ const router = useRouter();
         router.push('/guest');
         toast.success('Сохранено');
       "
-      class="footer__button footer__button--save"
+      class="footer__button footer__button_save"
     >
       Сохранить
     </BaseButton>

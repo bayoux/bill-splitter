@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
-import BaseButton from '@/components/BaseButton.vue';
 import { IconFileUploadFilled } from '@tabler/icons-vue';
+import BaseButton from '@/components/BaseButton.vue';
 import { useQrCodeStore } from '@/stores/qrCode';
 
 const qrStore = useQrCodeStore();
@@ -15,7 +15,7 @@ onMounted(async () => {
   <div class="qr-upload">
     <template v-if="!qrStore.qrSrc">
       <div class="qr-upload__qr">
-        <IconFileUploadFilled class="qr-upload__icon qr-upload__icon--upload" />
+        <IconFileUploadFilled class="qr-upload__icon qr-upload__icon_upload" />
         <div>
           <p class="qr-upload__qr-title">Загрузить QR</p>
           <p class="qr-upload__qr-subtitle">PNG, JPG, JPEG</p>
@@ -62,7 +62,7 @@ onMounted(async () => {
       <BaseButton
         variant="secondary"
         @click="qrStore.deleteQrCode"
-        class="qr-upload__button qr-upload__button--delete"
+        class="qr-upload__button qr-upload__button_delete"
       >
         Удалить
       </BaseButton>
@@ -89,7 +89,8 @@ onMounted(async () => {
 
   &__icon {
     color: var(--color-icon);
-    &--upload {
+
+    &_upload {
       width: var(--icon-lg);
       height: var(--icon-lg);
     }
@@ -151,7 +152,7 @@ onMounted(async () => {
   &__qr-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: var(--color-overlay);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -189,7 +190,8 @@ onMounted(async () => {
 
   &__button {
     border-radius: var(--border-radius-lg);
-    &--delete {
+
+    &_delete {
       width: 100%;
       max-width: 7rem;
       min-height: 2.7rem;
@@ -203,7 +205,7 @@ onMounted(async () => {
     justify-content: flex-start;
     gap: 1rem;
 
-    &__button--delete {
+    &__button_delete {
       margin-left: 0;
       align-self: flex-end;
     }

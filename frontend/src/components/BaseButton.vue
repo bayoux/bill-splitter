@@ -7,7 +7,7 @@ withDefaults(defineProps<{ variant: ButtonVariants }>(), {
 </script>
 
 <template>
-  <button :class="['base-btn', `base-btn--${variant}`]">
+  <button :class="['base-btn', `base-btn_${variant}`]">
     <slot />
   </button>
 </template>
@@ -24,7 +24,7 @@ withDefaults(defineProps<{ variant: ButtonVariants }>(), {
   border: 0.1rem solid transparent;
   cursor: pointer;
 
-  &--primary {
+  &_primary {
     background-color: var(--color-primary);
     color: var(--color-white);
 
@@ -33,7 +33,7 @@ withDefaults(defineProps<{ variant: ButtonVariants }>(), {
     }
   }
 
-  &--secondary {
+  &_secondary {
     background-color: var(--color-secondary);
     color: var(--color-muted-purple);
 
@@ -42,14 +42,14 @@ withDefaults(defineProps<{ variant: ButtonVariants }>(), {
     }
   }
 
-  &--icon {
+  &_icon {
     padding: 0.2rem;
     background-color: var(--color-white);
     border: none;
     color: var(--color-muted-dark);
   }
 
-  &--ghost {
+  &_ghost {
     background-color: var(--color-white);
     color: var(--color-primary);
     font-weight: var(--font-weight-medium);

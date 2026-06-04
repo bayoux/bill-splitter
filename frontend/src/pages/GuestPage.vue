@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, inject } from 'vue';
+import { IconReload } from '@tabler/icons-vue';
 import { DishesContext } from '@/composables/useDishes';
 import type { Dish } from '@/types/dish';
 import BaseButton from '@/components/BaseButton.vue';
-import { IconReload } from '@tabler/icons-vue';
 import { useQrCodeStore } from '@/stores/qrCode';
 
 const { dishes, loading, getDishes } = inject<DishesContext>('dishes')!;
@@ -123,10 +123,6 @@ onMounted(async () => {
     height: 1.3rem;
     margin: 0;
     accent-color: var(--color-secondary);
-  }
-
-  &__name {
-    flex: 1;
   }
 
   &__info {
