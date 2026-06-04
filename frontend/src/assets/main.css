@@ -23,7 +23,7 @@ body {
   display: flex;
   flex-direction: column;
   margin: 0 auto;
-  font-weight: var(--font-weight-regular );
+  font-weight: var(--font-weight-regular);
   border: 0.1rem solid var(--color-light-purple-gray);
   border-top: none;
   border-bottom: none;
@@ -46,22 +46,22 @@ input {
   margin-bottom: 1rem;
 }
 
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
   -webkit-appearance: none;
 }
 
 .Vue-Toastification__toast {
   font-size: var(--font-size-sm);
-  border-radius: var(--border-radius-md)!important;
+  border-radius: var(--border-radius-md) !important;
 }
 
 .Vue-Toastification__toast--success {
-  background: var(--color-green)!important;
+  background: var(--color-green) !important;
   color: var(--color-white);
 }
 
 .Vue-Toastification__toast--error {
-  background: var(--color-red)!important;
+  background: var(--color-red) !important;
   color: var(--color-white);
 }

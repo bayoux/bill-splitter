@@ -7,11 +7,11 @@ import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.useStaticAssets(join(process.cwd(), 'uploads'), { prefix: '/uploads' });
+  app.useStaticAssets(join(__dirname, '..', 'uploads'), { prefix: '/uploads' });
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors({
     origin: process.env.ALLOWED_ORIGIN ?? 'http://localhost:5173',
   });
   await app.listen(process.env.PORT ?? 3000);
 }
-bootstrap();
+void bootstrap();

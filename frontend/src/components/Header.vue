@@ -1,4 +1,5 @@
 <script setup lang="ts">
+defineOptions({ name: 'AppHeader' });
 import { IconMoonFilled, IconSunFilled, IconSparkle } from '@tabler/icons-vue';
 import BaseButton from '@/components/BaseButton.vue';
 import { useTheme } from '@/composables/useTheme';

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+defineOptions({ name: 'AppFooter' });
 import BaseButton from '@/components/BaseButton.vue';
 import { IconClipboardFilled } from '@tabler/icons-vue';
 import { useShareLink } from '@/composables/useShareLink';

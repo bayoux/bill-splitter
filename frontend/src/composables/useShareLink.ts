@@ -13,7 +13,7 @@ export function useShareLink() {
       await navigator.clipboard.writeText(link);
 
       toast.success('Ссылка скопирована!');
-    } catch (e) {
+    } catch {
       toast.error('Не удалось скопировать ссылку');
     }
   }

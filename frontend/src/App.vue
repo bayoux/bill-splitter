@@ -3,7 +3,7 @@ import Header from '@/components/Header.vue';
 import { useDishes } from '@/composables/useDishes';
 import { onMounted, provide } from 'vue';
 import Footer from '@/components/Footer.vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 
 const useDishesData = useDishes();
 const route = useRoute();

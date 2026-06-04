@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QrCode } from './qr-code.entity';
-import { Not, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { deleteFromS3, uploadToS3 } from './s3.service';
 
 @Injectable()

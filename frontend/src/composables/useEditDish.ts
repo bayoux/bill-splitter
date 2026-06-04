@@ -5,7 +5,7 @@ export function useEditDish(
   editDish: (dish: Dish) => Promise<void>,
   validateDish: (name: string, price: number) => boolean,
 ) {
-  const editingId = ref(null);
+  const editingId = ref<number | null>(null);
   const editName = ref('');
   const editPrice = ref('');
 

@@ -1,41 +1,40 @@
 :root {
-    --color-primary: #6750A4;
-    --color-secondary: #E8DEF8;
-    --color-background: #F7F2FA;
-    --color-light-lavender:#ECE6F0;
-    --color-light-purple-gray: #CAC4D0;
-    --color-muted-purple: #4A4459;
-    --color-muted-dark:#49454F;
-    --color-white: #ffffff;
-    --color-dark: #1D1B20;
-    --color-black: #000000;
-    --color-red: #ff0000;
-    --color-green: #4CAF50;
-    --color-icon: #6750A4;
-    --border-radius-md: 1rem;
-    --border-radius-lg: 2rem;
-    --font-main: 'DM Sans';
-    --font-heading: 'DM Serif Display';
-    --font-weight-regular: 400;
-    --font-weight-medium: 500;
-    --font-weight-semibold: 600;
-    --font-size-sm: 1rem;
-    --font-size-md: 1.5rem;
-    --font-size-lg: 2rem;
-    --icon-lg: 3.5rem;
-    --icon-sm: 1.2rem;
+  --color-primary: #6750a4;
+  --color-secondary: #e8def8;
+  --color-background: #f7f2fa;
+  --color-light-lavender: #ece6f0;
+  --color-light-purple-gray: #cac4d0;
+  --color-muted-purple: #4a4459;
+  --color-muted-dark: #49454f;
+  --color-white: #ffffff;
+  --color-dark: #1d1b20;
+  --color-black: #000000;
+  --color-red: #ff0000;
+  --color-green: #4caf50;
+  --color-icon: #6750a4;
+  --border-radius-md: 1rem;
+  --border-radius-lg: 2rem;
+  --font-main: 'DM Sans';
+  --font-heading: 'DM Serif Display';
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-size-sm: 1rem;
+  --font-size-md: 1.5rem;
+  --font-size-lg: 2rem;
+  --icon-lg: 3.5rem;
+  --icon-sm: 1.2rem;
 }
 
-[data-theme="dark"] {
-    --color-primary: #D0BCFE;
-    --color-secondary: #4A4458;
-    --color-background: #1D1B20;
-    --color-light-purple-gray: #49454F;
-    --color-light-lavender: #2B2930;
-    --color-muted-purple: #E8DEF8;
-    --color-muted-dark: #CAC4D0;
-    --color-white: #000000;
-    --color-dark: #E6E0E9;
-    --color-black: #000000;
-
+[data-theme='dark'] {
+  --color-primary: #d0bcfe;
+  --color-secondary: #4a4458;
+  --color-background: #1d1b20;
+  --color-light-purple-gray: #49454f;
+  --color-light-lavender: #2b2930;
+  --color-muted-purple: #e8def8;
+  --color-muted-dark: #cac4d0;
+  --color-white: #000000;
+  --color-dark: #e6e0e9;
+  --color-black: #000000;
 }
