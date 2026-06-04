@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import BaseButton from '@/components/BaseButton.vue';
-import { IconCircleDot, IconClipboardFilled } from '@tabler/icons-vue';
+import { IconClipboardFilled } from '@tabler/icons-vue';
 import { useShareLink } from '@/composables/useShareLink';
 import { useRouter } from 'vue-router';
-import Toast, { useToast } from 'vue-toastification';
+import { useToast } from 'vue-toastification';
 
 const { copyLink } = useShareLink();
 const toast = useToast();
