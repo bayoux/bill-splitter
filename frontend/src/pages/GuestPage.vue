@@ -4,7 +4,7 @@ import { DishesContext } from '@/composables/useDishes';
 import type { Dish } from '@/types/dish';
 import BaseButton from '@/components/BaseButton.vue';
 import { IconReload } from '@tabler/icons-vue';
-import { useQrCodeStore } from '@/stores/qrCode';
+import { useQrCodeStore } from '@/stores/useQrCodeStore';
 
 const { dishes, loading, getDishes } = inject<DishesContext>('dishes')!;
 const qrStore = useQrCodeStore();

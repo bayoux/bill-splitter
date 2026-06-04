@@ -2,7 +2,7 @@
 import { onMounted } from 'vue';
 import BaseButton from '@/components/BaseButton.vue';
 import { IconFileUploadFilled } from '@tabler/icons-vue';
-import { useQrCodeStore } from '@/stores/qrCode';
+import { useQrCodeStore } from '@/stores/useQrCodeStore';
 
 const qrStore = useQrCodeStore();
 
