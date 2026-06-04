@@ -2,6 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Dish } from './dish.entity';
+import { CreateDishDto } from './dto/create-dish.dto';
+import { UpdateDishDto } from './dto/update-dish.dto';
 
 @Injectable()
 export class DishesService {
@@ -18,22 +20,22 @@ export class DishesService {
 
   async findOne(id: number): Promise<Dish> {
     const dish = await this.dishRepository.findOneBy({ id });
-    if (!dish) throw new NotFoundException(`Dish ${id} not found}`);
+    if (!dish) throw new NotFoundException(`Dish ${id} not found`);
     return dish;
   }
 
-  async create(dish: Partial<Dish>): Promise<Dish> {
-    return await this.dishRepository.save(dish);
+  async create(dto: CreateDishDto): Promise<Dish> {
+    return await this.dishRepository.save(dto);
   }
 
-  async delete(id: number) {
+  async delete(id: number): Promise<void> {
     const result = await this.dishRepository.delete(id);
     if (result.affected === 0)
       throw new NotFoundException(`Dish ${id} not found`);
   }
 
-  async update(id: number, dish: Partial<Dish>): Promise<Dish | null> {
-    await this.dishRepository.update(id, dish);
+  async update(id: number, dto: UpdateDishDto): Promise<Dish> {
+    await this.dishRepository.update(id, dto);
     return this.findOne(id);
   }
 }

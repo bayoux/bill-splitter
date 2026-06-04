@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { QrCode } from './qr-code.entity';
 import { Repository } from 'typeorm';
+import { QrCode } from './qr-code.entity';
 import { deleteFromS3, uploadToS3 } from './s3.service';
 
 @Injectable()
@@ -30,11 +30,11 @@ export class QrCodeService {
     });
   }
 
-  async deleteQr() {
-    const getQr = await this.getQr();
+  async deleteQr(): Promise<void> {
+    const qr = await this.getQr();
 
-    if (getQr?.s3Key) {
-      await deleteFromS3(getQr.s3Key);
+    if (qr?.s3Key) {
+      await deleteFromS3(qr.s3Key);
     }
 
     await this.qrCodeRepository.clear();

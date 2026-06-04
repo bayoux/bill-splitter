@@ -8,15 +8,17 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-import { QrCodeService } from './qr-code.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
+import { QrCode } from './qr-code.entity';
+import { QrCodeService } from './qr-code.service';
 
 @Controller('qr-code')
 export class QrCodeController {
   constructor(private readonly qrCodeService: QrCodeService) {}
+
   @Get()
-  getOne() {
+  getOne(): Promise<QrCode | null> {
     return this.qrCodeService.getQr();
   }
 
@@ -32,13 +34,13 @@ export class QrCodeController {
       },
     }),
   )
-  create(@UploadedFile() file: Express.Multer.File) {
+  create(@UploadedFile() file: Express.Multer.File): Promise<QrCode> {
     return this.qrCodeService.uploadQr(file);
   }
 
   @Delete()
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteQr() {
+  delete(): Promise<void> {
     return this.qrCodeService.deleteQr();
   }
 }
