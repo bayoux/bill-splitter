@@ -15,7 +15,6 @@ const total = computed(() =>
 
 onMounted(async () => {
   await qrStore.getQrCode();
-  console.log(qrStore.qrSrc);
 });
 </script>
 
