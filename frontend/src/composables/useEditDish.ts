@@ -1,7 +1,10 @@
 import { ref } from 'vue';
 import type { Dish } from '@/types/dish';
 
-export function useEditDish(editDish: (dish: Dish) => Promise<void>) {
+export function useEditDish(
+  editDish: (dish: Dish) => Promise<void>,
+  validateDish: (name: string, price: number) => boolean,
+) {
   const editingId = ref(null);
   const editName = ref('');
   const editPrice = ref('');
@@ -20,6 +23,7 @@ export function useEditDish(editDish: (dish: Dish) => Promise<void>) {
 
   async function handleEdit() {
     if (!editingId.value) return;
+    if (!validateDish(editName.value, Number(editPrice.value))) return;
 
     await editDish({
       id: editingId.value,

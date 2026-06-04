@@ -11,11 +11,11 @@ import {
   IconTrashFilled,
 } from '@tabler/icons-vue';
 
-const { dishes, loading, addDish, deleteDish, editDish } =
+const { dishes, loading, addDish, deleteDish, editDish, validateDish } =
   inject<DishesContext>('dishes')!;
 
 const { editingId, editName, editPrice, startEdit, cancelEdit, handleEdit } =
-  useEditDish(editDish);
+  useEditDish(editDish, validateDish);
 
 const dishName = ref('');
 const price = ref('');

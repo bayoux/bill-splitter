@@ -79,6 +79,7 @@ export function useDishes() {
     addDish,
     deleteDish,
     editDish,
+    validateDish,
   };
 }
 
