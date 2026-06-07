@@ -8,5 +8,6 @@ import { Dish } from './dish.entity';
   imports: [TypeOrmModule.forFeature([Dish])],
   controllers: [DishesController],
   providers: [DishesService],
+  exports: [TypeOrmModule],
 })
 export class DishesModule {}
