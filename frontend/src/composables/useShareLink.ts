@@ -5,9 +5,9 @@ export function useShareLink() {
   const shareLink = ref('');
   const toast = useToast();
 
-  async function copyLink() {
+  async function copyLink(sessionId: string) {
     try {
-      const link = `${window.location.origin}/guest`;
+      const link = `${window.location.origin}/sessions/${sessionId}`;
 
       shareLink.value = link;
       await navigator.clipboard.writeText(link);
