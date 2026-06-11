@@ -30,7 +30,7 @@ export function useParticipant(sessionId: string) {
           dishId,
           selected,
         },
-        { headers: { Authorization: `Bearer ${token.value}` } },
+        { headers: { 'x-participant-token': token.value } },
       );
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Не удалось выбрать блюдо');
