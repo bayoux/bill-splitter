@@ -1,58 +1,102 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, inject } from 'vue';
-import { DishesContext } from '@/composables/useDishes';
-import type { Dish } from '@/types/dish';
+import { ref, computed, onMounted } from 'vue';
 import BaseButton from '@/components/BaseButton.vue';
 import { IconReload } from '@tabler/icons-vue';
 import { useQrCodeStore } from '@/stores/useQrCodeStore';
+import { useRoute } from 'vue-router';
+import { useSession } from '@/composables/useSession';
+import { useParticipant } from '@/composables/useParticipant';
 
-const { dishes, loading, getDishes } = inject<DishesContext>('dishes')!;
-const qrStore = useQrCodeStore();
-const selectedDishes = ref<Dish[]>([]);
-const total = computed(() =>
-  selectedDishes.value.reduce((sum, dish) => sum + Number(dish.price), 0),
+const route = useRoute();
+const name = ref('');
+const sessionId = route.params.sessionId as string;
+const { dishes, participants, loading, getSession } = useSession(sessionId);
+const { isJoined, join, selectDish } = useParticipant(sessionId);
+const participantId = ref(
+  localStorage.getItem(`bill_splitter_participantId_${sessionId}`),
 );
+const currentParticipant = computed(() =>
+  participants.value.find(
+    (participant) => participant.id === participantId.value,
+  ),
+);
+const qrStore = useQrCodeStore();
+const total = computed(() => {
+  const selected = dishes.value.filter((dish) =>
+    currentParticipant.value?.selections.includes(dish.id),
+  );
+  return selected.reduce((sum, dish) => sum + Number(dish.price), 0);
+});
+
+async function handleJoin() {
+  await join(name.value);
+  participantId.value = localStorage.getItem(
+    `bill_splitter_participantId_${sessionId}`,
+  );
+  await getSession();
+}
+
+async function handleSelectDish(dishId: number, checked: boolean) {
+  await selectDish(dishId, checked);
+  await getSession();
+}
 
 onMounted(async () => {
   await qrStore.getQrCode();
+  await getSession();
 });
 </script>
 
 <template>
   <div class="guest-page">
-    <div class="guest-page__qr">
-      <img
-        v-if="qrStore.qrSrc"
-        class="guest-page__qr-img"
-        :src="qrStore.qrSrc"
-        alt="QR"
-      />
-      <div class="guest-page__total">
-        <h2 class="guest-page__total-value">{{ total }} сом</h2>
-      </div>
+    <div v-if="!isJoined">
+      <input v-model="name" />
+      <BaseButton variant="primary" @click="handleJoin()">
+        Присоединиться
+      </BaseButton>
     </div>
 
-    <p v-if="loading">Загрузка...</p>
-
-    <ul v-else class="guest-page__list">
-      <li class="guest-page__item" v-for="dish in dishes" :key="dish.id">
-        <input
-          v-model="selectedDishes"
-          class="guest-page__checkbox"
-          type="checkbox"
-          :value="dish"
+    <div v-else>
+      <div class="guest-page__qr">
+        <img
+          v-if="qrStore.qrSrc"
+          class="guest-page__qr-img"
+          :src="qrStore.qrSrc"
+          alt="QR"
         />
-        <div class="guest-page__info">
-          <p class="guest-page__name">{{ dish.name }}</p>
-          <p class="guest-page__price">{{ dish.price }} сом</p>
+        <div class="guest-page__total">
+          <h2 class="guest-page__total-value">{{ total }} сом</h2>
         </div>
-      </li>
-    </ul>
+      </div>
 
-    <BaseButton variant="secondary" @click="getDishes()">
-      <IconReload stroke="{2}" />
-      Обновить список
-    </BaseButton>
+      <p v-if="loading">Загрузка...</p>
+
+      <ul v-else class="guest-page__list">
+        <li class="guest-page__item" v-for="dish in dishes" :key="dish.id">
+          <input
+            :checked="currentParticipant?.selections.includes(dish.id)"
+            @change="
+              (e) =>
+                handleSelectDish(
+                  dish.id,
+                  (e.target as HTMLInputElement).checked,
+                )
+            "
+            class="guest-page__checkbox"
+            type="checkbox"
+          />
+          <div class="guest-page__info">
+            <p class="guest-page__name">{{ dish.name }}</p>
+            <p class="guest-page__price">{{ dish.price }} сом</p>
+          </div>
+        </li>
+      </ul>
+
+      <BaseButton variant="secondary" @click="getSession()">
+        <IconReload stroke="{2}" />
+        Обновить список
+      </BaseButton>
+    </div>
   </div>
 </template>
 
