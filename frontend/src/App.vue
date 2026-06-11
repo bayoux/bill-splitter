@@ -3,7 +3,7 @@ import Header from '@/components/Header.vue';
 import { useDishes } from '@/composables/useDishes';
 import { onMounted, provide } from 'vue';
 import Footer from '@/components/Footer.vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 
 const useDishesData = useDishes();
 const route = useRoute();
@@ -20,7 +20,10 @@ onMounted(async () => {
     <main class="page__main">
       <RouterView />
     </main>
-    <Footer v-if="route.path === '/create'" />
+    <Footer
+      v-if="route.path === '/create'"
+      :dishIds="useDishesData.dishes.value.map((dish) => dish.id)"
+    />
   </div>
 </template>
 
