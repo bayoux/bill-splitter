@@ -5,7 +5,7 @@ import GuestPage from '@/pages/GuestPage.vue';
 
 const routes = [
   { path: '/create', component: CreateDishPage },
-  { path: '/guest', component: GuestPage },
+  { path: '/sessions/:sessionId', component: GuestPage },
   { path: '/', redirect: '/create' },
 ] as RouteRecordRaw[];
 
