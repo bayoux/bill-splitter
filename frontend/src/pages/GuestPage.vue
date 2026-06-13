@@ -6,9 +6,9 @@ import { useQrCodeStore } from '@/stores/useQrCodeStore';
 import { useRoute } from 'vue-router';
 import { useSession } from '@/composables/useSession';
 import { useParticipant } from '@/composables/useParticipant';
+import JoinPage from '@/pages/JoinPage.vue';
 
 const route = useRoute();
-const name = ref('');
 const sessionId = route.params.sessionId as string;
 const { dishes, participants, loading, getSession } = useSession(sessionId);
 const { isJoined, join, selectDish } = useParticipant(sessionId);
@@ -28,8 +28,10 @@ const total = computed(() => {
   return selected.reduce((sum, dish) => sum + Number(dish.price), 0);
 });
 
-async function handleJoin() {
-  await join(name.value);
+async function handleJoin(value: string) {
+  const ok = await join(value);
+  if (!ok) return;
+
   participantId.value = localStorage.getItem(
     `bill_splitter_participantId_${sessionId}`,
   );
@@ -49,12 +51,7 @@ onMounted(async () => {
 
 <template>
   <div class="guest-page">
-    <div v-if="!isJoined">
-      <input v-model="name" />
-      <BaseButton variant="primary" @click="handleJoin()">
-        Присоединиться
-      </BaseButton>
-    </div>
+    <JoinPage v-if="!isJoined" @join="handleJoin" />
 
     <div v-else>
       <div class="guest-page__qr">
@@ -92,7 +89,11 @@ onMounted(async () => {
         </li>
       </ul>
 
-      <BaseButton variant="secondary" @click="getSession()">
+      <BaseButton
+        variant="secondary"
+        class="guest-page__button guest-page__button--refresh"
+        @click="getSession(false)"
+      >
         <IconReload stroke="{2}" />
         Обновить список
       </BaseButton>
@@ -186,6 +187,15 @@ onMounted(async () => {
 
   &__price {
     color: var(--color-muted-purple);
+  }
+
+  &__button {
+    width: 100%;
+    min-height: 3.5rem;
+
+    &--refresh {
+      max-width: 34rem;
+    }
   }
 }
 </style>
