@@ -2,7 +2,6 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
@@ -99,6 +98,14 @@ export class SessionsService {
     sessionId: string,
     dto: JoinSessionDto,
   ): Promise<{ participantId: string; participantToken: string }> {
+    const session = await this.sessionRepository.findOne({
+      where: { id: sessionId },
+    });
+
+    if (!session) {
+      throw new NotFoundException('Сессия не найдена');
+    }
+
     const name = await this.participantRepository.findOne({
       where: { name: dto.name, sessionId: sessionId },
     });
@@ -122,30 +129,25 @@ export class SessionsService {
   }
 
   async selectDish(
-    sessionId: string,
-    token: string,
+    participant: Participant,
     dto: SelectDishDto,
   ): Promise<{ ok: boolean }> {
-    const user = await this.participantRepository.findOne({
-      where: { token: token, sessionId: sessionId },
-    });
-
-    if (!user) {
-      throw new UnauthorizedException('Токен недействителен');
-    }
-
     if (dto.selected) {
-      await this.selectionRepository.save({
-        participantId: user.id,
-        dishId: dto.dishId,
+      const exists = await this.selectionRepository.findOne({
+        where: { participantId: participant.id, dishId: dto.dishId },
       });
+      if (!exists) {
+        await this.selectionRepository.save({
+          participantId: participant.id,
+          dishId: dto.dishId,
+        });
+      }
     } else {
       await this.selectionRepository.delete({
-        participantId: user.id,
+        participantId: participant.id,
         dishId: dto.dishId,
       });
     }
-
     return { ok: true };
   }
 }

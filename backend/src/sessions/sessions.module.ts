@@ -7,6 +7,7 @@ import { Selection } from './selection.entity';
 import { SessionsController } from './sessions.controller';
 import { SessionsService } from './sessions.service';
 import { DishesModule } from '../dishes/dishes.module';
+import { ParticipantTokenGuard } from './guards/participant-token.guard';
 
 @Module({
   imports: [
@@ -14,6 +15,6 @@ import { DishesModule } from '../dishes/dishes.module';
     DishesModule,
   ],
   controllers: [SessionsController],
-  providers: [SessionsService],
+  providers: [SessionsService, ParticipantTokenGuard],
 })
 export class SessionsModule {}

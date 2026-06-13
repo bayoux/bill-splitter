@@ -2,11 +2,12 @@ import {
   Body,
   Controller,
   Get,
-  Headers,
+  Header,
   HttpCode,
   HttpStatus,
   Param,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { SessionsService } from './sessions.service';
@@ -26,6 +27,7 @@ export class SessionsController {
   }
 
   @Get(':sessionId')
+  @Header('Cache-Control', 'no-store')
   get(@Param('sessionId') sessionId: string) {
     return this.sessionService.getSession(sessionId);
   }
@@ -41,9 +43,9 @@ export class SessionsController {
   @HttpCode(HttpStatus.OK)
   select(
     @Param('sessionId') sessionId: string,
-    @Headers('x-participant-token') token: string,
+    @Req() req,
     @Body() dto: SelectDishDto,
   ) {
-    return this.sessionService.selectDish(sessionId, token, dto);
+    return this.sessionService.selectDish(req.participant, dto);
   }
 }
