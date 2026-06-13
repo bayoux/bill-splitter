@@ -16,13 +16,13 @@ onMounted(async () => {
 
 <template>
   <div class="page">
-    <Header />
+    <Header v-if="!route.path.startsWith('/sessions/')" />
     <main class="page__main">
       <RouterView />
     </main>
     <Footer
       v-if="route.path === '/create'"
-      :dishIds="useDishesData.dishes.value.map((dish) => dish.id)"
+      :dish-ids="useDishesData.dishes.value.map((dish) => dish.id)"
     />
   </div>
 </template>
