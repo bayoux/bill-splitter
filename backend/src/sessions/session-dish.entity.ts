@@ -14,7 +14,7 @@ export class SessionDish {
   @PrimaryColumn()
   dishId!: number;
 
-  @ManyToOne(() => Dish)
+  @ManyToOne(() => Dish, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'dishId' })
   dish!: Dish;
 }

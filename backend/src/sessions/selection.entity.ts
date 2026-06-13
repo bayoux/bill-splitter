@@ -4,11 +4,13 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Unique,
 } from 'typeorm';
 import { Participant } from './participant.entity';
 import { Dish } from '../dishes/dish.entity';
 
 @Entity('selections')
+@Unique(['participantId', 'dishId'])
 export class Selection {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
@@ -23,7 +25,7 @@ export class Selection {
   @Column()
   dishId!: number;
 
-  @ManyToOne(() => Dish)
+  @ManyToOne(() => Dish, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'dishId' })
   dish!: Dish;
 }
