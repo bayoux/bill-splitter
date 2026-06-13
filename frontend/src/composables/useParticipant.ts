@@ -1,6 +1,7 @@
 import { api } from '@/api/instance';
 import { computed, ref } from 'vue';
 import { useToast } from 'vue-toastification';
+import axios from 'axios';
 
 export function useParticipant(sessionId: string) {
   const participantTokenKey = `bill_splitter_participantToken_${sessionId}`;
@@ -15,10 +16,15 @@ export function useParticipant(sessionId: string) {
       const { data } = await api.post(`/sessions/${sessionId}/join`, { name });
       localStorage.setItem(participantTokenKey, data.participantToken);
       localStorage.setItem(participantIdKey, `${data.participantId}`);
-      localStorage.setItem(participantNameKey, `${data.participantName}`);
+      localStorage.setItem(participantNameKey, name);
       token.value = data.participantToken;
+      return true;
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : 'Не удалось присоединиться');
+      if (axios.isAxiosError(e) && e.response?.status === 409) {
+        toast.error('Имя занято, выберите другое');
+      } else {
+        toast.error('Не удалось присоединиться');
+      }
     }
   }
 
@@ -33,7 +39,15 @@ export function useParticipant(sessionId: string) {
         { headers: { 'x-participant-token': token.value } },
       );
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : 'Не удалось выбрать блюдо');
+      if (axios.isAxiosError(e) && e.response?.status === 401) {
+        localStorage.removeItem(participantTokenKey);
+        localStorage.removeItem(participantIdKey);
+        localStorage.removeItem(participantNameKey);
+        token.value = null;
+        toast.error('Токен недействителен, войдите снова');
+        return;
+      }
+      toast.error('Не удалось выбрать блюдо');
     }
   }
 

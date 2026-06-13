@@ -3,6 +3,7 @@ import { api } from '@/api/instance';
 import { useToast } from 'vue-toastification';
 import type { Dish } from '@/types/dish';
 import type { Participant } from '@/types/participant';
+import axios from 'axios';
 
 export function useSession(sessionId: string) {
   const dishes = ref<Dish[]>([]);
@@ -10,8 +11,8 @@ export function useSession(sessionId: string) {
   const loading = ref(false);
   const toast = useToast();
 
-  async function getSession() {
-    loading.value = true;
+  async function getSession(showLoading = true) {
+    if (showLoading) loading.value = true;
 
     try {
       const { data } = await api.get(`/sessions/${sessionId}`);
@@ -19,11 +20,13 @@ export function useSession(sessionId: string) {
       dishes.value = data.dishes;
       participants.value = data.participants;
     } catch (e) {
-      toast.error(
-        e instanceof Error ? e.message : 'Не удалось загрузить данные',
-      );
+      if (axios.isAxiosError(e) && e.response?.status === 404) {
+        toast.error('Сессия не найдена');
+      } else {
+        toast.error('Не удалось загрузить данные');
+      }
     } finally {
-      loading.value = false;
+      if (showLoading) loading.value = false;
     }
   }
 
