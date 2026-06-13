@@ -2,7 +2,6 @@
 import BaseButton from '@/components/BaseButton.vue';
 import { IconClipboardFilled } from '@tabler/icons-vue';
 import { useShareLink } from '@/composables/useShareLink';
-import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
 import { api } from '@/api/instance';
 import { ref } from 'vue';
@@ -28,6 +27,7 @@ async function handleSave() {
     <BaseButton
       variant="primary"
       @click="handleSave"
+      :disabled="!props.dishIds.length"
       class="footer__button footer__button--save"
     >
       Создать
@@ -35,6 +35,7 @@ async function handleSave() {
     <BaseButton
       variant="secondary"
       @click="copyLink(sessionId)"
+      :disabled="!sessionId"
       class="footer__button footer__button--copy"
     >
       <IconClipboardFilled />
