@@ -6,7 +6,6 @@ import { deleteFromS3, uploadToS3 } from './s3.service';
 
 @Injectable()
 export class QrCodeService {
-
   constructor(
     @InjectRepository(QrCode)
     private qrCodeRepository: Repository<QrCode>,

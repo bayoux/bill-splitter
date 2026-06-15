@@ -17,21 +17,28 @@ onMounted(async () => {
       <div class="qr-upload__qr">
         <IconFileUploadFilled class="qr-upload__icon qr-upload__icon--upload" />
         <div>
-          <p class="qr-upload__qr-title">Загрузить QR</p>
-          <p class="qr-upload__qr-subtitle">PNG, JPG, JPEG</p>
+          <p class="qr-upload__qr-title">
+            Загрузить QR
+          </p>
+          <p class="qr-upload__qr-subtitle">
+            PNG, JPG, JPEG
+          </p>
         </div>
       </div>
 
-      <label class="qr-upload__upload-label" for="qr-upload">Загрузить </label>
+      <label
+        class="qr-upload__upload-label"
+        for="qr-upload"
+      >Загрузить </label>
 
       <input
-        class="qr-upload__file-input"
         id="qr-upload"
+        class="qr-upload__file-input"
         type="file"
         accept="image/*"
-        @change="qrStore.onQrUpload"
         style="display: none"
-      />
+        @change="qrStore.onQrUpload"
+      >
     </template>
 
     <template v-else>
@@ -41,28 +48,38 @@ onMounted(async () => {
           :src="qrStore.qrSrc"
           alt="QR"
           @click="qrStore.showQrCode = true"
-        />
+        >
 
         <div
           v-if="qrStore.showQrCode"
           class="qr-upload__qr-overlay"
           @click="qrStore.showQrCode = false"
         >
-          <div class="qr-upload__qr-popup" @click.stop>
-            <img :src="qrStore.qrSrc" alt="QR" />
+          <div
+            class="qr-upload__qr-popup"
+            @click.stop
+          >
+            <img
+              :src="qrStore.qrSrc"
+              alt="QR"
+            >
           </div>
         </div>
 
         <div class="qr-upload__qr-info">
-          <p class="qr-upload__qr-name">{{ qrStore.fileName }}</p>
-          <p class="qr-upload__qr-size">{{ qrStore.fileSize }}</p>
+          <p class="qr-upload__qr-name">
+            {{ qrStore.fileName }}
+          </p>
+          <p class="qr-upload__qr-size">
+            {{ qrStore.fileSize }}
+          </p>
         </div>
       </div>
 
       <BaseButton
         variant="secondary"
-        @click="qrStore.deleteQrCode"
         class="qr-upload__button qr-upload__button--delete"
+        @click="qrStore.deleteQrCode"
       >
         Удалить
       </BaseButton>

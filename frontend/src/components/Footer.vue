@@ -1,4 +1,5 @@
 <script setup lang="ts">
+defineOptions({ name: 'AppFooter' });
 import BaseButton from '@/components/BaseButton.vue';
 import { IconClipboardFilled } from '@tabler/icons-vue';
 import { useShareLink } from '@/composables/useShareLink';
@@ -26,17 +27,17 @@ async function handleSave() {
   <footer class="footer">
     <BaseButton
       variant="primary"
-      @click="handleSave"
       :disabled="!props.dishIds.length"
       class="footer__button footer__button--save"
+      @click="handleSave"
     >
       Создать
     </BaseButton>
     <BaseButton
       variant="secondary"
-      @click="copyLink(sessionId)"
       :disabled="!sessionId"
       class="footer__button footer__button--copy"
+      @click="copyLink(sessionId)"
     >
       <IconClipboardFilled />
       Скопировать ссылку

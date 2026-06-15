@@ -35,19 +35,19 @@ async function handleAdd() {
 
     <div class="add-dish-page__header">
       <input
+        v-model="dishName"
         class="add-dish-page__input add-dish-page__input--name"
         type="text"
-        v-model="dishName"
         placeholder="Название блюда"
         required
-      />
+      >
       <input
-        class="add-dish-page__input add-dish-page__input--price"
         v-model="price"
+        class="add-dish-page__input add-dish-page__input--price"
         type="number"
         placeholder="Цена"
         required
-      />
+      >
 
       <BaseButton
         variant="primary"
@@ -59,17 +59,27 @@ async function handleAdd() {
       </BaseButton>
     </div>
 
-    <p v-if="loading">Загрузка...</p>
+    <p v-if="loading">
+      Загрузка...
+    </p>
 
     <ul class="add-dish-page__list">
-      <li class="add-dish-page__item" v-for="dish in dishes" :key="dish.id">
+      <li
+        v-for="dish in dishes"
+        :key="dish.id"
+        class="add-dish-page__item"
+      >
         <IconBowlSpoonFilled
           class="add-dish-page__icon add-dish-page__icon--bowl"
         />
 
         <div class="add-dish-page__info">
-          <p class="add-dish-page__name">{{ dish.name }}</p>
-          <p class="add-dish-page__price">{{ dish.price }} сом</p>
+          <p class="add-dish-page__name">
+            {{ dish.name }}
+          </p>
+          <p class="add-dish-page__price">
+            {{ dish.price }} сом
+          </p>
         </div>
 
         <BaseButton
@@ -89,25 +99,34 @@ async function handleAdd() {
       </li>
     </ul>
 
-    <div v-if="editingId" class="add-dish-page__overlay" @click="cancelEdit()">
-      <div class="add-dish-page__edit-popup" @click.stop>
+    <div
+      v-if="editingId"
+      class="add-dish-page__overlay"
+      @click="cancelEdit()"
+    >
+      <div
+        class="add-dish-page__edit-popup"
+        @click.stop
+      >
         <div class="add-dish-page__edit-actions">
-          <h3 class="add-dish-page__title">Редактировать</h3>
+          <h3 class="add-dish-page__title">
+            Редактировать
+          </h3>
           <div class="add-dish-page__fields">
             <input
+              v-model="editName"
               class="add-dish-page__input add-dish-page__input--edit-name"
               type="text"
-              v-model="editName"
               placeholder="Название блюда"
               required
-            />
+            >
             <input
-              class="add-dish-page__input add-dish-page__input--edit-price"
               v-model="editPrice"
+              class="add-dish-page__input add-dish-page__input--edit-price"
               type="number"
               placeholder="Цена"
               required
-            />
+            >
           </div>
         </div>
 

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+defineOptions({ name: 'AppHeader' });
 import { IconMoonFilled, IconSunFilled, IconSparkle } from '@tabler/icons-vue';
 import BaseButton from '@/components/BaseButton.vue';
 import { useTheme } from '@/composables/useTheme';
@@ -9,16 +10,23 @@ const { toggleTheme, isDark } = useTheme();
 <template>
   <header class="header">
     <div class="header__logo">
-      <IconSparkle class="header__icon" stroke="1.8" />
-      <h1 class="header__title">Bill Splitter</h1>
+      <IconSparkle
+        class="header__icon"
+        stroke="1.8"
+      />
+      <h1 class="header__title">
+        Bill Splitter
+      </h1>
     </div>
 
-    <p class="header__tagline">Разделите счет честно и без споров</p>
+    <p class="header__tagline">
+      Разделите счет честно и без споров
+    </p>
 
     <BaseButton
       variant="icon"
-      @click="toggleTheme()"
       class="header__theme-toggle"
+      @click="toggleTheme()"
     >
       <IconSunFilled v-if="isDark" />
       <IconMoonFilled v-else />

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 type ButtonVariants = 'primary' | 'secondary' | 'danger' | 'icon' | 'ghost';
 
-withDefaults(defineProps<{ variant: ButtonVariants }>(), {
+withDefaults(defineProps<{ variant?: ButtonVariants }>(), {
   variant: 'primary',
 });
 </script>

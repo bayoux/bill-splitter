@@ -51,7 +51,10 @@ onMounted(async () => {
 
 <template>
   <div class="guest-page">
-    <JoinPage v-if="!isJoined" @join="handleJoin" />
+    <JoinPage
+      v-if="!isJoined"
+      @join="handleJoin"
+    />
 
     <div v-else>
       <div class="guest-page__qr">
@@ -60,18 +63,31 @@ onMounted(async () => {
           class="guest-page__qr-img"
           :src="qrStore.qrSrc"
           alt="QR"
-        />
+        >
         <div class="guest-page__total">
-          <h2 class="guest-page__total-value">{{ total }} сом</h2>
+          <h2 class="guest-page__total-value">
+            {{ total }} сом
+          </h2>
         </div>
       </div>
 
-      <p v-if="loading">Загрузка...</p>
+      <p v-if="loading">
+        Загрузка...
+      </p>
 
-      <ul v-else class="guest-page__list">
-        <li class="guest-page__item" v-for="dish in dishes" :key="dish.id">
+      <ul
+        v-else
+        class="guest-page__list"
+      >
+        <li
+          v-for="dish in dishes"
+          :key="dish.id"
+          class="guest-page__item"
+        >
           <input
             :checked="currentParticipant?.selections.includes(dish.id)"
+            class="guest-page__checkbox"
+            type="checkbox"
             @change="
               (e) =>
                 handleSelectDish(
@@ -79,12 +95,14 @@ onMounted(async () => {
                   (e.target as HTMLInputElement).checked,
                 )
             "
-            class="guest-page__checkbox"
-            type="checkbox"
-          />
+          >
           <div class="guest-page__info">
-            <p class="guest-page__name">{{ dish.name }}</p>
-            <p class="guest-page__price">{{ dish.price }} сом</p>
+            <p class="guest-page__name">
+              {{ dish.name }}
+            </p>
+            <p class="guest-page__price">
+              {{ dish.price }} сом
+            </p>
           </div>
         </li>
       </ul>
