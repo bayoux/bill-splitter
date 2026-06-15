@@ -1,0 +1,60 @@
+import { computed, ref } from 'vue';
+import { useToast } from 'vue-toastification';
+import axios from 'axios';
+
+import { api } from '@/shared/api/instance';
+
+export function useParticipant(sessionId: string) {
+  const participantTokenKey = `bill_splitter_participantToken_${sessionId}`;
+  const participantIdKey = `bill_splitter_participantId_${sessionId}`;
+  const participantNameKey = `bill_splitter_participantName_${sessionId}`;
+  const token = ref(localStorage.getItem(participantTokenKey));
+  const isJoined = computed(() => token.value !== null);
+  const toast = useToast();
+
+  async function join(name: string) {
+    try {
+      const { data } = await api.post(`/sessions/${sessionId}/join`, { name });
+      localStorage.setItem(participantTokenKey, data.participantToken);
+      localStorage.setItem(participantIdKey, `${data.participantId}`);
+      localStorage.setItem(participantNameKey, name);
+      token.value = data.participantToken;
+      return true;
+    } catch (e) {
+      if (axios.isAxiosError(e) && e.response?.status === 409) {
+        toast.error('Имя занято, выберите другое');
+      } else {
+        toast.error('Не удалось присоединиться');
+      }
+    }
+  }
+
+  async function selectDish(dishId: number, selected: boolean) {
+    try {
+      await api.post(
+        `/sessions/${sessionId}/select`,
+        {
+          dishId,
+          selected,
+        },
+        { headers: { 'x-participant-token': token.value } },
+      );
+    } catch (e) {
+      if (axios.isAxiosError(e) && e.response?.status === 401) {
+        localStorage.removeItem(participantTokenKey);
+        localStorage.removeItem(participantIdKey);
+        localStorage.removeItem(participantNameKey);
+        token.value = null;
+        toast.error('Токен недействителен, войдите снова');
+        return;
+      }
+      toast.error('Не удалось выбрать блюдо');
+    }
+  }
+
+  return {
+    isJoined,
+    join,
+    selectDish,
+  };
+}
