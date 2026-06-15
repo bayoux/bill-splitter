@@ -15,6 +15,7 @@ import { CreateSessionDto } from './dto/create-session.dto';
 import { JoinSessionDto } from './dto/join-session.dto';
 import { SelectDishDto } from './dto/select-dish.dto';
 import { ParticipantTokenGuard } from './guards/participant-token.guard';
+import { Participant } from './participant.entity';
 
 @Controller('sessions')
 export class SessionsController {
@@ -43,7 +44,7 @@ export class SessionsController {
   @HttpCode(HttpStatus.OK)
   select(
     @Param('sessionId') sessionId: string,
-    @Req() req,
+    @Req() req: { participant: Participant },
     @Body() dto: SelectDishDto,
   ) {
     return this.sessionService.selectDish(req.participant, dto);

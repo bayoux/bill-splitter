@@ -1,13 +1,13 @@
-import './assets/main.css';
+import './app/styles/main.css';
 import '@tabler/icons-webfont/dist/tabler-icons.css';
+import 'vue-toastification/dist/index.css';
 
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-import App from './App.vue';
-import router from '@/router/index';
-
 import Toast from 'vue-toastification';
-import 'vue-toastification/dist/index.css';
+
+import App from './app/App.vue';
+import router from './app/router';
 
 createApp(App)
   .use(createPinia())

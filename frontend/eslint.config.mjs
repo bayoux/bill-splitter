@@ -17,6 +17,7 @@ export default [
       globals: {
         window: 'readonly',
         navigator: 'readonly',
+        localStorage: 'readonly',
       },
     },
     rules: {
