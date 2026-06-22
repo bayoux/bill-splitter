@@ -150,4 +150,17 @@ export class SessionsService {
     }
     return { ok: true };
   }
+
+  async findAll(): Promise<Session[]> {
+    return await this.sessionRepository.find({
+      order: { createdAt: 'DESC' },
+    });
+  }
+
+  async delete(id: string) {
+    const result = await this.sessionRepository.delete(id);
+
+    if (result.affected === 0)
+      throw new NotFoundException(`Session ${id} not found`);
+  }
 }

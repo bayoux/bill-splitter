@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Header,
   HttpCode,
@@ -48,5 +49,16 @@ export class SessionsController {
     @Body() dto: SelectDishDto,
   ) {
     return this.sessionService.selectDish(req.participant, dto);
+  }
+
+  @Get()
+  getAll() {
+    return this.sessionService.findAll();
+  }
+
+  @Delete(':sessionId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  delete(@Param('sessionId') sessionId: string) {
+    return this.sessionService.delete(sessionId);
   }
 }
