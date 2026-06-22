@@ -52,6 +52,10 @@ export function useParticipant(sessionId: string) {
         toast.error('Токен недействителен, войдите снова');
         return;
       }
+      if (axios.isAxiosError(e) && e.code === 'ECONNABORTED') {
+        toast.error(e.message);
+        return;
+      }
       toast.error('Не удалось выбрать блюдо');
     }
   }
