@@ -43,6 +43,11 @@ withDefaults(defineProps<{ variant?: ButtonVariants }>(), {
     }
   }
 
+  &--danger {
+    background-color: var(--color-grey);
+    color: var(--color-white);
+  }
+
   &--icon {
     padding: 0.2rem;
     background-color: var(--color-white);
