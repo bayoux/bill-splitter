@@ -48,4 +48,9 @@ export class DishesController {
   update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateDishDto) {
     return this.dishesService.update(id, dto);
   }
+
+  @Delete()
+  clearAll(@Body('ids') ids: number[]) {
+    return this.dishesService.clearByIds(ids);
+  }
 }

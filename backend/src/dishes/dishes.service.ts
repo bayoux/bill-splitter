@@ -36,4 +36,8 @@ export class DishesService {
     await this.dishRepository.update(id, dish);
     return this.findOne(id);
   }
+
+  async clearByIds(ids: number[]) {
+    await this.dishRepository.delete(ids);
+  }
 }
