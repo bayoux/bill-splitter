@@ -29,6 +29,13 @@ export function useParticipant(sessionId: string) {
     }
   }
 
+  function clearToken() {
+    localStorage.removeItem(participantTokenKey);
+    localStorage.removeItem(participantIdKey);
+    localStorage.removeItem(participantNameKey);
+    token.value = null;
+  }
+
   async function selectDish(dishId: number, selected: boolean) {
     try {
       await api.post(
@@ -41,10 +48,7 @@ export function useParticipant(sessionId: string) {
       );
     } catch (e) {
       if (axios.isAxiosError(e) && e.response?.status === 401) {
-        localStorage.removeItem(participantTokenKey);
-        localStorage.removeItem(participantIdKey);
-        localStorage.removeItem(participantNameKey);
-        token.value = null;
+        clearToken();
         toast.error('Токен недействителен, войдите снова');
         return;
       }
@@ -55,6 +59,7 @@ export function useParticipant(sessionId: string) {
   return {
     isJoined,
     join,
+    clearToken,
     selectDish,
   };
 }

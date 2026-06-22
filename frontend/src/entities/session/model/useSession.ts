@@ -23,6 +23,7 @@ export function useSession(sessionId: string) {
     } catch (e) {
       if (axios.isAxiosError(e) && e.response?.status === 404) {
         toast.error('Сессия не найдена');
+        return 'not_found';
       } else {
         toast.error('Не удалось загрузить данные');
       }

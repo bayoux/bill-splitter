@@ -13,7 +13,7 @@ import BaseButton from '@/shared/ui/BaseButton.vue';
 const route = useRoute();
 const sessionId = route.params.sessionId as string;
 const { dishes, participants, loading, getSession } = useSession(sessionId);
-const { isJoined, join, selectDish } = useParticipant(sessionId);
+const { isJoined, join, clearToken, selectDish } = useParticipant(sessionId);
 const participantId = ref(
   localStorage.getItem(`bill_splitter_participantId_${sessionId}`),
 );
@@ -47,16 +47,16 @@ async function handleSelectDish(dishId: number, checked: boolean) {
 
 onMounted(async () => {
   await qrStore.getQrCode();
-  await getSession();
+  const result = await getSession();
+  if (result === 'not_found') {
+    clearToken();
+  }
 });
 </script>
 
 <template>
   <div class="guest-page">
-    <JoinForm
-      v-if="!isJoined"
-      @join="handleJoin"
-    />
+    <JoinForm v-if="!isJoined" @join="handleJoin" />
 
     <div v-else>
       <div class="guest-page__qr">
@@ -65,27 +65,16 @@ onMounted(async () => {
           class="guest-page__qr-img"
           :src="qrStore.qrSrc"
           alt="QR"
-        >
+        />
         <div class="guest-page__total">
-          <h2 class="guest-page__total-value">
-            {{ total }} сом
-          </h2>
+          <h2 class="guest-page__total-value">{{ total }} сом</h2>
         </div>
       </div>
 
-      <p v-if="loading">
-        Загрузка...
-      </p>
+      <p v-if="loading">Загрузка...</p>
 
-      <ul
-        v-else
-        class="guest-page__list"
-      >
-        <li
-          v-for="dish in dishes"
-          :key="dish.id"
-          class="guest-page__item"
-        >
+      <ul v-else class="guest-page__list">
+        <li v-for="dish in dishes" :key="dish.id" class="guest-page__item">
           <input
             :checked="currentParticipant?.selections.includes(dish.id)"
             class="guest-page__checkbox"
@@ -97,14 +86,12 @@ onMounted(async () => {
                   (e.target as HTMLInputElement).checked,
                 )
             "
-          >
+          />
           <div class="guest-page__info">
             <p class="guest-page__name">
               {{ dish.name }}
             </p>
-            <p class="guest-page__price">
-              {{ dish.price }} сом
-            </p>
+            <p class="guest-page__price">{{ dish.price }} сом</p>
           </div>
         </li>
       </ul>
