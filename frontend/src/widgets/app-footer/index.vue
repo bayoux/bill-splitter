@@ -2,16 +2,18 @@
 defineOptions({ name: 'AppFooter' });
 import { ref } from 'vue';
 import { useToast } from 'vue-toastification';
-import { IconClipboardFilled } from '@tabler/icons-vue';
+import { IconClipboardFilled, IconSquareRoundedCheck } from '@tabler/icons-vue';
 
 import { useShareLink } from '@/features/share-link';
 import { api } from '@/shared/api/instance';
 import BaseButton from '@/shared/ui/BaseButton.vue';
+import { useRouter } from 'vue-router';
 
 const sessionId = ref('');
 const { copyLink } = useShareLink();
 const toast = useToast();
 const props = defineProps<{ dishIds: number[] }>();
+const router = useRouter();
 
 async function handleSave() {
   try {
@@ -21,6 +23,10 @@ async function handleSave() {
   } catch (e) {
     toast.error(e instanceof Error ? e.message : 'Не удалось создать сессию');
   }
+}
+
+function showAllSessions() {
+  router.push('/all-sessions');
 }
 </script>
 
@@ -42,6 +48,14 @@ async function handleSave() {
     >
       <IconClipboardFilled />
       Скопировать ссылку
+    </BaseButton>
+    <BaseButton
+      variant="secondary"
+      class="footer__button footer__button--created"
+      @click="showAllSessions()"
+    >
+      <IconSquareRoundedCheck />
+      Созданные
     </BaseButton>
   </footer>
 </template>

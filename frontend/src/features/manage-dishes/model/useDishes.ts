@@ -73,6 +73,17 @@ export function useDishes() {
     }
   }
 
+  async function clearDishes(ids: number[]) {
+    try {
+      await api.delete(`/dishes`, { data: { ids } });
+      dishes.value = [];
+    } catch (e) {
+      toast.error(
+        e instanceof Error ? e.message : 'Не удалось очистить список',
+      );
+    }
+  }
+
   return {
     dishes,
     loading,
@@ -81,6 +92,7 @@ export function useDishes() {
     deleteDish,
     editDish,
     validateDish,
+    clearDishes,
   };
 }
 
