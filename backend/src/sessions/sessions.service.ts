@@ -133,7 +133,6 @@ export class SessionsService {
     participant: Participant,
     dto: SelectDishDto,
   ): Promise<{ ok: boolean }> {
-
     const sessionDish = await this.sessionDishRepository.findOne({
       where: { sessionId: participant.sessionId, dishId: dto.dishId },
     });

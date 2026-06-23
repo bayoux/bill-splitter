@@ -22,7 +22,7 @@ import { SessionsModule } from './sessions/sessions.module';
       password: process.env.DB_PASSWORD!,
       database: process.env.DB_NAME!,
       entities: [Dish, QrCode, Session, SessionDish, Selection, Participant],
-      synchronize: process.env.NODE_ENV !== 'production',
+      synchronize: false,
     }),
     DishesModule,
     QrCodeModule,
