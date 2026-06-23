@@ -10,6 +10,8 @@ import { SessionDish } from './sessions/session-dish.entity';
 import { Selection } from './sessions/selection.entity';
 import { Participant } from './sessions/participant.entity';
 import { SessionsModule } from './sessions/sessions.module';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -24,9 +26,17 @@ import { SessionsModule } from './sessions/sessions.module';
       entities: [Dish, QrCode, Session, SessionDish, Selection, Participant],
       synchronize: false,
     }),
+    ThrottlerModule.forRoot([{ ttl: 60000, limit: 10 }]),
     DishesModule,
     QrCodeModule,
     SessionsModule,
+  ],
+
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
 })
 export class AppModule {}
