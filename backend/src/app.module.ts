@@ -12,6 +12,7 @@ import { Participant } from './sessions/participant.entity';
 import { SessionsModule } from './sessions/sessions.module';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { APP_GUARD } from '@nestjs/core';
       synchronize: false,
     }),
     ThrottlerModule.forRoot([{ ttl: 60000, limit: 10 }]),
+    ScheduleModule.forRoot(),
     DishesModule,
     QrCodeModule,
     SessionsModule,

@@ -1,11 +1,12 @@
 import {
   BadRequestException,
   ConflictException,
+  GoneException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { In, LessThan, Repository } from 'typeorm';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { Session } from './session.entity';
 import { SessionDish } from './session-dish.entity';
@@ -15,6 +16,7 @@ import { Selection } from './selection.entity';
 import { JoinSessionDto } from './dto/join-session.dto';
 import * as crypto from 'node:crypto';
 import { SelectDishDto } from './dto/select-dish.dto';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class SessionsService {
@@ -36,12 +38,15 @@ export class SessionsService {
   ) {}
 
   async createSession(dto: CreateSessionDto): Promise<{ sessionId: string }> {
-    const session = await this.sessionRepository.save({});
-
+    const expiresAt = new Date(
+      Date.now() + Number(process.env.SESSION_TTL_HOURS!) * 3600000,
+    );
+    const session = await this.sessionRepository.save({ expiresAt });
     const sessionDishes = dto.dishIds.map((dishId) => ({
       sessionId: session.id,
       dishId,
     }));
+
     await this.sessionDishRepository.save(sessionDishes);
 
     return { sessionId: session.id };
@@ -62,6 +67,10 @@ export class SessionsService {
 
     if (!session) {
       throw new NotFoundException('Сессия не найдена');
+    }
+
+    if (session.expiresAt && session.expiresAt < new Date()) {
+      throw new GoneException('Сессия истекла');
     }
 
     const sessionDishes = await this.sessionDishRepository.find({
@@ -93,6 +102,13 @@ export class SessionsService {
       dishes,
       participants: result,
     };
+  }
+
+  @Cron(CronExpression.EVERY_HOUR)
+  async cleanExpiredSessions() {
+    await this.sessionRepository.delete({
+      expiresAt: LessThan(new Date()),
+    });
   }
 
   async joinSession(
