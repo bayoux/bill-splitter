@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -132,6 +133,14 @@ export class SessionsService {
     participant: Participant,
     dto: SelectDishDto,
   ): Promise<{ ok: boolean }> {
+
+    const sessionDish = await this.sessionDishRepository.findOne({
+      where: { sessionId: participant.sessionId, dishId: dto.dishId },
+    });
+
+    if (!sessionDish)
+      throw new BadRequestException('Блюдо не найдено в сессии');
+
     if (dto.selected) {
       const exists = await this.selectionRepository.findOne({
         where: { participantId: participant.id, dishId: dto.dishId },
