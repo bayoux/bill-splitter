@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { DishesContext } from '@/features/manage-dishes';
+
 defineOptions({ name: 'AppFooter' });
-import { ref } from 'vue';
+import { inject, ref, watch } from 'vue';
 import { useToast } from 'vue-toastification';
 import { IconClipboardFilled, IconSquareRoundedCheck } from '@tabler/icons-vue';
 
@@ -14,16 +16,31 @@ const { copyLink } = useShareLink();
 const toast = useToast();
 const props = defineProps<{ dishIds: number[] }>();
 const router = useRouter();
+const dishesData = inject<DishesContext>('dishes');
+const isSessionCreated = ref(false);
 
 async function handleSave() {
+  if (isSessionCreated.value) return;
+
   try {
     const { data } = await api.post('/sessions', { dishIds: props.dishIds });
     sessionId.value = data.sessionId;
+    isSessionCreated.value = true;
+
+    await dishesData?.clearDishes(props.dishIds);
+
     toast.success('Сессия создана');
   } catch (e) {
     toast.error(e instanceof Error ? e.message : 'Не удалось создать сессию');
   }
 }
+
+watch(
+  () => props.dishIds.length,
+  (newValue) => {
+    if (newValue > 0) isSessionCreated.value = false;
+  },
+);
 
 function showAllSessions() {
   router.push('/all-sessions');
@@ -34,11 +51,11 @@ function showAllSessions() {
   <footer class="footer">
     <BaseButton
       variant="primary"
-      :disabled="!props.dishIds.length"
+      :disabled="!props.dishIds.length || isSessionCreated"
       class="footer__button footer__button--save"
       @click="handleSave"
     >
-      Создать
+      Сохранить
     </BaseButton>
     <BaseButton
       variant="secondary"
