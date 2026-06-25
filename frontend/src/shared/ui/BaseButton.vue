@@ -1,6 +1,12 @@
 <script setup lang="ts">
 defineOptions({ name: 'BaseButton' });
-type ButtonVariants = 'primary' | 'secondary' | 'danger' | 'icon' | 'ghost';
+type ButtonVariants =
+  | 'primary'
+  | 'secondary'
+  | 'danger'
+  | 'icon'
+  | 'ghost'
+  | 'toast';
 
 withDefaults(defineProps<{ variant?: ButtonVariants }>(), {
   variant: 'primary',
@@ -58,6 +64,16 @@ withDefaults(defineProps<{ variant?: ButtonVariants }>(), {
   &--ghost {
     background-color: var(--color-white);
     color: var(--color-primary);
+    font-weight: var(--font-weight-medium);
+
+    &:hover {
+      border-color: var(--color-primary);
+    }
+  }
+
+  &--toast {
+    background-color: var(--color-toast);
+    color: var(--color-black);
     font-weight: var(--font-weight-medium);
 
     &:hover {

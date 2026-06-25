@@ -2,10 +2,9 @@
 import { DishesContext } from '@/features/manage-dishes';
 
 defineOptions({ name: 'AppFooter' });
-import { inject, ref, watch } from 'vue';
+import { h, inject, ref, watch } from 'vue';
 import { useToast } from 'vue-toastification';
 import { IconClipboardFilled, IconSquareRoundedCheck } from '@tabler/icons-vue';
-
 import { useShareLink } from '@/features/share-link';
 import { api } from '@/shared/api/instance';
 import BaseButton from '@/shared/ui/BaseButton.vue';
@@ -29,7 +28,21 @@ async function handleSave() {
 
     await dishesData?.clearDishes(props.dishIds);
 
-    toast.success('Сессия создана');
+    toast.success(
+      h('div', [
+        h('span', 'Сессия создана'),
+        h(
+          BaseButton,
+          {
+            onClick: () => copyLink(sessionId.value),
+            class: 'footer__button footer__button--copy',
+            variant: 'toast',
+          },
+          'Скопировать ссылку',
+        ),
+      ]),
+      { timeout: false },
+    );
   } catch (e) {
     toast.error(e instanceof Error ? e.message : 'Не удалось создать сессию');
   }
@@ -55,16 +68,7 @@ function showAllSessions() {
       class="footer__button footer__button--save"
       @click="handleSave"
     >
-      Сохранить
-    </BaseButton>
-    <BaseButton
-      variant="secondary"
-      :disabled="!sessionId"
-      class="footer__button footer__button--copy"
-      @click="copyLink(sessionId)"
-    >
-      <IconClipboardFilled />
-      Скопировать ссылку
+      Создать сессию
     </BaseButton>
     <BaseButton
       variant="secondary"
@@ -93,6 +97,10 @@ function showAllSessions() {
     padding: 1rem;
     border-radius: var(--border-radius-lg);
     height: 3.5rem;
+
+    &--copy {
+      margin-left: 1rem;
+    }
   }
 
   @media (max-width: 480px) {
