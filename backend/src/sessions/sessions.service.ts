@@ -42,9 +42,16 @@ export class SessionsService {
       Date.now() + Number(process.env.SESSION_TTL_HOURS!) * 3600000,
     );
     const session = await this.sessionRepository.save({ expiresAt });
-    const sessionDishes = dto.dishIds.map((dishId) => ({
+
+    const dishes = await this.dishRepository.findBy({
+      id: In(dto.dishIds),
+    });
+
+    const sessionDishes = dishes.map((dish) => ({
       sessionId: session.id,
-      dishId,
+      dishId: dish.id,
+      name: dish.name,
+      price: dish.price,
     }));
 
     await this.sessionDishRepository.save(sessionDishes);
@@ -74,12 +81,14 @@ export class SessionsService {
     }
 
     const sessionDishes = await this.sessionDishRepository.find({
-      where: { sessionId: sessionId },
+      where: { sessionId },
     });
 
-    const dishes = await this.dishRepository.findBy({
-      id: In(sessionDishes.map((sessionDish) => sessionDish.dishId)),
-    });
+    const dishes = sessionDishes.map((sd) => ({
+      id: sd.dishId,
+      name: sd.name,
+      price: sd.price,
+    }));
 
     const participants = await this.participantRepository.find({
       where: { sessionId: sessionId },

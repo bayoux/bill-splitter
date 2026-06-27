@@ -4,7 +4,7 @@ import { DishesContext } from '@/features/manage-dishes';
 defineOptions({ name: 'AppFooter' });
 import { h, inject, ref, watch } from 'vue';
 import { useToast } from 'vue-toastification';
-import { IconClipboardFilled, IconSquareRoundedCheck } from '@tabler/icons-vue';
+import { IconSquareRoundedCheck } from '@tabler/icons-vue';
 import { useShareLink } from '@/features/share-link';
 import { api } from '@/shared/api/instance';
 import BaseButton from '@/shared/ui/BaseButton.vue';
@@ -25,7 +25,6 @@ async function handleSave() {
     const { data } = await api.post('/sessions', { dishIds: props.dishIds });
     sessionId.value = data.sessionId;
     isSessionCreated.value = true;
-
     await dishesData?.clearDishes(props.dishIds);
 
     toast.success(

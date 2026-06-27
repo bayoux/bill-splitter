@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, provide } from 'vue';
+import { provide } from 'vue';
 import { useRoute } from 'vue-router';
 
 import AppHeader from '@/widgets/app-header/index.vue';
@@ -9,10 +9,6 @@ import { useDishes } from '@/features/manage-dishes';
 const useDishesData = useDishes();
 const route = useRoute();
 provide('dishes', useDishesData);
-
-onMounted(async () => {
-  await useDishesData.getDishes();
-});
 </script>
 
 <template>
