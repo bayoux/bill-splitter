@@ -132,6 +132,7 @@ onMounted(async () => {
     max-width: 14rem;
     object-fit: contain;
     border-radius: var(--border-radius-lg);
+    border: 0.1rem solid var(--color-black);
   }
 
   &__total-value {
