@@ -3,7 +3,7 @@ defineOptions({ name: 'GuestPage' });
 import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { IconReload } from '@tabler/icons-vue';
-
+import AppHeader from '@/widgets/app-header/index.vue';
 import JoinForm from '@/widgets/join-form/index.vue';
 import { useParticipant } from '@/features/join-session';
 import { useQrCodeStore } from '@/entities/qr-code';
@@ -56,9 +56,10 @@ onMounted(async () => {
 
 <template>
   <div class="guest-page">
+    <AppHeader />
     <JoinForm v-if="!isJoined" @join="handleJoin" />
 
-    <div v-else>
+    <div v-else class="guest-page__qr-card">
       <div class="guest-page__qr">
         <img
           v-if="qrStore.qrSrc"
@@ -67,7 +68,12 @@ onMounted(async () => {
           alt="QR"
         />
         <div class="guest-page__total">
-          <h2 class="guest-page__total-value">{{ total }} сом</h2>
+          <h2
+            class="guest-page__total-value"
+            :style="{ visibility: total > 0 ? 'visible' : 'hidden' }"
+          >
+            {{ total }} сом
+          </h2>
         </div>
       </div>
 
@@ -95,7 +101,9 @@ onMounted(async () => {
           </div>
         </li>
       </ul>
+    </div>
 
+    <div class="guest-page__footer">
       <BaseButton
         variant="secondary"
         class="guest-page__button guest-page__button--refresh"
@@ -111,8 +119,12 @@ onMounted(async () => {
 <style lang="scss">
 .guest-page {
   display: flex;
+  min-height: 100vh;
   flex-direction: column;
-  padding: 0.5rem;
+
+  &__qr-card {
+    margin: 1rem;
+  }
 
   &__qr {
     display: flex;
@@ -195,6 +207,12 @@ onMounted(async () => {
 
   &__price {
     color: var(--color-muted-purple);
+  }
+
+  &__footer {
+    margin-top: auto;
+    background-color: var(--color-white);
+    padding: 1rem;
   }
 
   &__button {
