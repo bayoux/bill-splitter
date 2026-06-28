@@ -41,35 +41,29 @@ async function handleAdd() {
         type="text"
         placeholder="Название блюда"
         required
-      >
+      />
       <input
         v-model="price"
         class="add-dish-page__input add-dish-page__input--price"
         type="number"
         placeholder="Цена"
         required
-      >
+      />
 
       <BaseButton
         variant="primary"
         class="add-dish-page__button add-dish-page__button--add"
         @click="handleAdd"
       >
-        <IconPlus stroke="2" />
+        <IconPlus />
         Добавить
       </BaseButton>
     </div>
 
-    <p v-if="loading">
-      Загрузка...
-    </p>
+    <p v-if="loading">Загрузка...</p>
 
     <ul class="add-dish-page__list">
-      <li
-        v-for="dish in dishes"
-        :key="dish.id"
-        class="add-dish-page__item"
-      >
+      <li v-for="dish in dishes" :key="dish.id" class="add-dish-page__item">
         <IconBowlSpoonFilled
           class="add-dish-page__icon add-dish-page__icon--bowl"
         />
@@ -78,9 +72,7 @@ async function handleAdd() {
           <p class="add-dish-page__name">
             {{ dish.name }}
           </p>
-          <p class="add-dish-page__price">
-            {{ dish.price }} сом
-          </p>
+          <p class="add-dish-page__price">{{ dish.price }} сом</p>
         </div>
 
         <BaseButton
@@ -100,19 +92,10 @@ async function handleAdd() {
       </li>
     </ul>
 
-    <div
-      v-if="editingId"
-      class="add-dish-page__overlay"
-      @click="cancelEdit()"
-    >
-      <div
-        class="add-dish-page__edit-popup"
-        @click.stop
-      >
+    <div v-if="editingId" class="add-dish-page__overlay" @click="cancelEdit()">
+      <div class="add-dish-page__edit-popup" @click.stop>
         <div class="add-dish-page__edit-actions">
-          <h3 class="add-dish-page__title">
-            Редактировать
-          </h3>
+          <h3 class="add-dish-page__title">Редактировать</h3>
           <div class="add-dish-page__fields">
             <input
               v-model="editName"
@@ -120,14 +103,14 @@ async function handleAdd() {
               type="text"
               placeholder="Название блюда"
               required
-            >
+            />
             <input
               v-model="editPrice"
               class="add-dish-page__input add-dish-page__input--edit-price"
               type="number"
               placeholder="Цена"
               required
-            >
+            />
           </div>
         </div>
 

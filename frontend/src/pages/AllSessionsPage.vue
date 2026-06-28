@@ -4,13 +4,14 @@ import { api } from '@/shared/api/instance';
 import { useToast } from 'vue-toastification';
 import {
   IconChevronLeft,
-  IconTrashFilled,
-  IconCreditCardHand,
+  IconUsers,
+  IconChevronRight,
 } from '@tabler/icons-vue';
 import BaseButton from '@/shared/ui/BaseButton.vue';
 import router from '@/app/router';
+import type { Session } from '@/types/session';
 
-const sessions = ref([]);
+const sessions = ref<Session[]>([]);
 const toast = useToast();
 
 function goBack() {
@@ -46,6 +47,22 @@ function formatDate(dateStr: string) {
   });
 }
 
+function isExpired(expiresAt: string) {
+  return new Date() > new Date(expiresAt);
+}
+
+function getParticipantText(count: number) {
+  if (count % 10 === 1 && count % 100 !== 11) {
+    return 'участник';
+  }
+
+  if ([2, 3, 4].includes(count % 10) && ![12, 13, 14].includes(count % 100)) {
+    return 'участника';
+  }
+
+  return 'участников';
+}
+
 onMounted(() => {
   getSessions();
 });
@@ -61,6 +78,11 @@ onMounted(() => {
       <IconChevronLeft />
     </BaseButton>
 
+    <div class="all-sessions__header">
+      <h3>Ваши сессии</h3>
+      <p>{{ sessions.length }} всего</p>
+    </div>
+
     <ul class="all-sessions__list">
       <li
         class="all-sessions__item"
@@ -68,17 +90,33 @@ onMounted(() => {
         :key="session.id"
       >
         <div class="all-sessions__info">
-          <p class="all-sessions__name">
+          <div class="all-sessions__title">
+            <h3>название</h3>
+            <span class="all-sessions__status">{{
+              isExpired(session.expiresAt) ? 'Завершена' : 'Активна'
+            }}</span>
+          </div>
+          <p class="all-sessions__date">
             {{ formatDate(session.createdAt) }}
           </p>
-        </div>
 
-        <BaseButton variant="secondary">
-          <IconCreditCardHand />
-        </BaseButton>
-        <BaseButton variant="danger" @click="deleteSession(session.id)">
-          <IconTrashFilled />
-        </BaseButton>
+          <div class="all-sessions__participants">
+            <div>
+              <IconUsers />
+              <p>
+                {{ session.participantCount }}
+                {{ getParticipantText(session.participantCount) }}
+              </p>
+            </div>
+
+            <BaseButton
+              variant="icon"
+              class="all-sessions__button all-sessions__button--go-forward"
+            >
+              <IconChevronRight />
+            </BaseButton>
+          </div>
+        </div>
       </li>
     </ul>
   </div>
@@ -93,6 +131,14 @@ onMounted(() => {
   max-width: 36rem;
   margin: 0 auto;
   padding: 1rem 1rem 0;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--color-muted-purple);
+    margin-inline: 0.5rem;
+  }
 
   &__list {
     list-style: none;
@@ -117,11 +163,32 @@ onMounted(() => {
   &__info {
     flex: 1;
     min-width: 0;
-    max-width: 26rem;
+    max-width: 27rem;
     display: flex;
     flex-direction: column;
-    color: var(--color-dark);
+    color: var(--color-muted-purple);
     cursor: pointer;
+  }
+
+  &__participants {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 1rem;
+  }
+
+  &__title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--color-dark);
+  }
+
+  &__status {
+    padding: 0.25rem 0.5rem;
+    background-color: var(--color-light-green);
+    color: var(--color-green);
+    border-radius: var(--border-radius-lg);
   }
 
   &__button {
@@ -134,6 +201,9 @@ onMounted(() => {
       margin: 0.4rem;
       border-radius: var(--border-radius-md);
       height: 2.8rem;
+    }
+
+    &--go-forward {
     }
   }
 }

@@ -184,10 +184,19 @@ export class SessionsService {
     return { ok: true };
   }
 
-  async findAll(): Promise<Session[]> {
-    return await this.sessionRepository.find({
+  async findAll() {
+    const sessions = await this.sessionRepository.find({
       order: { createdAt: 'DESC' },
     });
+
+    return Promise.all(
+      sessions.map(async (session) => {
+        const participantCount = await this.participantRepository.count({
+          where: { sessionId: session.id },
+        });
+        return { ...session, participantCount };
+      }),
+    );
   }
 
   async delete(id: string) {
