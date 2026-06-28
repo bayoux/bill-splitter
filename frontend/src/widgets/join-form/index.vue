@@ -2,7 +2,6 @@
 defineOptions({ name: 'JoinForm' });
 import { ref } from 'vue';
 import { IconMoonFilled, IconSparkle, IconSunFilled } from '@tabler/icons-vue';
-
 import { useTheme } from '@/features/toggle-theme';
 import BaseButton from '@/shared/ui/BaseButton.vue';
 
@@ -24,21 +23,13 @@ const { toggleTheme, isDark } = useTheme();
 
     <div class="join-page__logo">
       <IconSparkle class="join-page__icon" />
-      <h1 class="join-page__title">
-        Bill Splitter
-      </h1>
+      <h1 class="join-page__title">Bill Splitter</h1>
     </div>
 
-    <p class="join-page__tagline">
-      Разделите счет честно и без споров
-    </p>
+    <p class="join-page__tagline">Разделите счет честно и без споров</p>
 
     <div class="join-page__form">
-      <input
-        v-model="name"
-        class="join-page__name-input"
-        placeholder="Имя"
-      >
+      <input v-model="name" class="join-page__name-input" placeholder="Имя" />
 
       <BaseButton
         class="join-page__button-join"

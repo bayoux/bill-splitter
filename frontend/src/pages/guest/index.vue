@@ -56,51 +56,53 @@ onMounted(async () => {
 
 <template>
   <div class="guest-page">
-    <AppHeader />
     <JoinForm v-if="!isJoined" @join="handleJoin" />
 
-    <div v-else class="guest-page__qr-card">
-      <div class="guest-page__qr">
-        <img
-          v-if="qrStore.qrSrc"
-          class="guest-page__qr-img"
-          :src="qrStore.qrSrc"
-          alt="QR"
-        />
-        <div class="guest-page__total">
-          <h2
-            class="guest-page__total-value"
-            :style="{ visibility: total > 0 ? 'visible' : 'hidden' }"
-          >
-            {{ total }} сом
-          </h2>
-        </div>
-      </div>
-
-      <p v-if="loading">Загрузка...</p>
-
-      <ul v-else class="guest-page__list">
-        <li v-for="dish in dishes" :key="dish.id" class="guest-page__item">
-          <input
-            :checked="currentParticipant?.selections.includes(dish.id)"
-            class="guest-page__checkbox"
-            type="checkbox"
-            @change="
-              (e) =>
-                handleSelectDish(
-                  dish.id,
-                  (e.target as HTMLInputElement).checked,
-                )
-            "
+    <div v-else>
+      <AppHeader />
+      <div class="guest-page__qr-card">
+        <div class="guest-page__qr">
+          <img
+            v-if="qrStore.qrSrc"
+            class="guest-page__qr-img"
+            :src="qrStore.qrSrc"
+            alt="QR"
           />
-          <div class="guest-page__info">
-            <p class="guest-page__name">
-              {{ dish.name }}
-            </p>
-            <p class="guest-page__price">{{ dish.price }} сом</p>
+          <div class="guest-page__total">
+            <h2
+              class="guest-page__total-value"
+              :style="{ visibility: total > 0 ? 'visible' : 'hidden' }"
+            >
+              {{ total }} сом
+            </h2>
           </div>
-        </li>
-      </ul>
+        </div>
+
+        <p v-if="loading">Загрузка...</p>
+
+        <ul v-else class="guest-page__list">
+          <li v-for="dish in dishes" :key="dish.id" class="guest-page__item">
+            <input
+              :checked="currentParticipant?.selections.includes(dish.id)"
+              class="guest-page__checkbox"
+              type="checkbox"
+              @change="
+                (e) =>
+                  handleSelectDish(
+                    dish.id,
+                    (e.target as HTMLInputElement).checked,
+                  )
+              "
+            />
+            <div class="guest-page__info">
+              <p class="guest-page__name">
+                {{ dish.name }}
+              </p>
+              <p class="guest-page__price">{{ dish.price }} сом</p>
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
 
     <div class="guest-page__footer">
@@ -122,7 +124,7 @@ onMounted(async () => {
   min-height: 100vh;
   flex-direction: column;
 
-  &__qr-card {
+  &__qr-card{
     margin: 1rem;
   }
 
