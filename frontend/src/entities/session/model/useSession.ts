@@ -11,14 +11,17 @@ export function useSession(sessionId: string) {
   const participants = ref<Participant[]>([]);
   const loading = ref(false);
   const toast = useToast();
+  const sessionName = ref('');
 
   async function getSession(showLoading = true) {
     if (showLoading) loading.value = true;
 
     try {
       const { data } = await api.get(`/sessions/${sessionId}`);
+      sessionName.value = data.sessionName;
 
       dishes.value = data.dishes;
+
       participants.value = data.participants;
     } catch (e) {
       if (axios.isAxiosError(e) && e.response?.status === 404) {
@@ -37,5 +40,6 @@ export function useSession(sessionId: string) {
     participants,
     loading,
     getSession,
+    sessionName,
   };
 }

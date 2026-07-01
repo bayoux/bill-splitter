@@ -11,12 +11,25 @@ import {
 import QrUpload from '@/widgets/qr-upload/index.vue';
 import { useEditDish, type DishesContext } from '@/features/manage-dishes';
 import BaseButton from '@/shared/ui/BaseButton.vue';
+import { useCreateSession } from '@/features/create-session';
 
-const { dishes, loading, addDish, deleteDish, editDish, validateDish } =
-  inject<DishesContext>('dishes')!;
+const {
+  dishes,
+  loading,
+  addDish,
+  deleteDish,
+  editDish,
+  validateDish,
+  clearDishes,
+} = inject<DishesContext>('dishes')!;
 
 const { editingId, editName, editPrice, startEdit, cancelEdit, handleEdit } =
   useEditDish(editDish, validateDish);
+
+const { sessionName, isSessionCreated, handleCreate } = useCreateSession(
+  dishes,
+  clearDishes,
+);
 
 const dishName = ref('');
 const price = ref('');
@@ -62,7 +75,7 @@ async function handleAdd() {
 
     <p v-if="loading">Загрузка...</p>
 
-    <ul class="add-dish-page__list">
+    <ul v-if="dishes.length" class="add-dish-page__list">
       <li v-for="dish in dishes" :key="dish.id" class="add-dish-page__item">
         <IconBowlSpoonFilled
           class="add-dish-page__icon add-dish-page__icon--bowl"
@@ -131,6 +144,27 @@ async function handleAdd() {
           </BaseButton>
         </div>
       </div>
+    </div>
+
+    <div
+      v-if="dishes.length && !isSessionCreated"
+      class="add-dish-page__session"
+    >
+      <input
+        v-model="sessionName"
+        class="add-dish-page__input add-dish-page__input--session-name"
+        type="text"
+        placeholder="Название сессии"
+        required
+      />
+
+      <BaseButton
+        class="add-dish-page__button add-dish-page__button--create"
+        variant="secondary"
+        @click="handleCreate()"
+      >
+        Создать
+      </BaseButton>
     </div>
   </div>
 </template>
@@ -296,6 +330,13 @@ async function handleAdd() {
     &--save {
       max-width: 6.4rem;
     }
+  }
+
+  &__session {
+    display: flex;
+    flex-direction: row;
+    margin: 1rem 0;
+    gap: 0.5rem;
   }
 
   @media (max-width: 480px) {

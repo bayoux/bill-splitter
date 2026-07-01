@@ -15,4 +15,7 @@ export class Session {
 
   @Column({ type: 'timestamp', nullable: true })
   expiresAt!: Date | null;
+
+  @Column({ type: 'varchar' })
+  name!: string;
 }

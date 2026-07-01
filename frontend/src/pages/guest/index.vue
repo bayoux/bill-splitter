@@ -11,7 +11,8 @@ import BaseButton from '@/shared/ui/BaseButton.vue';
 
 const route = useRoute();
 const sessionId = route.params.sessionId as string;
-const { dishes, participants, loading, getSession } = useSession(sessionId);
+const { dishes, participants, loading, getSession, sessionName } =
+  useSession(sessionId);
 const { isJoined, join, clearToken, selectDish } = useParticipant(sessionId);
 const participantId = ref(
   localStorage.getItem(`bill_splitter_participantId_${sessionId}`),
@@ -58,6 +59,7 @@ onMounted(async () => {
     <JoinForm v-if="!isJoined" @join="handleJoin" />
 
     <div v-else class="guest-page__content">
+      <h2 class="guest-page__session-name">{{ sessionName }}</h2>
       <div class="guest-page__qr-card">
         <div class="guest-page__qr">
           <img
@@ -125,6 +127,11 @@ onMounted(async () => {
     display: flex;
     flex-direction: column;
     flex: 1;
+  }
+
+  &__session-name {
+    color: var(--color-muted-purple);
+    margin: 1rem 1.2rem;
   }
 
   &__qr-card {
