@@ -3,7 +3,6 @@ defineOptions({ name: 'GuestPage' });
 import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { IconReload } from '@tabler/icons-vue';
-import AppHeader from '@/widgets/app-header/index.vue';
 import JoinForm from '@/widgets/join-form/index.vue';
 import { useParticipant } from '@/features/join-session';
 import { useQrCodeStore } from '@/entities/qr-code';
@@ -58,8 +57,7 @@ onMounted(async () => {
   <div class="guest-page">
     <JoinForm v-if="!isJoined" @join="handleJoin" />
 
-    <div v-else>
-      <AppHeader />
+    <div v-else class="guest-page__content">
       <div class="guest-page__qr-card">
         <div class="guest-page__qr">
           <img
@@ -103,17 +101,16 @@ onMounted(async () => {
           </li>
         </ul>
       </div>
-    </div>
-
-    <div class="guest-page__footer">
-      <BaseButton
-        variant="secondary"
-        class="guest-page__button guest-page__button--refresh"
-        @click="getSession(false)"
-      >
-        <IconReload stroke="{2}" />
-        Обновить список
-      </BaseButton>
+      <div class="guest-page__footer">
+        <BaseButton
+          variant="secondary"
+          class="guest-page__button guest-page__button--refresh"
+          @click="getSession(false)"
+        >
+          <IconReload stroke="{2}" />
+          Обновить список
+        </BaseButton>
+      </div>
     </div>
   </div>
 </template>
@@ -121,10 +118,16 @@ onMounted(async () => {
 <style lang="scss">
 .guest-page {
   display: flex;
-  min-height: 100vh;
+  min-height: 100dvh;
   flex-direction: column;
 
-  &__qr-card{
+  &__content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  &__qr-card {
     margin: 1rem;
   }
 
