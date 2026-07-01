@@ -1,9 +1,4 @@
-import {
-  ArrayNotEmpty,
-  IsArray,
-  IsInt,
-  IsString,
-} from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsInt, IsString } from 'class-validator';
 
 export class CreateSessionDto {
   @IsString()
