@@ -1,58 +1,9 @@
 <script setup lang="ts">
-import { DishesContext } from '@/features/manage-dishes';
+import router from '@/app/router';
 
 defineOptions({ name: 'AppFooter' });
-import { h, inject, ref, watch } from 'vue';
-import { useToast } from 'vue-toastification';
-import { IconSquareRoundedCheck } from '@tabler/icons-vue';
-import { useShareLink } from '@/features/share-link';
-import { api } from '@/shared/api/instance';
+import { IconList } from '@tabler/icons-vue';
 import BaseButton from '@/shared/ui/BaseButton.vue';
-import { useRouter } from 'vue-router';
-
-const sessionId = ref('');
-const { copyLink } = useShareLink();
-const toast = useToast();
-const props = defineProps<{ dishIds: number[] }>();
-const router = useRouter();
-const dishesData = inject<DishesContext>('dishes');
-const isSessionCreated = ref(false);
-
-async function handleSave() {
-  if (isSessionCreated.value) return;
-
-  try {
-    const { data } = await api.post('/sessions', { dishIds: props.dishIds });
-    sessionId.value = data.sessionId;
-    isSessionCreated.value = true;
-    await dishesData?.clearDishes(props.dishIds);
-
-    toast.success(
-      h('div', [
-        h('span', 'Сессия создана'),
-        h(
-          BaseButton,
-          {
-            onClick: () => copyLink(sessionId.value),
-            class: 'footer__button footer__button--copy',
-            variant: 'toast',
-          },
-          'Скопировать ссылку',
-        ),
-      ]),
-      { timeout: false },
-    );
-  } catch (e) {
-    toast.error(e instanceof Error ? e.message : 'Не удалось создать сессию');
-  }
-}
-
-watch(
-  () => props.dishIds.length,
-  (newValue) => {
-    if (newValue > 0) isSessionCreated.value = false;
-  },
-);
 
 function showAllSessions() {
   router.push('/all-sessions');
@@ -61,12 +12,7 @@ function showAllSessions() {
 
 <template>
   <footer class="footer">
-    <BaseButton
-      variant="primary"
-      :disabled="!props.dishIds.length || isSessionCreated"
-      class="footer__button footer__button--save"
-      @click="handleSave"
-    >
+    <BaseButton variant="primary" class="footer__button footer__button--save">
       Создать сессию
     </BaseButton>
     <BaseButton
@@ -74,8 +20,8 @@ function showAllSessions() {
       class="footer__button footer__button--created"
       @click="showAllSessions()"
     >
-      <IconSquareRoundedCheck />
-      Созданные
+      <IconList />
+      Список сессий
     </BaseButton>
   </footer>
 </template>
