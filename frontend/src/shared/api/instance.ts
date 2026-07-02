@@ -1,5 +1,6 @@
 import axios from 'axios';
 import axiosRetry from 'axios-retry';
+import { useAuth } from '@/entities/user';
 
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:3000',
@@ -15,6 +16,14 @@ axiosRetry(api, {
       axiosRetry.isNetworkOrIdempotentRequestError(e)
     );
   },
+});
+
+api.interceptors.request.use((config) => {
+  const { token } = useAuth();
+  if (token.value) {
+    config.headers.Authorization = `Bearer ${token.value}`;
+  }
+  return config;
 });
 
 api.interceptors.response.use(
