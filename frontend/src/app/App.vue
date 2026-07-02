@@ -2,7 +2,6 @@
 import { provide } from 'vue';
 import { useRoute } from 'vue-router';
 
-import AppHeader from '@/widgets/app-header/index.vue';
 import AppFooter from '@/widgets/app-footer/index.vue';
 import { useDishes } from '@/features/manage-dishes';
 
@@ -13,7 +12,6 @@ provide('dishes', useDishesData);
 
 <template>
   <div class="page">
-    <AppHeader v-if="!route.path.startsWith('/sessions/')" />
     <main class="page__main">
       <RouterView />
     </main>

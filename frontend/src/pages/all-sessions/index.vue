@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import AppHeader from '@/widgets/app-header/index.vue';
+
 defineOptions({ name: 'AllSessionsPage' });
 import { ref, onMounted } from 'vue';
 import { api } from '@/shared/api/instance';
@@ -58,6 +60,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <AppHeader />
   <div class="all-sessions">
     <div class="all-sessions__сontent">
       <div class="all-sessions__main">

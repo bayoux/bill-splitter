@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import AppHeader from '@/widgets/app-header/index.vue';
+
 defineOptions({ name: 'GuestPage' });
 import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
@@ -55,6 +57,7 @@ onMounted(async () => {
 </script>
 
 <template>
+  <AppHeader />
   <div class="guest-page">
     <JoinForm v-if="!isJoined" @join="handleJoin" />
 
@@ -109,7 +112,7 @@ onMounted(async () => {
           class="guest-page__button guest-page__button--refresh"
           @click="getSession(false)"
         >
-          <IconReload stroke="{2}" />
+          <IconReload />
           Обновить список
         </BaseButton>
       </div>

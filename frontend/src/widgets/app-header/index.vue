@@ -10,19 +10,13 @@ const { toggleTheme, isDark } = useTheme();
 
 <template>
   <header class="header">
+    <slot />
     <div class="header__logo">
-      <IconSparkle
-        class="header__icon"
-        stroke="1.8"
-      />
-      <h1 class="header__title">
-        Bill Splitter
-      </h1>
+      <IconSparkle class="header__icon" stroke="1.8" />
+      <h1 class="header__title">Bill Splitter</h1>
     </div>
 
-    <p class="header__tagline">
-      Разделите счет честно и без споров
-    </p>
+    <p class="header__tagline">Разделите счет честно и без споров</p>
 
     <BaseButton
       variant="icon"
@@ -47,6 +41,12 @@ const { toggleTheme, isDark } = useTheme();
   gap: 0.2rem;
   background-color: var(--color-white);
   border-bottom: 0.1rem solid var(--color-light-purple-gray);
+
+  :slotted(button) {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+  }
 
   &__logo {
     display: flex;

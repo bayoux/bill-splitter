@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import AppHeader from '@/widgets/app-header/index.vue';
+
 defineOptions({ name: 'CreatePage' });
 import { inject, ref } from 'vue';
 import {
@@ -44,6 +46,7 @@ async function handleAdd() {
 }
 </script>
 <template>
+  <AppHeader />
   <div class="add-dish-page">
     <QrUpload />
 
