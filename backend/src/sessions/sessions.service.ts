@@ -37,7 +37,10 @@ export class SessionsService {
     private selectionRepository: Repository<Selection>,
   ) {}
 
-  async createSession(dto: CreateSessionDto): Promise<{ sessionId: string }> {
+  async createSession(
+    dto: CreateSessionDto,
+    ownerId: string,
+  ): Promise<{ sessionId: string }> {
     const expiresAt = new Date(
       Date.now() + Number(process.env.SESSION_TTL_HOURS!) * 3600000,
     );
@@ -45,6 +48,7 @@ export class SessionsService {
     const session = await this.sessionRepository.save({
       expiresAt,
       name: dto.name,
+      ownerId,
     });
 
     const dishes = await this.dishRepository.findBy({

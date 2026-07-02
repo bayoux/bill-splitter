@@ -17,15 +17,18 @@ import { JoinSessionDto } from './dto/join-session.dto';
 import { SelectDishDto } from './dto/select-dish.dto';
 import { ParticipantTokenGuard } from './guards/participant-token.guard';
 import { Participant } from './participant.entity';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import type { RequestWithUser } from '../auth/types/request-with-user';
 
 @Controller('sessions')
 export class SessionsController {
   constructor(private sessionService: SessionsService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() dto: CreateSessionDto) {
-    return this.sessionService.createSession(dto);
+  create(@Body() dto: CreateSessionDto, @Req() req: RequestWithUser) {
+    return this.sessionService.createSession(dto, req.user.userId);
   }
 
   @Get(':sessionId')
