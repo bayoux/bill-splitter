@@ -13,6 +13,8 @@ import { SessionsModule } from './sessions/sessions.module';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
+import { AuthModule } from './auth/auth.module';
+import { User } from './user/user.entity';
 
 @Module({
   imports: [
@@ -24,7 +26,15 @@ import { ScheduleModule } from '@nestjs/schedule';
       username: process.env.DB_USERNAME!,
       password: process.env.DB_PASSWORD!,
       database: process.env.DB_NAME!,
-      entities: [Dish, QrCode, Session, SessionDish, Selection, Participant],
+      entities: [
+        Dish,
+        QrCode,
+        Session,
+        SessionDish,
+        Selection,
+        Participant,
+        User,
+      ],
       synchronize: false,
     }),
     ThrottlerModule.forRoot([{ ttl: 60000, limit: 10 }]),
@@ -32,6 +42,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     DishesModule,
     QrCodeModule,
     SessionsModule,
+    AuthModule,
   ],
 
   providers: [
