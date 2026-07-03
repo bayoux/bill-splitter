@@ -194,8 +194,9 @@ export class SessionsService {
     return { ok: true };
   }
 
-  async findAll() {
+  async findAll(ownerId: string) {
     const sessions = await this.sessionRepository.find({
+      where: { ownerId },
       order: { createdAt: 'DESC' },
     });
 

@@ -54,9 +54,10 @@ export class SessionsController {
     return this.sessionService.selectDish(req.participant, dto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
-  getAll() {
-    return this.sessionService.findAll();
+  getAll(@Req() req: RequestWithUser) {
+    return this.sessionService.findAll(req.user.userId);
   }
 
   @Delete(':sessionId')
