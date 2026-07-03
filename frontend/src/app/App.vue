@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import { provide } from 'vue';
-import { useRoute } from 'vue-router';
 
-import AppFooter from '@/widgets/app-footer/index.vue';
 import { useDishes } from '@/features/manage-dishes';
 
 const useDishesData = useDishes();
-const route = useRoute();
 provide('dishes', useDishesData);
 </script>
 
@@ -15,10 +12,6 @@ provide('dishes', useDishesData);
     <main class="page__main">
       <RouterView />
     </main>
-    <AppFooter
-      v-if="route.path === '/create'"
-      :dish-ids="useDishesData.dishes.value.map((dish) => dish.id)"
-    />
   </div>
 </template>
 

@@ -57,14 +57,16 @@ onMounted(async () => {
 </script>
 
 <template>
-  <AppHeader />
   <div class="guest-page">
+    <AppHeader />
+
     <JoinForm v-if="!isJoined" @join="handleJoin" />
 
     <div v-else class="guest-page__content">
       <h2 class="guest-page__session-name">{{ sessionName }}</h2>
+
       <div class="guest-page__qr-card">
-        <div class="guest-page__qr">
+        <div v-if="qrStore.qrSrc" class="guest-page__qr">
           <img
             v-if="qrStore.qrSrc"
             class="guest-page__qr-img"
@@ -72,12 +74,7 @@ onMounted(async () => {
             alt="QR"
           />
           <div class="guest-page__total">
-            <h2
-              class="guest-page__total-value"
-              :style="{ visibility: total > 0 ? 'visible' : 'hidden' }"
-            >
-              {{ total }} сом
-            </h2>
+            <h2 class="guest-page__total-value">{{ total }} сом</h2>
           </div>
         </div>
 
@@ -106,6 +103,7 @@ onMounted(async () => {
           </li>
         </ul>
       </div>
+
       <div class="guest-page__footer">
         <BaseButton
           variant="secondary"
@@ -123,8 +121,12 @@ onMounted(async () => {
 <style lang="scss">
 .guest-page {
   display: flex;
-  min-height: 100dvh;
   flex-direction: column;
+  flex: 1;
+  width: 100%;
+  max-width: 36rem;
+  min-height: 100dvh;
+  margin: 0 auto;
 
   &__content {
     display: flex;
@@ -151,14 +153,14 @@ onMounted(async () => {
     width: 100%;
     max-width: 35rem;
     background-color: var(--color-white);
-    border-radius: var(--border-radius-md);
+    border-radius: var(--border-radius-sm);
   }
 
   &__qr-img {
     width: 100%;
     max-width: 14rem;
     object-fit: contain;
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius-md);
     border: 0.1rem solid var(--color-black);
   }
 
@@ -181,7 +183,7 @@ onMounted(async () => {
     margin: 1rem 0;
     overflow: hidden;
     background-color: var(--color-white);
-    border-radius: var(--border-radius-md);
+    border-radius: var(--border-radius-sm);
   }
 
   &__item {

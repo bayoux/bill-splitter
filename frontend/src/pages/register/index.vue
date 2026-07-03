@@ -97,12 +97,6 @@ async function handleSubmit() {
   align-items: center;
   gap: 0.2rem;
 
-  :slotted(button) {
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
-  }
-
   &__logo {
     display: flex;
     align-items: center;
@@ -113,7 +107,7 @@ async function handleSubmit() {
     color: var(--color-icon);
   }
 
-  &__title{
+  &__title {
     font-family: var(--font-heading), serif;
     color: var(--color-primary);
     font-size: var(--font-size-lg);
@@ -147,7 +141,7 @@ async function handleSubmit() {
     gap: 0.5rem;
     color: var(--color-muted-purple);
     border: 0.1rem solid var(--color-light-purple-gray);
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius-md);
   }
 
   &__heading {
@@ -172,7 +166,7 @@ async function handleSubmit() {
     min-height: 3.5rem;
     width: 100%;
     max-width: 28rem;
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius-md);
     border: 0.1rem solid var(--color-secondary);
     padding: 0 1rem;
     color: var(--color-dark);

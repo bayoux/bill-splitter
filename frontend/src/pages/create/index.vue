@@ -14,6 +14,7 @@ import QrUpload from '@/widgets/qr-upload/index.vue';
 import { useEditDish, type DishesContext } from '@/features/manage-dishes';
 import BaseButton from '@/shared/ui/BaseButton.vue';
 import { useCreateSession } from '@/features/create-session';
+import AppFooter from '@/widgets/app-footer/index.vue';
 
 const {
   dishes,
@@ -46,129 +47,138 @@ async function handleAdd() {
 }
 </script>
 <template>
-  <AppHeader />
   <div class="add-dish-page">
-    <QrUpload />
+    <AppHeader />
 
-    <div class="add-dish-page__header">
-      <input
-        v-model="dishName"
-        class="add-dish-page__input add-dish-page__input--name"
-        type="text"
-        placeholder="Название блюда"
-        required
-      />
-      <input
-        v-model="price"
-        class="add-dish-page__input add-dish-page__input--price"
-        type="number"
-        placeholder="Цена"
-        required
-      />
+    <div class="add-dish-page__content">
+      <QrUpload />
 
-      <BaseButton
-        variant="primary"
-        class="add-dish-page__button add-dish-page__button--add"
-        @click="handleAdd"
-      >
-        <IconPlus />
-        Добавить
-      </BaseButton>
-    </div>
-
-    <p v-if="loading">Загрузка...</p>
-
-    <ul v-if="dishes.length" class="add-dish-page__list">
-      <li v-for="dish in dishes" :key="dish.id" class="add-dish-page__item">
-        <IconBowlSpoonFilled
-          class="add-dish-page__icon add-dish-page__icon--bowl"
+      <div class="add-dish-page__header">
+        <input
+          v-model="dishName"
+          class="add-dish-page__input add-dish-page__input--name"
+          type="text"
+          placeholder="Название блюда"
+          required
+        />
+        <input
+          v-model="price"
+          class="add-dish-page__input add-dish-page__input--price"
+          type="number"
+          placeholder="Цена"
+          required
         />
 
-        <div class="add-dish-page__info">
-          <p class="add-dish-page__name">
-            {{ dish.name }}
-          </p>
-          <p class="add-dish-page__price">{{ dish.price }} сом</p>
-        </div>
-
         <BaseButton
-          variant="icon"
-          style="flex-shrink: 0"
-          @click="startEdit(dish)"
+          variant="primary"
+          class="add-dish-page__button add-dish-page__button--add"
+          @click="handleAdd"
         >
-          <IconPencilFilled />
+          <IconPlus />
+          Добавить
         </BaseButton>
-        <BaseButton
-          variant="icon"
-          style="flex-shrink: 0"
-          @click="deleteDish(dish.id)"
-        >
-          <IconTrashFilled />
-        </BaseButton>
-      </li>
-    </ul>
+      </div>
 
-    <div v-if="editingId" class="add-dish-page__overlay" @click="cancelEdit()">
-      <div class="add-dish-page__edit-popup" @click.stop>
-        <div class="add-dish-page__edit-actions">
-          <h3 class="add-dish-page__title">Редактировать</h3>
-          <div class="add-dish-page__fields">
-            <input
-              v-model="editName"
-              class="add-dish-page__input add-dish-page__input--edit-name"
-              type="text"
-              placeholder="Название блюда"
-              required
-            />
-            <input
-              v-model="editPrice"
-              class="add-dish-page__input add-dish-page__input--edit-price"
-              type="number"
-              placeholder="Цена"
-              required
-            />
+      <p v-if="loading">Загрузка...</p>
+
+      <ul v-if="dishes.length" class="add-dish-page__list">
+        <li v-for="dish in dishes" :key="dish.id" class="add-dish-page__item">
+          <IconBowlSpoonFilled
+            class="add-dish-page__icon add-dish-page__icon--bowl"
+          />
+
+          <div class="add-dish-page__info">
+            <p class="add-dish-page__name">
+              {{ dish.name }}
+            </p>
+            <p class="add-dish-page__price">{{ dish.price }} сом</p>
+          </div>
+
+          <BaseButton
+            variant="icon"
+            style="flex-shrink: 0"
+            @click="startEdit(dish)"
+          >
+            <IconPencilFilled />
+          </BaseButton>
+          <BaseButton
+            variant="icon"
+            style="flex-shrink: 0"
+            @click="deleteDish(dish.id)"
+          >
+            <IconTrashFilled />
+          </BaseButton>
+        </li>
+      </ul>
+
+      <div
+        v-if="editingId"
+        class="add-dish-page__overlay"
+        @click="cancelEdit()"
+      >
+        <div class="add-dish-page__edit-popup" @click.stop>
+          <div class="add-dish-page__edit-actions">
+            <h3 class="add-dish-page__title">Редактировать</h3>
+            <div class="add-dish-page__fields">
+              <input
+                v-model="editName"
+                class="add-dish-page__input add-dish-page__input--edit-name"
+                type="text"
+                placeholder="Название блюда"
+                required
+              />
+              <input
+                v-model="editPrice"
+                class="add-dish-page__input add-dish-page__input--edit-price"
+                type="number"
+                placeholder="Цена"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="add-dish-page__edit-buttons">
+            <BaseButton
+              class="add-dish-page__button add-dish-page__button--cancel"
+              variant="ghost"
+              @click="cancelEdit()"
+            >
+              Отменить
+            </BaseButton>
+            <BaseButton
+              class="add-dish-page__button add-dish-page__button--save"
+              variant="primary"
+              @click="handleEdit()"
+            >
+              Сохранить
+            </BaseButton>
           </div>
         </div>
+      </div>
 
-        <div class="add-dish-page__edit-buttons">
-          <BaseButton
-            class="add-dish-page__button add-dish-page__button--cancel"
-            variant="ghost"
-            @click="cancelEdit()"
-          >
-            Отменить
-          </BaseButton>
-          <BaseButton
-            class="add-dish-page__button add-dish-page__button--save"
-            variant="primary"
-            @click="handleEdit()"
-          >
-            Сохранить
-          </BaseButton>
-        </div>
+      <div
+        v-if="dishes.length && !isSessionCreated"
+        class="add-dish-page__session"
+      >
+        <input
+          v-model="sessionName"
+          class="add-dish-page__input add-dish-page__input--session-name"
+          type="text"
+          placeholder="Название сессии"
+          required
+        />
+
+        <BaseButton
+          class="add-dish-page__button add-dish-page__button--create"
+          variant="secondary"
+          @click="handleCreate()"
+        >
+          Создать
+        </BaseButton>
       </div>
     </div>
 
-    <div
-      v-if="dishes.length && !isSessionCreated"
-      class="add-dish-page__session"
-    >
-      <input
-        v-model="sessionName"
-        class="add-dish-page__input add-dish-page__input--session-name"
-        type="text"
-        placeholder="Название сессии"
-        required
-      />
-
-      <BaseButton
-        class="add-dish-page__button add-dish-page__button--create"
-        variant="secondary"
-        @click="handleCreate()"
-      >
-        Создать
-      </BaseButton>
-    </div>
+    <AppFooter />
   </div>
 </template>
 
@@ -179,8 +189,12 @@ async function handleAdd() {
   flex: 1;
   width: 100%;
   max-width: 36rem;
+  min-height: 100dvh;
   margin: 0 auto;
-  padding: 1rem 1rem 0;
+
+  &__content {
+    padding: 1rem;
+  }
 
   &__icon {
     color: var(--color-icon);
@@ -203,7 +217,7 @@ async function handleAdd() {
     padding: 0;
     margin: 0;
     overflow: hidden;
-    border-radius: var(--border-radius-md);
+    border-radius: var(--border-radius-sm);
     border: 0.1rem solid var(--color-secondary);
   }
 
@@ -250,7 +264,7 @@ async function handleAdd() {
 
   &__edit-popup {
     background: var(--color-white);
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius-md);
     border: 0.1rem solid var(--color-light-lavender);
     padding: 1.5rem;
     width: 100%;
@@ -283,7 +297,7 @@ async function handleAdd() {
 
   &__input {
     min-height: 3.5rem;
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius-md);
     border: 0.1rem solid transparent;
     color: var(--color-dark);
 

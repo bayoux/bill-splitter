@@ -34,7 +34,7 @@ body {
 input {
   outline: none;
   border: none;
-  border-radius: var(--border-radius-md);
+  border-radius: var(--border-radius-sm);
   background-color: var(--color-white);
   font-size: var(--font-size-sm);
   padding: 1rem 2rem;
@@ -55,7 +55,7 @@ input[type="number"]::-webkit-inner-spin-button {
 
 .Vue-Toastification__toast {
   font-size: var(--font-size-sm);
-  border-radius: var(--border-radius-md)!important;
+  border-radius: var(--border-radius-sm)!important;
 }
 
 .Vue-Toastification__toast--success {

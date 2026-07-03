@@ -8,15 +8,20 @@ import { useToast } from 'vue-toastification';
 import {
   IconUsers,
   IconChevronRight,
-  IconList,
+  IconLogout,
+  IconClipboardListFilled,
   IconPlus,
 } from '@tabler/icons-vue';
 import BaseButton from '@/shared/ui/BaseButton.vue';
 import router from '@/app/router';
 import type { Session } from '@/types/session';
+import ConfirmModal from '@/shared/ui/ConfirmModal.vue';
+import { useAuth } from '@/entities/user';
 
 const sessions = ref<Session[]>([]);
 const toast = useToast();
+const { logout } = useAuth();
+const showLogoutModal = ref(false);
 
 async function getSessions() {
   try {
@@ -54,21 +59,52 @@ function getParticipantText(count: number) {
   return 'участников';
 }
 
+function confirmLogout() {
+  logout();
+  router.push('/');
+}
+
 onMounted(() => {
   getSessions();
 });
 </script>
 
 <template>
-  <AppHeader />
   <div class="all-sessions">
-    <div class="all-sessions__сontent">
-      <div class="all-sessions__main">
+    <AppHeader>
+      <BaseButton
+        variant="icon"
+        @click="showLogoutModal = true"
+        class="all-sessions__button all-sessions__button--logout"
+      >
+        <IconLogout />
+      </BaseButton>
+    </AppHeader>
+
+    <div class="all-sessions__content">
+      <div v-if="sessions.length === 0" class="all-sessions__empty">
+        <div class="all-sessions__empty-icon">
+          <IconClipboardListFilled />
+        </div>
+        <h3 class="all-sessions__empty-title">Пока нет сессий</h3>
+        <p class="all-sessions__empty-description">
+          Создайте первую сессию, чтобы разделить счёт с друзьями
+        </p>
+        <BaseButton
+          variant="primary"
+          class="all-sessions__empty-button"
+          @click="router.push('/create')"
+        >
+          <IconPlus />
+          Создать сессию
+        </BaseButton>
+      </div>
+
+      <template v-else>
         <div class="all-sessions__heading">
           <h3>Ваши сессии</h3>
           <p>{{ sessions.length }} всего</p>
         </div>
-
         <ul class="all-sessions__list">
           <li
             class="all-sessions__item"
@@ -117,40 +153,36 @@ onMounted(() => {
             </div>
           </li>
         </ul>
-      </div>
-
-      <div class="all-sessions__footer">
-        <BaseButton
-          variant="secondary"
-          class="all-sessions__button all-sessions__button--sessions-list"
-        >
-          <IconList />
-          Список сессий
-        </BaseButton>
-        <BaseButton
-          variant="primary"
-          class="all-sessions__button all-sessions__button--session-create"
-          @click="router.push('/create')"
-        >
-          <IconPlus />
-          Создать сессию
-        </BaseButton>
-      </div>
+      </template>
     </div>
   </div>
+
+  <ConfirmModal
+    v-if="showLogoutModal"
+    title="Выйти из аккаунта?"
+    description="Вам нужно будет снова войти, чтобы увидеть свои сессии"
+    confirm-text="Выйти"
+    cancel-text="Остаться"
+    @confirm="confirmLogout"
+    @cancel="showLogoutModal = false"
+  />
 </template>
 
 <style lang="scss">
 .all-sessions {
   display: flex;
   flex-direction: column;
-  height: 100dvh;
+  flex: 1;
+  width: 100%;
+  max-width: 36rem;
+  min-height: 100dvh;
+  margin: 0 auto;
 
   &__button {
     flex-shrink: 0;
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius-md);
 
-    &--go-back {
+    &--logout {
       position: absolute;
       left: 1rem;
       max-width: 3rem;
@@ -158,28 +190,11 @@ onMounted(() => {
       padding: 0.5rem;
       border: 0.1rem solid var(--color-light-purple-gray);
     }
-
-    &--sessions-list {
-      min-width: 16rem;
-      min-height: 3.5rem;
-    }
-
-    &--session-create {
-      min-width: 16rem;
-      min-height: 3.5rem;
-    }
   }
 
-  &__сontent {
+  &__content {
     display: flex;
-    flex-direction: column;
     flex: 1;
-    width: 100%;
-    max-width: 36rem;
-    margin: 0 auto;
-  }
-
-  &__main {
     padding: 1rem;
   }
 
@@ -196,7 +211,7 @@ onMounted(() => {
     padding: 0;
     margin: 1rem 0;
     overflow: hidden;
-    border-radius: var(--border-radius-md);
+    border-radius: var(--border-radius-sm);
     border: 0.1rem solid var(--color-secondary);
   }
 
@@ -243,7 +258,7 @@ onMounted(() => {
 
   &__status {
     padding: 0.25rem 0.5rem;
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius-md);
 
     &--active {
       background-color: var(--color-light-green);
@@ -256,13 +271,46 @@ onMounted(() => {
     }
   }
 
-  &__footer {
+  &__empty {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__empty-icon {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-top: auto;
-    padding: 1rem;
-    background-color: var(--color-white);
+    justify-content: center;
+    width: 14rem;
+    height: 14rem;
+    margin-bottom: 1rem;
+    background-color: var(--color-light-purple);
+    border-radius: var(--border-radius-lg);
+    border: 0.1rem solid var(--color-grayish-purple);
+
+    svg {
+      width: 7rem;
+      height: 7rem;
+      color: var(--color-primary);
+    }
+  }
+
+  &__empty-title {
+    margin-bottom: 0.5rem;
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    text-align: center;
+    color: var(--color-muted-purple);
+  }
+
+  &__empty-description {
+    color: var(--color-muted-purple);
+    text-align: center;
+    font-size: var(--font-size);
+    max-width: 20rem;
+    margin-bottom: 1rem;
   }
 }
 </style>

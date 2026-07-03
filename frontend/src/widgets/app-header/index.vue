@@ -83,7 +83,7 @@ const { toggleTheme, isDark } = useTheme();
     gap: 0.5rem;
     color: var(--color-muted-purple);
     border: 0.1rem solid var(--color-light-purple-gray);
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius-md);
   }
 }
 </style>

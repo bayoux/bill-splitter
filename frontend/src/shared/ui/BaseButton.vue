@@ -27,7 +27,7 @@ withDefaults(defineProps<{ variant?: ButtonVariants }>(), {
   gap: 0.3rem;
   font-size: var(--font-size);
   padding: 0.6rem 1rem;
-  border-radius: var(--border-radius-lg);
+  border-radius: var(--border-radius-md);
   border: 0.1rem solid transparent;
   cursor: pointer;
 

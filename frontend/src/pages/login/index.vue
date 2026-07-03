@@ -133,7 +133,7 @@ async function handleSubmit() {
     gap: 0.5rem;
     color: var(--color-muted-purple);
     border: 0.1rem solid var(--color-light-purple-gray);
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius-md);
   }
 
   &__heading {
@@ -158,7 +158,7 @@ async function handleSubmit() {
     min-height: 3.5rem;
     width: 100%;
     max-width: 28rem;
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius-md);
     border: 0.1rem solid var(--color-secondary);
     padding: 0 1rem;
     color: var(--color-dark);

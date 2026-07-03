@@ -5,6 +5,7 @@
     --color-light-lavender:#ECE6F0;
     --color-light-purple-gray: #CAC4D0;
     --color-muted-purple: #4A4459;
+    --color-grayish-purple: #CAC4D0;
     --color-muted-dark:#49454F;
     --color-grey: #757575;
     --color-white: #ffffff;
@@ -16,8 +17,9 @@
     --color-green: #1BB542;
     --color-icon: #6750A4;
     --color-toast: #e1e9b7;
-    --border-radius-md: 1rem;
-    --border-radius-lg: 2rem;
+    --border-radius-sm: 1rem;
+    --border-radius-md: 2rem;
+    --border-radius-lg: 4rem;
     --font-main: 'DM Sans';
     --font-heading: 'DM Serif Display';
     --font-weight-regular: 400;
@@ -34,6 +36,7 @@
     --color-primary: #D0BCFE;
     --color-secondary: #4A4458;
     --color-background: #1D1B20;
+    --color-light-purple: #3c3c3c;
     --color-light-purple-gray: #49454F;
     --color-light-lavender: #2B2930;
     --color-muted-purple: #E8DEF8;

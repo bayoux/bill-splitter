@@ -19,19 +19,12 @@ onMounted(async () => {
       <div class="qr-upload__qr">
         <IconFileUploadFilled class="qr-upload__icon qr-upload__icon--upload" />
         <div>
-          <p class="qr-upload__qr-title">
-            Загрузить QR
-          </p>
-          <p class="qr-upload__qr-subtitle">
-            PNG, JPG, JPEG
-          </p>
+          <p class="qr-upload__qr-title">Загрузить QR</p>
+          <p class="qr-upload__qr-subtitle">PNG, JPG, JPEG</p>
         </div>
       </div>
 
-      <label
-        class="qr-upload__upload-label"
-        for="qr-upload"
-      >Загрузить </label>
+      <label class="qr-upload__upload-label" for="qr-upload">Загрузить </label>
 
       <input
         id="qr-upload"
@@ -40,7 +33,7 @@ onMounted(async () => {
         accept="image/*"
         style="display: none"
         @change="qrStore.onQrUpload"
-      >
+      />
     </template>
 
     <template v-else>
@@ -50,21 +43,15 @@ onMounted(async () => {
           :src="qrStore.qrSrc"
           alt="QR"
           @click="qrStore.showQrCode = true"
-        >
+        />
 
         <div
           v-if="qrStore.showQrCode"
           class="qr-upload__qr-overlay"
           @click="qrStore.showQrCode = false"
         >
-          <div
-            class="qr-upload__qr-popup"
-            @click.stop
-          >
-            <img
-              :src="qrStore.qrSrc"
-              alt="QR"
-            >
+          <div class="qr-upload__qr-popup" @click.stop>
+            <img :src="qrStore.qrSrc" alt="QR" />
           </div>
         </div>
 
@@ -98,7 +85,7 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-radius: var(--border-radius-md);
+  border-radius: var(--border-radius-sm);
   background-color: var(--color-white);
 
   &__qr {
@@ -137,7 +124,7 @@ onMounted(async () => {
     font-weight: var(--font-weight-medium);
     color: var(--color-muted-purple);
     background-color: var(--color-secondary);
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius-md);
     border: 0.1rem solid transparent;
 
     &:hover {
@@ -178,14 +165,14 @@ onMounted(async () => {
   }
 
   &__qr-popup {
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius-md);
     padding: 1.5rem;
 
     img {
       max-width: 18rem;
       height: auto;
       object-fit: contain;
-      border-radius: var(--border-radius-md);
+      border-radius: var(--border-radius-sm);
     }
   }
 
@@ -207,7 +194,7 @@ onMounted(async () => {
   }
 
   &__button {
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius-md);
     &--delete {
       width: 100%;
       max-width: 7rem;
