@@ -11,7 +11,7 @@ import { useAuth } from '@/entities/user';
 
 const routes = [
   {
-    path: '/create',
+    path: '/sessions/new',
     component: CreatePage,
     meta: { showHeader: true, requiresAuth: true },
   },
@@ -21,7 +21,7 @@ const routes = [
     meta: { showHeader: true },
   },
   {
-    path: '/all-sessions',
+    path: '/dashboard',
     component: AllSessions,
     meta: { showHeader: true, requiresAuth: true },
   },

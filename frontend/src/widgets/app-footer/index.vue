@@ -12,20 +12,20 @@ const route = useRoute();
 <template>
   <footer class="footer">
     <BaseButton
-      v-if="route.path !== '/all-sessions'"
+      v-if="route.path !== '/dashboard'"
       variant="secondary"
       class="footer__button"
-      @click="router.push('/all-sessions')"
+      @click="router.push('/dashboard')"
     >
       <IconList />
       Список сессий
     </BaseButton>
 
     <BaseButton
-      v-if="route.path !== '/create'"
+      v-if="route.path !== '/sessions/new'"
       variant="primary"
       class="footer__button"
-      @click="router.push('/create')"
+      @click="router.push('/sessions/new')"
     >
       <IconPlus />
       Создать сессию

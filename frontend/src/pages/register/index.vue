@@ -19,7 +19,7 @@ const password = ref('');
 async function handleSubmit() {
   const ok = await register(email.value, name.value, password.value);
   if (ok) {
-    router.push('/all-sessions');
+    router.push('/dashboard');
   }
 }
 </script>
