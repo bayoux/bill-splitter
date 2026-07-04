@@ -44,7 +44,7 @@ async function handleJoin(value: string) {
 
 async function handleSelectDish(dishId: number, checked: boolean) {
   await selectDish(dishId, checked);
-  await getSession();
+  await getSession(false);
 }
 
 onMounted(async () => {

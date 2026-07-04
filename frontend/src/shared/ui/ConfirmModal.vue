@@ -51,17 +51,15 @@ const emit = defineEmits<{
   width: 100%;
   max-width: 24rem;
   padding: 1.5rem;
-  border-radius: var(--border-radius-md);
+  border-radius: var(--border-radius-lg);
   background-color: var(--color-white);
   border: 0.1rem solid var(--color-light-purple-gray);
 
   &__title {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-heading), serif;
-    font-size: var(--font-size-lg);
+    font-family: var(--font-main), serif;
+    font-size: var(--font-size-md);
     font-weight: var(--font-weight-regular);
+    text-align: center;
     color: var(--color-dark);
     margin: 0 0 0.5rem;
   }
@@ -75,11 +73,11 @@ const emit = defineEmits<{
 
   &__actions {
     display: flex;
-    gap: 0.75rem;
+    gap: 0.5rem;
 
     button {
       flex: 1;
-      min-height: 3rem;
+      min-height: 3.5rem;
       border-radius: var(--border-radius-md);
     }
   }
