@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import AppHeader from '@/widgets/app-header/index.vue';
-
 defineOptions({ name: 'CreatePage' });
-import { inject, ref } from 'vue';
+import { ref } from 'vue';
 import {
   IconPlus,
   IconBowlSpoonFilled,
@@ -10,11 +8,20 @@ import {
   IconTrashFilled,
 } from '@tabler/icons-vue';
 
-import QrUpload from '@/widgets/qr-upload/index.vue';
-import { useEditDish, type DishesContext } from '@/features/manage-dishes';
-import BaseButton from '@/shared/ui/BaseButton.vue';
-import { useCreateSession } from '@/features/create-session';
+import AppHeader from '@/widgets/app-header/index.vue';
 import AppFooter from '@/widgets/app-footer/index.vue';
+import QrUpload from '@/widgets/qr-upload/index.vue';
+import BaseButton from '@/shared/ui/BaseButton.vue';
+import { useEditDish, useDishes } from '@/features/manage-dishes';
+import { useCreateSession } from '@/features/create-session';
+
+const {
+  sessionName,
+  sessionId,
+  isSessionStarted,
+  startSession,
+  finishSession,
+} = useCreateSession(() => resetDishes());
 
 const {
   dishes,
@@ -23,16 +30,11 @@ const {
   deleteDish,
   editDish,
   validateDish,
-  clearDishes,
-} = inject<DishesContext>('dishes')!;
+  resetDishes,
+} = useDishes(sessionId);
 
 const { editingId, editName, editPrice, startEdit, cancelEdit, handleEdit } =
   useEditDish(editDish, validateDish);
-
-const { sessionName, isSessionCreated, handleCreate } = useCreateSession(
-  dishes,
-  clearDishes,
-);
 
 const dishName = ref('');
 const price = ref('');
@@ -45,121 +47,19 @@ async function handleAdd() {
   dishName.value = '';
   price.value = '';
 }
+
+async function handleStart() {
+  await startSession();
+}
 </script>
+
 <template>
   <div class="add-dish-page">
     <AppHeader />
 
     <div class="add-dish-page__content">
       <QrUpload />
-
-      <div class="add-dish-page__header">
-        <input
-          v-model="dishName"
-          class="add-dish-page__input add-dish-page__input--name"
-          type="text"
-          placeholder="Название блюда"
-          required
-        />
-        <input
-          v-model="price"
-          class="add-dish-page__input add-dish-page__input--price"
-          type="number"
-          placeholder="Цена"
-          required
-        />
-
-        <BaseButton
-          variant="primary"
-          class="add-dish-page__button add-dish-page__button--add"
-          @click="handleAdd"
-        >
-          <IconPlus />
-          Добавить
-        </BaseButton>
-      </div>
-
-      <p v-if="loading">Загрузка...</p>
-
-      <ul v-if="dishes.length" class="add-dish-page__list">
-        <li v-for="dish in dishes" :key="dish.id" class="add-dish-page__item">
-          <IconBowlSpoonFilled
-            class="add-dish-page__icon add-dish-page__icon--bowl"
-          />
-
-          <div class="add-dish-page__info">
-            <p class="add-dish-page__name">
-              {{ dish.name }}
-            </p>
-            <p class="add-dish-page__price">{{ dish.price }} сом</p>
-          </div>
-
-          <BaseButton
-            variant="icon"
-            style="flex-shrink: 0"
-            @click="startEdit(dish)"
-          >
-            <IconPencilFilled />
-          </BaseButton>
-          <BaseButton
-            variant="icon"
-            style="flex-shrink: 0"
-            @click="deleteDish(dish.id)"
-          >
-            <IconTrashFilled />
-          </BaseButton>
-        </li>
-      </ul>
-
-      <div
-        v-if="editingId"
-        class="add-dish-page__overlay"
-        @click="cancelEdit()"
-      >
-        <div class="add-dish-page__edit-popup" @click.stop>
-          <div class="add-dish-page__edit-actions">
-            <h3 class="add-dish-page__title">Редактировать</h3>
-            <div class="add-dish-page__fields">
-              <input
-                v-model="editName"
-                class="add-dish-page__input add-dish-page__input--edit-name"
-                type="text"
-                placeholder="Название блюда"
-                required
-              />
-              <input
-                v-model="editPrice"
-                class="add-dish-page__input add-dish-page__input--edit-price"
-                type="number"
-                placeholder="Цена"
-                required
-              />
-            </div>
-          </div>
-
-          <div class="add-dish-page__edit-buttons">
-            <BaseButton
-              class="add-dish-page__button add-dish-page__button--cancel"
-              variant="ghost"
-              @click="cancelEdit()"
-            >
-              Отменить
-            </BaseButton>
-            <BaseButton
-              class="add-dish-page__button add-dish-page__button--save"
-              variant="primary"
-              @click="handleEdit()"
-            >
-              Сохранить
-            </BaseButton>
-          </div>
-        </div>
-      </div>
-
-      <div
-        v-if="dishes.length && !isSessionCreated"
-        class="add-dish-page__session"
-      >
+      <div v-if="!isSessionStarted" class="add-dish-page__start">
         <input
           v-model="sessionName"
           class="add-dish-page__input add-dish-page__input--session-name"
@@ -169,13 +69,128 @@ async function handleAdd() {
         />
 
         <BaseButton
-          class="add-dish-page__button add-dish-page__button--create"
-          variant="secondary"
-          @click="handleCreate()"
+          variant="primary"
+          class="add-dish-page__button add-dish-page__button--start"
+          @click="handleStart"
         >
-          Создать
+          Начать
         </BaseButton>
       </div>
+
+      <template v-else>
+        <div class="add-dish-page__header">
+          <input
+            v-model="dishName"
+            class="add-dish-page__input add-dish-page__input--name"
+            type="text"
+            placeholder="Название блюда"
+            required
+          />
+          <input
+            v-model="price"
+            class="add-dish-page__input add-dish-page__input--price"
+            type="number"
+            placeholder="Цена"
+            required
+          />
+
+          <BaseButton
+            variant="primary"
+            class="add-dish-page__button add-dish-page__button--add"
+            @click="handleAdd"
+          >
+            <IconPlus />
+            Добавить
+          </BaseButton>
+        </div>
+
+        <p v-if="loading">Загрузка...</p>
+
+        <ul v-if="dishes.length" class="add-dish-page__list">
+          <li v-for="dish in dishes" :key="dish.id" class="add-dish-page__item">
+            <IconBowlSpoonFilled
+              class="add-dish-page__icon add-dish-page__icon--bowl"
+            />
+
+            <div class="add-dish-page__info">
+              <p class="add-dish-page__name">
+                {{ dish.name }}
+              </p>
+              <p class="add-dish-page__price">{{ dish.price }} сом</p>
+            </div>
+
+            <BaseButton
+              variant="icon"
+              style="flex-shrink: 0"
+              @click="startEdit(dish)"
+            >
+              <IconPencilFilled />
+            </BaseButton>
+            <BaseButton
+              variant="icon"
+              style="flex-shrink: 0"
+              @click="deleteDish(dish.id)"
+            >
+              <IconTrashFilled />
+            </BaseButton>
+          </li>
+        </ul>
+
+        <div
+          v-if="editingId"
+          class="add-dish-page__overlay"
+          @click="cancelEdit()"
+        >
+          <div class="add-dish-page__edit-popup" @click.stop>
+            <div class="add-dish-page__edit-actions">
+              <h3 class="add-dish-page__title">Редактировать</h3>
+              <div class="add-dish-page__fields">
+                <input
+                  v-model="editName"
+                  class="add-dish-page__input add-dish-page__input--edit-name"
+                  type="text"
+                  placeholder="Название блюда"
+                  required
+                />
+                <input
+                  v-model="editPrice"
+                  class="add-dish-page__input add-dish-page__input--edit-price"
+                  type="number"
+                  placeholder="Цена"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="add-dish-page__edit-buttons">
+              <BaseButton
+                class="add-dish-page__button add-dish-page__button--cancel"
+                variant="ghost"
+                @click="cancelEdit()"
+              >
+                Отменить
+              </BaseButton>
+              <BaseButton
+                class="add-dish-page__button add-dish-page__button--save"
+                variant="primary"
+                @click="handleEdit()"
+              >
+                Сохранить
+              </BaseButton>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="dishes.length" class="add-dish-page__session">
+          <BaseButton
+            class="add-dish-page__button add-dish-page__button--create"
+            variant="secondary"
+            @click="finishSession()"
+          >
+            Готово
+          </BaseButton>
+        </div>
+      </template>
     </div>
 
     <AppFooter />
@@ -194,6 +209,13 @@ async function handleAdd() {
 
   &__content {
     padding: 1rem;
+  }
+
+  &__start {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 2rem;
   }
 
   &__icon {
@@ -312,6 +334,10 @@ async function handleAdd() {
       flex: 1;
     }
 
+    &--session-name {
+      width: 100%;
+    }
+
     &--edit-name,
     &--edit-price {
       background-color: var(--color-light-lavender);
@@ -338,6 +364,10 @@ async function handleAdd() {
 
     &--add {
       max-width: 8.2rem;
+    }
+    &--start {
+      margin-top: 0.5rem;
+      max-width: 100%;
     }
     &--cancel {
       max-width: 6.2rem;

@@ -1,10 +1,9 @@
-import { ref } from 'vue';
+import { ref, type Ref } from 'vue';
 import { useToast } from 'vue-toastification';
-
 import type { Dish } from '@/entities/dish';
 import { api } from '@/shared/api/instance';
 
-export function useDishes() {
+export function useDishes(sessionId: Ref<string>) {
   const dishes = ref<Dish[]>([]);
   const loading = ref(false);
   const toast = useToast();
@@ -22,10 +21,13 @@ export function useDishes() {
   }
 
   async function getDishes() {
+    if (!sessionId.value) return;
     loading.value = true;
 
     try {
-      const { data } = await api.get<Dish[]>('/dishes');
+      const { data } = await api.get<Dish[]>(
+        `/sessions/${sessionId.value}/dishes`,
+      );
       dishes.value = data;
     } catch (e) {
       toast.error(
@@ -37,14 +39,11 @@ export function useDishes() {
   }
 
   async function addDish(name: string, price: number) {
+    if (!sessionId.value) return;
     if (!validateDish(name, price)) return;
 
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('price', String(price));
-
     try {
-      await api.post<Dish[]>('/dishes', formData);
+      await api.post(`/sessions/${sessionId.value}/dishes`, { name, price });
       await getDishes();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'не удалось добавить блюдо');
@@ -52,8 +51,10 @@ export function useDishes() {
   }
 
   async function deleteDish(id: number) {
+    if (!sessionId.value) return;
+
     try {
-      await api.delete(`/dishes/${id}`);
+      await api.delete(`/sessions/${sessionId.value}/dishes/${id}`);
       await getDishes();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'не удалось удалить');
@@ -61,27 +62,21 @@ export function useDishes() {
   }
 
   async function editDish({ id, name, price }: Dish) {
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('price', String(price));
+    if (!sessionId.value) return;
 
     try {
-      await api.patch(`/dishes/${id}`, formData);
+      await api.patch(`/sessions/${sessionId.value}/dishes/${id}`, {
+        name,
+        price,
+      });
       await getDishes();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'не удалось обновить блюдо');
     }
   }
 
-  async function clearDishes(ids: number[]) {
-    try {
-      await api.delete(`/dishes`, { data: { ids } });
-      dishes.value = [];
-    } catch (e) {
-      toast.error(
-        e instanceof Error ? e.message : 'Не удалось очистить список',
-      );
-    }
+  function resetDishes() {
+    dishes.value = [];
   }
 
   return {
@@ -92,7 +87,7 @@ export function useDishes() {
     deleteDish,
     editDish,
     validateDish,
-    clearDishes,
+    resetDishes,
   };
 }
 
