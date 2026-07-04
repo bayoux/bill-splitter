@@ -7,6 +7,8 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseIntPipe,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -19,6 +21,8 @@ import { ParticipantTokenGuard } from './guards/participant-token.guard';
 import { Participant } from './participant.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import type { RequestWithUser } from '../auth/types/request-with-user';
+import { CreateDishDto } from '../dishes/dto/create-dish.dto';
+import { UpdateDishDto } from '../dishes/dto/update-dish.dto';
 
 @Controller('sessions')
 export class SessionsController {
@@ -64,5 +68,37 @@ export class SessionsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   delete(@Param('sessionId') sessionId: string) {
     return this.sessionService.delete(sessionId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':sessionId/dishes')
+  @HttpCode(HttpStatus.CREATED)
+  addDish(@Param('sessionId') sessionId: string, @Body() dto: CreateDishDto) {
+    return this.sessionService.addDish(sessionId, dto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':sessionId/dishes/:dishId')
+  updateDish(
+    @Param('sessionId') sessionId: string,
+    @Param('dishId', ParseIntPipe) dishId: number,
+    @Body() dto: UpdateDishDto,
+  ) {
+    return this.sessionService.updateDish(sessionId, dishId, dto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':sessionId/dishes/:dishId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  deleteDish(
+    @Param('sessionId') sessionId: string,
+    @Param('dishId', ParseIntPipe) dishId: number,
+  ) {
+    return this.sessionService.deleteDish(sessionId, dishId);
+  }
+
+  @Get(':sessionId/dishes')
+  getDishes(@Param('sessionId') sessionId: string) {
+    return this.sessionService.getDishes(sessionId);
   }
 }

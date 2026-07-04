@@ -9,7 +9,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { In, LessThan, Repository } from 'typeorm';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { Session } from './session.entity';
-import { SessionDish } from './session-dish.entity';
 import { Participant } from './participant.entity';
 import { Dish } from '../dishes/dish.entity';
 import { Selection } from './selection.entity';
@@ -17,15 +16,14 @@ import { JoinSessionDto } from './dto/join-session.dto';
 import * as crypto from 'node:crypto';
 import { SelectDishDto } from './dto/select-dish.dto';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { UpdateDishDto } from '../dishes/dto/update-dish.dto';
+import { CreateDishDto } from '../dishes/dto/create-dish.dto';
 
 @Injectable()
 export class SessionsService {
   constructor(
     @InjectRepository(Session)
     private sessionRepository: Repository<Session>,
-
-    @InjectRepository(SessionDish)
-    private sessionDishRepository: Repository<SessionDish>,
 
     @InjectRepository(Participant)
     private participantRepository: Repository<Participant>,
@@ -50,19 +48,6 @@ export class SessionsService {
       name: dto.name,
       ownerId,
     });
-
-    const dishes = await this.dishRepository.findBy({
-      id: In(dto.dishIds),
-    });
-
-    const sessionDishes = dishes.map((dish) => ({
-      sessionId: session.id,
-      dishId: dish.id,
-      name: dish.name,
-      price: dish.price,
-    }));
-
-    await this.sessionDishRepository.save(sessionDishes);
 
     return { sessionId: session.id };
   }
@@ -89,15 +74,9 @@ export class SessionsService {
       throw new GoneException('Сессия истекла');
     }
 
-    const sessionDishes = await this.sessionDishRepository.find({
+    const dishes = await this.dishRepository.find({
       where: { sessionId },
     });
-
-    const dishes = sessionDishes.map((sd) => ({
-      id: sd.dishId,
-      name: sd.name,
-      price: sd.price,
-    }));
 
     const participants = await this.participantRepository.find({
       where: { sessionId: sessionId },
@@ -168,12 +147,11 @@ export class SessionsService {
     participant: Participant,
     dto: SelectDishDto,
   ): Promise<{ ok: boolean }> {
-    const sessionDish = await this.sessionDishRepository.findOne({
-      where: { sessionId: participant.sessionId, dishId: dto.dishId },
+    const dish = await this.dishRepository.findOne({
+      where: { id: dto.dishId, sessionId: participant.sessionId },
     });
 
-    if (!sessionDish)
-      throw new BadRequestException('Блюдо не найдено в сессии');
+    if (!dish) throw new BadRequestException('Блюдо не найдено в сессии');
 
     if (dto.selected) {
       const exists = await this.selectionRepository.findOne({
@@ -215,5 +193,50 @@ export class SessionsService {
 
     if (result.affected === 0)
       throw new NotFoundException(`Session ${id} not found`);
+  }
+
+  async addDish(sessionId: string, dto: CreateDishDto) {
+    const session = await this.sessionRepository.findOne({
+      where: { id: sessionId },
+    });
+
+    if (!session) {
+      throw new NotFoundException('Сессия не найдена');
+    }
+
+    return this.dishRepository.save({
+      name: dto.name,
+      price: dto.price,
+      sessionId,
+    });
+  }
+
+  async updateDish(sessionId: string, dishId: number, dto: UpdateDishDto) {
+    const dish = await this.dishRepository.findOne({
+      where: { id: dishId, sessionId },
+    });
+
+    if (!dish) {
+      throw new NotFoundException('Блюдо не найдено в этой сессии');
+    }
+
+    await this.dishRepository.update(dishId, dto);
+    return this.dishRepository.findOne({ where: { id: dishId } });
+  }
+
+  async deleteDish(sessionId: string, dishId: number) {
+    const dish = await this.dishRepository.findOne({
+      where: { id: dishId, sessionId },
+    });
+
+    if (!dish) {
+      throw new NotFoundException('Блюдо не найдено в этой сессии');
+    }
+
+    await this.dishRepository.delete(dishId);
+  }
+
+  async getDishes(sessionId: string) {
+    return this.dishRepository.find({ where: { sessionId } });
   }
 }

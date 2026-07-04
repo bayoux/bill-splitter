@@ -1,4 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
+import { Session } from '../sessions/session.entity';
 
 @Entity('dishes')
 export class Dish {
@@ -18,4 +25,11 @@ export class Dish {
     },
   })
   price!: number;
+
+  @Column({ type: 'uuid', nullable: true })
+  sessionId?: string | null;
+
+  @ManyToOne(() => Session, { onDelete: 'CASCADE', nullable: true })
+  @JoinColumn({ name: 'sessionId' })
+  session?: Session | null;
 }
