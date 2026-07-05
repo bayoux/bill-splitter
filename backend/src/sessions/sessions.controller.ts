@@ -101,4 +101,23 @@ export class SessionsController {
   getDishes(@Param('sessionId') sessionId: string) {
     return this.sessionService.getDishes(sessionId);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':sessionId/summary')
+  getSummary(
+    @Param('sessionId') sessionId: string,
+    @Req() req: RequestWithUser,
+  ) {
+    return this.sessionService.getSummary(sessionId, req.user.userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':sessionId/finish')
+  @HttpCode(HttpStatus.OK)
+  finishSession(
+    @Param('sessionId') sessionId: string,
+    @Req() req: RequestWithUser,
+  ) {
+    return this.sessionService.finishSession(sessionId, req.user.userId);
+  }
 }

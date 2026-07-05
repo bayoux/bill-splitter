@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   GoneException,
   Injectable,
   NotFoundException,
@@ -104,8 +105,10 @@ export class SessionsService {
 
   @Cron(CronExpression.EVERY_HOUR)
   async cleanExpiredSessions() {
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
     await this.sessionRepository.delete({
-      expiresAt: LessThan(new Date()),
+      expiresAt: LessThan(oneDayAgo),
     });
   }
 
@@ -238,5 +241,72 @@ export class SessionsService {
 
   async getDishes(sessionId: string) {
     return this.dishRepository.find({ where: { sessionId } });
+  }
+
+  async getSummary(sessionId: string, ownerId: string) {
+    const session = await this.sessionRepository.findOne({
+      where: { id: sessionId },
+    });
+
+    if (!session) {
+      throw new NotFoundException('Сессия не найдена');
+    }
+
+    if (session.ownerId !== ownerId) {
+      throw new ForbiddenException('Нет доступа к этой сессии');
+    }
+
+    const dishes = await this.dishRepository.find({ where: { sessionId } });
+    const participants = await this.participantRepository.find({
+      where: { sessionId },
+    });
+
+    const selections = await this.selectionRepository.findBy({
+      participantId: In(participants.map((p) => p.id)),
+    });
+
+    const result = participants.map((participant) => {
+      const participantSelections = selections.filter(
+        (s) => s.participantId === participant.id,
+      );
+      const selectedDishes = dishes.filter((dish) =>
+        participantSelections.some((s) => s.dishId === dish.id),
+      );
+      const total = selectedDishes.reduce(
+        (sum, dish) => sum + Number(dish.price),
+        0,
+      );
+
+      return {
+        participantId: participant.id,
+        name: participant.name,
+        dishes: selectedDishes.map((d) => d.name),
+        total,
+      };
+    });
+
+    const grandTotal = result.reduce((sum, p) => sum + p.total, 0);
+
+    return {
+      sessionName: session.name,
+      isExpired: session.expiresAt ? session.expiresAt < new Date() : false,
+      participantCount: participants.length,
+      participants: result,
+      grandTotal,
+    };
+  }
+
+  async finishSession(id: string, ownerId: string) {
+    const session = await this.sessionRepository.findOne({ where: { id } });
+
+    if (!session) {
+      throw new NotFoundException(`Session ${id} not found`);
+    }
+
+    if (session.ownerId !== ownerId) {
+      throw new ForbiddenException('Нет доступа к этой сессии');
+    }
+
+    await this.sessionRepository.update(id, { expiresAt: new Date() });
   }
 }
