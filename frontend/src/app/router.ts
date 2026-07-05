@@ -28,7 +28,7 @@ const routes = [
   {
     path: '/sessions/:sessionId/manage',
     component: SessionManage,
-    meta: { showHeader: true },
+    meta: { showHeader: true, requiresAuth: true },
   },
   { path: '/', component: StartPage },
   { path: '/register', component: RegisterPage },
