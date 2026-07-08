@@ -64,10 +64,11 @@ export class SessionsController {
     return this.sessionService.findAll(req.user.userId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':sessionId')
   @HttpCode(HttpStatus.NO_CONTENT)
-  delete(@Param('sessionId') sessionId: string) {
-    return this.sessionService.delete(sessionId);
+  delete(@Param('sessionId') sessionId: string, @Req() req: RequestWithUser) {
+    return this.sessionService.delete(sessionId, req.user.userId);
   }
 
   @UseGuards(JwtAuthGuard)

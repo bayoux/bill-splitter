@@ -10,6 +10,7 @@ import {
   IconChevronRight,
   IconLogout,
   IconClipboardListFilled,
+  IconTrash,
 } from '@tabler/icons-vue';
 import BaseButton from '@/shared/ui/BaseButton.vue';
 import router from '@/app/router';
@@ -22,6 +23,8 @@ const sessions = ref<Session[]>([]);
 const toast = useToast();
 const { logout } = useAuth();
 const showLogoutModal = ref(false);
+const showDeleteModal = ref(false);
+const deletingSessionId = ref('');
 
 async function getSessions() {
   try {
@@ -62,6 +65,25 @@ function getParticipantText(count: number) {
 function confirmLogout() {
   logout();
   router.push('/');
+}
+
+function openDeleteModal(sessionId: string) {
+  deletingSessionId.value = sessionId;
+  showDeleteModal.value = true;
+}
+
+async function handleDelete() {
+  try {
+    await api.delete(`/sessions/${deletingSessionId.value}`);
+    sessions.value = sessions.value.filter(
+      (s) => s.id !== deletingSessionId.value,
+    );
+    toast.success('Сессия удалена');
+  } catch (e) {
+    toast.error(e instanceof Error ? e.message : 'Не удалось удалить сессию');
+  } finally {
+    showDeleteModal.value = false;
+  }
 }
 
 onMounted(() => {
@@ -134,13 +156,23 @@ onMounted(() => {
                   </p>
                 </div>
 
-                <BaseButton
-                  variant="icon"
-                  class="all-sessions__button all-sessions__button--go-forward"
-                  @click="router.push(`/sessions/${session.id}/manage`)"
-                >
-                  <IconChevronRight />
-                </BaseButton>
+                <div class="all-sessions__actions">
+                  <BaseButton
+                    variant="icon"
+                    class="all-sessions__button"
+                    @click="openDeleteModal(session.id)"
+                  >
+                    <IconTrash />
+                  </BaseButton>
+
+                  <BaseButton
+                    variant="icon"
+                    class="all-sessions__button all-sessions__button--go-forward"
+                    @click="router.push(`/sessions/${session.id}/manage`)"
+                  >
+                    <IconChevronRight />
+                  </BaseButton>
+                </div>
               </div>
             </div>
           </li>
@@ -159,6 +191,16 @@ onMounted(() => {
     cancel-text="Остаться"
     @confirm="confirmLogout"
     @cancel="showLogoutModal = false"
+  />
+
+  <ConfirmModal
+    v-if="showDeleteModal"
+    title="Удалить сессию?"
+    description="Все данные сессии будут удалены."
+    confirm-text="Удалить"
+    cancel-text="Отмена"
+    @confirm="handleDelete"
+    @cancel="showDeleteModal = false"
   />
 </template>
 
@@ -250,6 +292,12 @@ onMounted(() => {
     align-items: center;
     flex-direction: row;
     gap: 0.6rem;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 
   &__title {

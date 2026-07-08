@@ -191,11 +191,18 @@ export class SessionsService {
     );
   }
 
-  async delete(id: string) {
-    const result = await this.sessionRepository.delete(id);
+  async delete(id: string, ownerId: string) {
+    const session = await this.sessionRepository.findOne({ where: { id } });
 
-    if (result.affected === 0)
-      throw new NotFoundException(`Session ${id} not found`);
+    if (!session) {
+      throw new NotFoundException(`Сессия ${id} не найдена`);
+    }
+
+    if (session.ownerId !== ownerId) {
+      throw new ForbiddenException('Нет доступа к этой сессии');
+    }
+
+    await this.sessionRepository.delete(id);
   }
 
   async addDish(sessionId: string, dto: CreateDishDto) {
