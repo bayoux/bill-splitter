@@ -8,6 +8,8 @@ import {
   IconCopy,
   IconSquareRoundedFilled,
   IconChevronLeft,
+  IconPencil,
+  IconTrash,
 } from '@tabler/icons-vue';
 import { useSessionSummary } from '@/entities/session';
 import { useQrCodeStore } from '@/entities/qr-code';
@@ -15,16 +17,28 @@ import { useShareLink } from '@/features/share-link';
 import BaseButton from '@/shared/ui/BaseButton.vue';
 import ConfirmModal from '@/shared/ui/ConfirmModal.vue';
 import router from '@/app/router';
+import { useDishes } from '@/features/manage-dishes';
+import { Dish } from '@/entities/dish';
 
 const route = useRoute();
 const sessionId = route.params.sessionId as string;
-
+const sessionIdRef = ref(sessionId);
+const {
+  dishes,
+  loading: dishesLoading,
+  getDishes,
+  addDish,
+  editDish,
+  deleteDish,
+} = useDishes(sessionIdRef);
 const { summary, loading, getSummary, finishSession } =
   useSessionSummary(sessionId);
 const qrStore = useQrCodeStore();
 const { copyLink } = useShareLink();
-
 const showFinishModal = ref(false);
+const newDishName = ref('');
+const newDishPrice = ref<number | null>(null);
+const editingDishId = ref<number | null>(null);
 
 async function handleFinish() {
   const ok = await finishSession();
@@ -49,9 +63,46 @@ function goBack() {
   router.push('/dashboard');
 }
 
+async function handleAddDish() {
+  if (!newDishName.value || !newDishPrice.value) return;
+  await addDish(newDishName.value, Number(newDishPrice.value));
+  newDishName.value = '';
+  newDishPrice.value = null;
+}
+
+function startEdit(dish: Dish) {
+  editingDishId.value = dish.id;
+  newDishName.value = dish.name;
+  newDishPrice.value = Number(dish.price);
+}
+
+async function handleSaveEdit() {
+  if (editingDishId.value === null || !newDishName.value || !newDishPrice.value)
+    return;
+  await editDish({
+    id: editingDishId.value,
+    name: newDishName.value,
+    price: Number(newDishPrice.value),
+  });
+  editingDishId.value = null;
+  newDishName.value = '';
+  newDishPrice.value = null;
+}
+
+async function handleDeleteDish(id: number) {
+  await deleteDish(id);
+}
+
+function cancelEdit() {
+  editingDishId.value = null;
+  newDishName.value = '';
+  newDishPrice.value = null;
+}
+
 onMounted(async () => {
   await qrStore.getQrCode();
   await getSummary();
+  await getDishes();
 });
 </script>
 
@@ -111,6 +162,78 @@ onMounted(async () => {
         <p class="session-manage-page__qr-hint">
           Покажите гостям, чтобы присоединиться
         </p>
+      </div>
+
+      <div
+        v-if="!summary.isExpired"
+        class="session-manage-page__dishes-section"
+      >
+        <h3 class="session-manage-page__dishes-title">Меню</h3>
+
+        <form
+          class="session-manage-page__dish-form"
+          @submit.prevent="editingDishId ? handleSaveEdit() : handleAddDish()"
+        >
+          <div class="session-manage-page__dish-inputs">
+            <input
+              v-model="newDishName"
+              class="session-manage-page__dish-input"
+              placeholder="Название"
+            />
+            <input
+              v-model.number="newDishPrice"
+              class="session-manage-page__dish-input"
+              type="number"
+              placeholder="Цена"
+            />
+          </div>
+
+          <div class="session-manage-page__dish-form-actions">
+            <BaseButton
+              class="session-manage-page__dish-submit"
+              variant="primary"
+              type="submit"
+            >
+              {{ editingDishId ? 'Сохранить' : 'Добавить' }}
+            </BaseButton>
+
+            <BaseButton
+              v-if="editingDishId"
+              variant="secondary"
+              type="button"
+              @click="cancelEdit"
+            >
+              Отмена
+            </BaseButton>
+          </div>
+        </form>
+
+        <p v-if="dishesLoading">Загрузка блюд...</p>
+
+        <ul v-else class="session-manage-page__dish-list">
+          <li
+            v-for="dish in dishes"
+            :key="dish.id"
+            class="session-manage-page__dish-item"
+          >
+            <span class="session-manage-page__dish-name">
+              <span class="session-manage-page__dish-name-text">{{
+                dish.name
+              }}</span>
+              <span class="session-manage-page__dish-price"
+                >{{ dish.price }} сом</span
+              >
+            </span>
+            <div class="session-manage-page__dish-actions">
+              <BaseButton variant="icon" @click="startEdit(dish)"
+                ><IconPencil
+              /></BaseButton>
+              <BaseButton variant="icon" @click="handleDeleteDish(dish.id)"
+                ><IconTrash
+              /></BaseButton>
+            </div>
+          </li>
+        </ul>
       </div>
 
       <p v-if="loading">Загрузка...</p>
@@ -197,8 +320,7 @@ onMounted(async () => {
   }
 
   &__copy-button {
-    min-height: 2.5rem;
-    padding: 1rem 1rem;
+    min-height: 2rem;
     margin-top: 1rem;
     border-radius: var(--border-radius-lg);
   }
@@ -259,6 +381,121 @@ onMounted(async () => {
     color: var(--color-muted-purple);
     font-size: var(--font-size-sm);
     margin-top: 0.25rem;
+  }
+
+  &__dishes-section {
+    padding: 1rem;
+    margin: 0 1rem 1rem;
+    background-color: var(--color-white);
+    border-radius: var(--border-radius-sm);
+  }
+
+  &__dishes-title {
+    margin-bottom: 0.75rem;
+    color: var(--color-dark);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+  }
+
+  &__dish-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  &__dish-inputs {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  &__dish-input {
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+    min-height: 2.5rem;
+    padding: 0.75rem 1rem;
+    border: 0.1rem solid var(--color-secondary);
+    border-radius: var(--border-radius-lg);
+    font-size: var(--font-size-sm);
+    color: var(--color-dark);
+
+    &::placeholder {
+      color: var(--color-muted-purple);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-primary);
+    }
+  }
+
+  &__dish-submit {
+    min-height: 2rem;
+    padding: 0.8rem 1.5rem;
+  }
+
+  &__dish-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+    gap: 0.5rem;
+  }
+
+  &__dish-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  &__dish-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    list-style: none;
+    border-bottom: 0.1rem solid var(--color-secondary);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__dish-name {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 0;
+  }
+
+  &__dish-name-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--color-dark);
+    font-size: var(--font-size-sm);
+  }
+
+  &__dish-price {
+    flex-shrink: 0;
+    margin-left: 0.5rem;
+    color: var(--color-muted-purple);
+    font-size: var(--font-size-sm);
+  }
+
+  &__dish-actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+
+    svg {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
   }
 
   &__list {
