@@ -11,7 +11,9 @@ import {
   Patch,
   Post,
   Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { SessionsService } from './sessions.service';
 import { CreateSessionDto } from './dto/create-session.dto';
@@ -23,6 +25,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import type { RequestWithUser } from '../auth/types/request-with-user';
 import { CreateDishDto } from '../dishes/dto/create-dish.dto';
 import { UpdateDishDto } from '../dishes/dto/update-dish.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('sessions')
 export class SessionsController {
@@ -120,5 +123,26 @@ export class SessionsController {
     @Req() req: RequestWithUser,
   ) {
     return this.sessionService.finishSession(sessionId, req.user.userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':sessionId/qr')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadQr(
+    @Param('sessionId') sessionId: string,
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: RequestWithUser,
+  ) {
+    return this.sessionService.uploadQr(sessionId, file, req.user.userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':sessionId/name')
+  updateName(
+    @Param('sessionId') sessionId: string,
+    @Body('name') name: string,
+    @Req() req: RequestWithUser,
+  ) {
+    return this.sessionService.updateName(sessionId, name, req.user.userId);
   }
 }

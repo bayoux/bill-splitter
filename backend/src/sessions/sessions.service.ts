@@ -19,6 +19,7 @@ import { SelectDishDto } from './dto/select-dish.dto';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { UpdateDishDto } from '../dishes/dto/update-dish.dto';
 import { CreateDishDto } from '../dishes/dto/create-dish.dto';
+import { uploadToS3 } from '../qr-code/s3.service';
 
 @Injectable()
 export class SessionsService {
@@ -56,6 +57,7 @@ export class SessionsService {
   async getSession(sessionId: string): Promise<{
     sessionId: string;
     sessionName: string;
+    qrUrl: string | null;
     dishes: Dish[];
     participants: {
       id: string;
@@ -98,6 +100,7 @@ export class SessionsService {
     return {
       sessionId,
       sessionName: session.name,
+      qrUrl: session.qrUrl,
       dishes,
       participants: result,
     };
@@ -296,6 +299,7 @@ export class SessionsService {
 
     return {
       sessionName: session.name,
+      qrUrl: session.qrUrl,
       isExpired: session.expiresAt ? session.expiresAt < new Date() : false,
       participantCount: participants.length,
       participants: result,
@@ -315,5 +319,37 @@ export class SessionsService {
     }
 
     await this.sessionRepository.update(id, { expiresAt: new Date() });
+  }
+
+  async uploadQr(
+    sessionId: string,
+    file: Express.Multer.File,
+    ownerId: string,
+  ) {
+    const session = await this.sessionRepository.findOneBy({ id: sessionId });
+    if (!session) {
+      throw new NotFoundException('Сессия не найдена');
+    }
+
+    if (session.ownerId !== ownerId) {
+      throw new ForbiddenException('Нет доступа к этой сессии');
+    }
+
+    const { url } = await uploadToS3(file);
+
+    session.qrUrl = url;
+    await this.sessionRepository.save(session);
+
+    return { qrUrl: url };
+  }
+
+  async updateName(id: string, name: string, ownerId: string) {
+    const session = await this.sessionRepository.findOne({ where: { id } });
+
+    if (!session) throw new NotFoundException('Сессия не найдена');
+    if (session.ownerId !== ownerId)
+      throw new ForbiddenException('Нет доступа');
+
+    await this.sessionRepository.update(id, { name });
   }
 }

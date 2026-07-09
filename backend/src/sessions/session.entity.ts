@@ -28,4 +28,7 @@ export class Session {
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'ownerId' })
   owner!: User;
+
+  @Column({ type: 'varchar', nullable: true })
+  qrUrl!: string | null;
 }

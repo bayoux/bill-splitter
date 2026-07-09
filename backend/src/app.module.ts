@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DishesModule } from './dishes/dishes.module';
 import { Dish } from './dishes/dish.entity';
 import { ConfigModule } from '@nestjs/config';
-import { QrCodeModule } from './qr-code/qr-code.module';
 import { QrCode } from './qr-code/qr-code.entity';
 import { Session } from './sessions/session.entity';
 import { SessionDish } from './sessions/session-dish.entity';
@@ -40,7 +39,6 @@ import { User } from './user/user.entity';
     ThrottlerModule.forRoot([{ ttl: 60000, limit: 10 }]),
     ScheduleModule.forRoot(),
     DishesModule,
-    QrCodeModule,
     SessionsModule,
     AuthModule,
   ],
