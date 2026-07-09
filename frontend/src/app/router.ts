@@ -8,6 +8,7 @@ import RegisterPage from '@/pages/register/index.vue';
 import LoginPage from '@/pages/login/index.vue';
 import StartPage from '@/pages/start-page/index.vue';
 import { useAuth } from '@/entities/user';
+import NotFoundPage from '@/pages/not-found/index.vue';
 
 const routes = [
   {
@@ -33,6 +34,7 @@ const routes = [
   { path: '/', component: StartPage },
   { path: '/register', component: RegisterPage },
   { path: '/login', component: LoginPage },
+  { path: '/:pathMatch(.*)*', component: NotFoundPage },
 ] as RouteRecordRaw[];
 
 export const router = createRouter({

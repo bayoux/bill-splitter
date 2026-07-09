@@ -27,9 +27,11 @@
     --font-weight-regular: 400;
     --font-weight-medium: 500;
     --font-weight-semibold: 600;
+    --font-weight-extrabold: 800;
     --font-size-sm: 1rem;
     --font-size-md: 1.5rem;
     --font-size-lg: 2rem;
+    --font-size-xxl: 6rem;
     --icon-lg: 3.5rem;
     --icon-sm: 1.2rem;
 }
