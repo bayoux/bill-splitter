@@ -12,13 +12,14 @@ import {
   IconTrash,
 } from '@tabler/icons-vue';
 import { useSessionSummary } from '@/entities/session';
-import { useQrCodeStore } from '@/entities/qr-code';
 import { useShareLink } from '@/features/share-link';
 import BaseButton from '@/shared/ui/BaseButton.vue';
 import ConfirmModal from '@/shared/ui/ConfirmModal.vue';
 import router from '@/app/router';
 import { useDishes } from '@/features/manage-dishes';
 import { Dish } from '@/entities/dish';
+import QrUpload from '@/widgets/qr-upload/index.vue';
+import { api } from '@/shared/api/instance';
 
 const route = useRoute();
 const sessionId = route.params.sessionId as string;
@@ -33,12 +34,13 @@ const {
 } = useDishes(sessionIdRef);
 const { summary, loading, getSummary, finishSession } =
   useSessionSummary(sessionId);
-const qrStore = useQrCodeStore();
 const { copyLink } = useShareLink();
 const showFinishModal = ref(false);
 const newDishName = ref('');
 const newDishPrice = ref<number | null>(null);
 const editingDishId = ref<number | null>(null);
+const isEditingName = ref(false);
+const editedName = ref('');
 
 async function handleFinish() {
   const ok = await finishSession();
@@ -99,8 +101,18 @@ function cancelEdit() {
   newDishPrice.value = null;
 }
 
+function startEditName() {
+  editedName.value = summary.value!.sessionName;
+  isEditingName.value = true;
+}
+
+async function saveEditName() {
+  await api.patch(`/sessions/${sessionId}/name`, { name: editedName.value });
+  isEditingName.value = false;
+  await getSummary();
+}
+
 onMounted(async () => {
-  await qrStore.getQrCode();
   await getSummary();
   await getDishes();
 });
@@ -121,7 +133,27 @@ onMounted(async () => {
     <div v-if="summary" class="session-manage-page__content">
       <div class="session-manage-page__heading">
         <div class="session-manage-page__title-row">
-          <h2 class="session-manage-page__name">{{ summary.sessionName }}</h2>
+          <h2
+            v-if="!isEditingName"
+            @click="startEditName"
+            class="session-manage-page__name"
+          >
+            {{ summary.sessionName }}
+          </h2>
+          <div v-else class="session-manage-page__name-edit">
+            <input
+              v-model="editedName"
+              @keyup.enter="saveEditName"
+              class="session-manage-page__name-input"
+            />
+            <BaseButton
+              class="session-manage-page__name-save"
+              variant="primary"
+              @click="saveEditName"
+            >
+              Сохранить
+            </BaseButton>
+          </div>
           <div class="session-manage-page__status-info">
             <span
               class="session-manage-page__status"
@@ -149,17 +181,16 @@ onMounted(async () => {
         </BaseButton>
       </div>
 
-      <div
-        v-if="qrStore.qrSrc && !summary.isExpired"
-        class="session-manage-page__qr-card"
-      >
-        <img
-          class="session-manage-page__qr-img"
-          :src="qrStore.qrSrc"
-          alt="QR"
+      <div v-if="!summary.isExpired" class="session-manage-page__qr-card">
+        <QrUpload
+          :session-id="sessionId"
+          :qr-url="summary.qrUrl"
+          @uploaded="getSummary"
         />
-        <h2 class="session-manage-page__total">{{ summary.grandTotal }} сом</h2>
-        <p class="session-manage-page__qr-hint">
+        <h2 v-if="summary.qrUrl" class="session-manage-page__total">
+          {{ summary.grandTotal }} сом
+        </h2>
+        <p v-if="summary.qrUrl" class="session-manage-page__qr-hint">
           Покажите гостям, чтобы присоединиться
         </p>
       </div>
@@ -317,6 +348,12 @@ onMounted(async () => {
     color: var(--color-dark);
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-medium);
+    cursor: pointer;
+  }
+
+  &__name-save {
+    margin: 1rem;
+    padding: 0.8rem;
   }
 
   &__copy-button {
@@ -358,7 +395,7 @@ onMounted(async () => {
     flex-direction: column;
     align-items: center;
     padding: 1.5rem 1rem;
-    margin-bottom: 1rem;
+    margin: 1rem;
     background-color: var(--color-white);
     border-radius: var(--border-radius-sm);
   }
