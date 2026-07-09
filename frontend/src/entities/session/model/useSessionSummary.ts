@@ -11,6 +11,7 @@ interface ParticipantSummary {
 
 interface SessionSummary {
   sessionName: string;
+  qrUrl: string | null;
   isExpired: boolean;
   participantCount: number;
   participants: ParticipantSummary[];

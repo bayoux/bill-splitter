@@ -12,6 +12,7 @@ export function useSession(sessionId: string) {
   const loading = ref(false);
   const toast = useToast();
   const sessionName = ref('');
+  const qrUrl = ref<string | null>(null);
 
   async function getSession(showLoading = true) {
     if (showLoading) loading.value = true;
@@ -19,10 +20,9 @@ export function useSession(sessionId: string) {
     try {
       const { data } = await api.get(`/sessions/${sessionId}`);
       sessionName.value = data.sessionName;
-
       dishes.value = data.dishes;
-
       participants.value = data.participants;
+      qrUrl.value = data.qrUrl;
     } catch (e) {
       if (axios.isAxiosError(e) && e.response?.status === 404) {
         toast.error('Сессия не найдена');
@@ -41,5 +41,6 @@ export function useSession(sessionId: string) {
     loading,
     getSession,
     sessionName,
+    qrUrl,
   };
 }

@@ -38,6 +38,7 @@ const { editingId, editName, editPrice, startEdit, cancelEdit, handleEdit } =
 
 const dishName = ref('');
 const price = ref('');
+const qrUrl = ref<string | null>(null);
 
 async function handleAdd() {
   const parsedPrice = Number(price.value);
@@ -51,6 +52,15 @@ async function handleAdd() {
 async function handleStart() {
   await startSession();
 }
+
+function handleQrUploaded(url: string) {
+  qrUrl.value = url;
+}
+
+function handleFinish() {
+  finishSession();
+  qrUrl.value = null;
+}
 </script>
 
 <template>
@@ -58,7 +68,6 @@ async function handleStart() {
     <AppHeader />
 
     <div class="add-dish-page__content">
-      <QrUpload />
       <div v-if="!isSessionStarted" class="add-dish-page__start">
         <input
           v-model="sessionName"
@@ -78,6 +87,11 @@ async function handleStart() {
       </div>
 
       <template v-else>
+        <QrUpload
+          :session-id="sessionId"
+          :qr-url="qrUrl"
+          @uploaded="handleQrUploaded"
+        />
         <div class="add-dish-page__header">
           <input
             v-model="dishName"
@@ -185,7 +199,7 @@ async function handleStart() {
           <BaseButton
             class="add-dish-page__button add-dish-page__button--create"
             variant="secondary"
-            @click="finishSession()"
+            @click="handleFinish()"
           >
             Готово
           </BaseButton>

@@ -7,13 +7,12 @@ import { useRoute } from 'vue-router';
 import { IconReload } from '@tabler/icons-vue';
 import JoinForm from '@/widgets/join-form/index.vue';
 import { useParticipant } from '@/features/join-session';
-import { useQrCodeStore } from '@/entities/qr-code';
 import { useSession } from '@/entities/session';
 import BaseButton from '@/shared/ui/BaseButton.vue';
 
 const route = useRoute();
 const sessionId = route.params.sessionId as string;
-const { dishes, participants, loading, getSession, sessionName } =
+const { dishes, participants, loading, getSession, sessionName, qrUrl } =
   useSession(sessionId);
 const { isJoined, join, clearToken, selectDish } = useParticipant(sessionId);
 const participantId = ref(
@@ -24,7 +23,6 @@ const currentParticipant = computed(() =>
     (participant) => participant.id === participantId.value,
   ),
 );
-const qrStore = useQrCodeStore();
 const total = computed(() => {
   const selected = dishes.value.filter((dish) =>
     currentParticipant.value?.selections.includes(dish.id),
@@ -48,7 +46,6 @@ async function handleSelectDish(dishId: number, checked: boolean) {
 }
 
 onMounted(async () => {
-  await qrStore.getQrCode();
   const result = await getSession();
   if (result === 'not_found') {
     clearToken();
@@ -66,13 +63,8 @@ onMounted(async () => {
       <h2 class="guest-page__session-name">{{ sessionName }}</h2>
 
       <div class="guest-page__qr-card">
-        <div v-if="qrStore.qrSrc" class="guest-page__qr">
-          <img
-            v-if="qrStore.qrSrc"
-            class="guest-page__qr-img"
-            :src="qrStore.qrSrc"
-            alt="QR"
-          />
+        <div v-if="qrUrl" class="guest-page__qr">
+          <img v-if="qrUrl" class="guest-page__qr-img" :src="qrUrl" alt="QR" />
           <div class="guest-page__total">
             <h2 class="guest-page__total-value">{{ total }} сом</h2>
           </div>

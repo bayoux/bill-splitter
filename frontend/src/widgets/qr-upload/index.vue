@@ -1,21 +1,51 @@
 <script setup lang="ts">
 defineOptions({ name: 'QrUpload' });
-import { onMounted } from 'vue';
+import { ref } from 'vue';
 import { IconFileUploadFilled } from '@tabler/icons-vue';
+import { useToast } from 'vue-toastification';
+import { api } from '@/shared/api/instance';
+import { formatSize } from '@/shared/lib/formatSize';
 
-import { useQrCodeStore } from '@/entities/qr-code';
-import BaseButton from '@/shared/ui/BaseButton.vue';
+const props = defineProps<{
+  sessionId: string;
+  qrUrl: string | null;
+}>();
 
-const qrStore = useQrCodeStore();
+const emit = defineEmits<{
+  uploaded: [qrUrl: string];
+}>();
 
-onMounted(async () => {
-  await qrStore.getQrCode();
-});
+const toast = useToast();
+const fileName = ref('');
+const fileSize = ref('');
+const showQrCode = ref(false);
+
+async function onQrUpload(e: globalThis.Event) {
+  const input = e.target as globalThis.HTMLInputElement;
+  const file = input.files?.[0];
+  if (!file) return;
+
+  fileName.value = file.name;
+  fileSize.value = formatSize(file.size);
+
+  const formData = new globalThis.FormData();
+  formData.append('file', file);
+
+  try {
+    const { data } = await api.post(
+      `/sessions/${props.sessionId}/qr`,
+      formData,
+    );
+    if (data?.qrUrl) emit('uploaded', data.qrUrl);
+  } catch (e) {
+    toast.error(e instanceof Error ? e.message : 'не удалось загрузить QR код');
+  }
+}
 </script>
 
 <template>
   <div class="qr-upload">
-    <template v-if="!qrStore.qrSrc">
+    <template v-if="!qrUrl">
       <div class="qr-upload__qr">
         <IconFileUploadFilled class="qr-upload__icon qr-upload__icon--upload" />
         <div>
@@ -32,7 +62,7 @@ onMounted(async () => {
         type="file"
         accept="image/*"
         style="display: none"
-        @change="qrStore.onQrUpload"
+        @change="onQrUpload"
       />
     </template>
 
@@ -40,38 +70,36 @@ onMounted(async () => {
       <div class="qr-upload__qr-file">
         <img
           class="qr-upload__qr-image"
-          :src="qrStore.qrSrc"
+          :src="qrUrl"
           alt="QR"
-          @click="qrStore.showQrCode = true"
+          @click="showQrCode = true"
         />
 
         <div
-          v-if="qrStore.showQrCode"
+          v-if="showQrCode"
           class="qr-upload__qr-overlay"
-          @click="qrStore.showQrCode = false"
+          @click="showQrCode = false"
         >
           <div class="qr-upload__qr-popup" @click.stop>
-            <img :src="qrStore.qrSrc" alt="QR" />
+            <img :src="qrUrl" alt="QR" />
           </div>
         </div>
 
         <div class="qr-upload__qr-info">
-          <p class="qr-upload__qr-name">
-            {{ qrStore.fileName }}
-          </p>
-          <p class="qr-upload__qr-size">
-            {{ qrStore.fileSize }}
-          </p>
+          <p class="qr-upload__qr-name">{{ fileName || 'QR-код' }}</p>
+          <p v-if="fileSize" class="qr-upload__qr-size">{{ fileSize }}</p>
         </div>
       </div>
 
-      <BaseButton
-        variant="secondary"
-        class="qr-upload__button qr-upload__button--delete"
-        @click="qrStore.deleteQrCode"
-      >
-        Удалить
-      </BaseButton>
+      <label class="qr-upload__upload-label" for="qr-upload">Заменить</label>
+      <input
+        id="qr-upload"
+        class="qr-upload__file-input"
+        type="file"
+        accept="image/*"
+        style="display: none"
+        @change="onQrUpload"
+      />
     </template>
   </div>
 </template>
