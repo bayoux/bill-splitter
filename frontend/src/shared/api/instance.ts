@@ -1,6 +1,7 @@
 import axios from 'axios';
 import axiosRetry from 'axios-retry';
 import { useAuth } from '@/entities/user';
+import router from '@/app/router';
 
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:3000',
@@ -31,6 +32,12 @@ api.interceptors.response.use(
   (e) => {
     if (e.code === 'ECONNABORTED') {
       e.message = 'Сервер не отвечает. Попробуйте ещё раз';
+    }
+    if (e.response?.status === 401) {
+      e.message = 'Сессия истекла. Пожалуйста, войдите снова';
+      const { logout } = useAuth();
+      logout();
+      router.push('/');
     }
     return Promise.reject(e);
   },
