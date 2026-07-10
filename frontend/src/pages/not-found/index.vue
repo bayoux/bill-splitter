@@ -1,4 +1,7 @@
 <script setup lang="ts">
+defineOptions({
+  name: 'NotFoundPage',
+});
 import { IconMoodPuzzled } from '@tabler/icons-vue';
 </script>
 
