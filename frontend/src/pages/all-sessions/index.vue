@@ -2,7 +2,7 @@
 import AppHeader from '@/widgets/app-header/index.vue';
 
 defineOptions({ name: 'AllSessionsPage' });
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { api } from '@/shared/api/instance';
 import { useToast } from 'vue-toastification';
 import {
@@ -25,6 +25,8 @@ const { logout } = useAuth();
 const showLogoutModal = ref(false);
 const showDeleteModal = ref(false);
 const deletingSessionId = ref('');
+const searchQuery = ref('');
+const statusFilter = ref<'all' | 'active' | 'expired'>('all');
 
 async function getSessions() {
   try {
@@ -86,6 +88,19 @@ async function handleDelete() {
   }
 }
 
+const filteredSessions = computed(() =>
+  sessions.value.filter((s) => {
+    const matchesSearch = s.name
+      .toLowerCase()
+      .includes(searchQuery.value.toLowerCase());
+    const matchesStatus =
+      statusFilter.value === 'all' ||
+      (statusFilter.value === 'active' && !isExpired(s.expiresAt)) ||
+      (statusFilter.value === 'expired' && isExpired(s.expiresAt));
+    return matchesSearch && matchesStatus;
+  }),
+);
+
 onMounted(() => {
   getSessions();
 });
@@ -119,10 +134,48 @@ onMounted(() => {
           <h3>Ваши сессии</h3>
           <p>{{ sessions.length }} всего</p>
         </div>
+
+        <div class="all-sessions__filters">
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Поиск по названию"
+            class="all-sessions__search"
+          />
+
+          <div class="all-sessions__tabs">
+            <button
+              class="all-sessions__tab"
+              :class="{ 'all-sessions__tab--active': statusFilter === 'all' }"
+              @click="statusFilter = 'all'"
+            >
+              Все
+            </button>
+            <button
+              class="all-sessions__tab"
+              :class="{
+                'all-sessions__tab--active': statusFilter === 'active',
+              }"
+              @click="statusFilter = 'active'"
+            >
+              Активные
+            </button>
+            <button
+              class="all-sessions__tab"
+              :class="{
+                'all-sessions__tab--active': statusFilter === 'expired',
+              }"
+              @click="statusFilter = 'expired'"
+            >
+              Завершённые
+            </button>
+          </div>
+        </div>
+
         <ul class="all-sessions__list">
           <li
             class="all-sessions__item"
-            v-for="session in sessions"
+            v-for="session in filteredSessions"
             :key="session.id"
           >
             <div class="all-sessions__info">
@@ -249,6 +302,50 @@ onMounted(() => {
     justify-content: space-between;
     color: var(--color-muted-purple);
     margin-inline: 0.5rem;
+  }
+  &__filters {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  &__search {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    margin: 1rem 0;
+    border-radius: var(--border-radius-md);
+    border: 0.1rem solid var(--color-secondary);
+    font-size: var(--font-size);
+    color: var(--color-dark);
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-primary);
+    }
+  }
+
+  &__tabs {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  &__tab {
+    flex: 1;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius-md);
+    border: 0.1rem solid var(--color-secondary);
+    background-color: var(--color-white);
+    color: var(--color-muted-purple);
+    font-size: var(--font-size);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &--active {
+      background-color: var(--color-primary);
+      border-color: var(--color-primary);
+      color: var(--color-white);
+    }
   }
 
   &__list {
