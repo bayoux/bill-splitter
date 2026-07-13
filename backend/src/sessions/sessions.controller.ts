@@ -77,8 +77,12 @@ export class SessionsController {
   @UseGuards(JwtAuthGuard)
   @Post(':sessionId/dishes')
   @HttpCode(HttpStatus.CREATED)
-  addDish(@Param('sessionId') sessionId: string, @Body() dto: CreateDishDto) {
-    return this.sessionService.addDish(sessionId, dto);
+  addDish(
+    @Param('sessionId') sessionId: string,
+    @Body() dto: CreateDishDto,
+    @Req() req: RequestWithUser,
+  ) {
+    return this.sessionService.addDish(sessionId, dto, req.user.userId);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -87,8 +91,14 @@ export class SessionsController {
     @Param('sessionId') sessionId: string,
     @Param('dishId', ParseIntPipe) dishId: number,
     @Body() dto: UpdateDishDto,
+    @Req() req: RequestWithUser,
   ) {
-    return this.sessionService.updateDish(sessionId, dishId, dto);
+    return this.sessionService.updateDish(
+      sessionId,
+      dishId,
+      dto,
+      req.user.userId,
+    );
   }
 
   @UseGuards(JwtAuthGuard)
@@ -97,8 +107,9 @@ export class SessionsController {
   deleteDish(
     @Param('sessionId') sessionId: string,
     @Param('dishId', ParseIntPipe) dishId: number,
+    @Req() req: RequestWithUser,
   ) {
-    return this.sessionService.deleteDish(sessionId, dishId);
+    return this.sessionService.deleteDish(sessionId, dishId, req.user.userId);
   }
 
   @Get(':sessionId/dishes')

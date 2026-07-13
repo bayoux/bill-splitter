@@ -195,28 +195,13 @@ export class SessionsService {
   }
 
   async delete(id: string, ownerId: string) {
-    const session = await this.sessionRepository.findOne({ where: { id } });
-
-    if (!session) {
-      throw new NotFoundException(`Сессия ${id} не найдена`);
-    }
-
-    if (session.ownerId !== ownerId) {
-      throw new ForbiddenException('Нет доступа к этой сессии');
-    }
+    await this.getSessionOrThrow(id, ownerId);
 
     await this.sessionRepository.delete(id);
   }
 
-  async addDish(sessionId: string, dto: CreateDishDto) {
-    const session = await this.sessionRepository.findOne({
-      where: { id: sessionId },
-    });
-
-    if (!session) {
-      throw new NotFoundException('Сессия не найдена');
-    }
-
+  async addDish(sessionId: string, dto: CreateDishDto, ownerId: string) {
+    await this.getSessionOrThrow(sessionId, ownerId);
     return this.dishRepository.save({
       name: dto.name,
       price: dto.price,
@@ -224,7 +209,14 @@ export class SessionsService {
     });
   }
 
-  async updateDish(sessionId: string, dishId: number, dto: UpdateDishDto) {
+  async updateDish(
+    sessionId: string,
+    dishId: number,
+    dto: UpdateDishDto,
+    ownerId: string,
+  ) {
+    await this.getSessionOrThrow(sessionId, ownerId)
+
     const dish = await this.dishRepository.findOne({
       where: { id: dishId, sessionId },
     });
@@ -232,12 +224,13 @@ export class SessionsService {
     if (!dish) {
       throw new NotFoundException('Блюдо не найдено в этой сессии');
     }
-
     await this.dishRepository.update(dishId, dto);
     return this.dishRepository.findOne({ where: { id: dishId } });
   }
 
-  async deleteDish(sessionId: string, dishId: number) {
+  async deleteDish(sessionId: string, dishId: number, ownerId: string) {
+    await this.getSessionOrThrow(sessionId, ownerId);
+
     const dish = await this.dishRepository.findOne({
       where: { id: dishId, sessionId },
     });
@@ -308,15 +301,7 @@ export class SessionsService {
   }
 
   async finishSession(id: string, ownerId: string) {
-    const session = await this.sessionRepository.findOne({ where: { id } });
-
-    if (!session) {
-      throw new NotFoundException(`Session ${id} not found`);
-    }
-
-    if (session.ownerId !== ownerId) {
-      throw new ForbiddenException('Нет доступа к этой сессии');
-    }
+    await this.getSessionOrThrow(id, ownerId);
 
     await this.sessionRepository.update(id, { expiresAt: new Date() });
   }
@@ -344,12 +329,27 @@ export class SessionsService {
   }
 
   async updateName(id: string, name: string, ownerId: string) {
-    const session = await this.sessionRepository.findOne({ where: { id } });
-
-    if (!session) throw new NotFoundException('Сессия не найдена');
-    if (session.ownerId !== ownerId)
-      throw new ForbiddenException('Нет доступа');
+    await this.getSessionOrThrow(id, ownerId);
 
     await this.sessionRepository.update(id, { name });
   }
+
+  private async getSessionOrThrow(
+    sessionId: string,
+    ownerId: string,
+  ): Promise<Session> {
+    const session = await this.sessionRepository.findOne({
+      where: { id: sessionId },
+    });
+
+    if (!session) {
+      throw new NotFoundException('Сессия не найдена');
+    }
+
+    if (session.ownerId !== ownerId)
+      throw new ForbiddenException('Нет доступа');
+
+    return session;
+  }
+
 }
