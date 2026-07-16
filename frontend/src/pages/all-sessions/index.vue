@@ -11,13 +11,13 @@ import {
   IconLogout,
   IconClipboardListFilled,
   IconTrash,
+  IconPlus,
 } from '@tabler/icons-vue';
 import BaseButton from '@/shared/ui/BaseButton.vue';
 import router from '@/app/router';
 import type { Session } from '@/types/session';
 import ConfirmModal from '@/shared/ui/ConfirmModal.vue';
 import { useAuth } from '@/entities/user';
-import AppFooter from '@/widgets/app-footer/index.vue';
 
 const sessions = ref<Session[]>([]);
 const toast = useToast();
@@ -136,6 +136,14 @@ onMounted(() => {
         <p class="all-sessions__empty-description">
           Создайте первую сессию, чтобы разделить счёт с друзьями
         </p>
+        <BaseButton
+          variant="primary"
+          class="all-sessions__button--session-create"
+          @click="router.push('/sessions/new')"
+        >
+          <IconPlus />
+          Создать сессию
+        </BaseButton>
       </div>
 
       <template v-else>
@@ -241,8 +249,6 @@ onMounted(() => {
         </ul>
       </template>
     </div>
-
-    <AppFooter />
   </div>
 
   <ConfirmModal
@@ -290,9 +296,7 @@ onMounted(() => {
     }
 
     &--session-create {
-      flex-shrink: 0;
       border-radius: var(--border-radius-md);
-      min-width: 30rem;
       min-height: 3.5rem;
       margin: 1rem;
     }
