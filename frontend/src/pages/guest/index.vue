@@ -55,7 +55,7 @@ onMounted(async () => {
 
 <template>
   <div class="guest-page">
-    <AppHeader />
+    <AppHeader v-if="isJoined" />
 
     <JoinForm v-if="!isJoined" @join="handleJoin" />
 

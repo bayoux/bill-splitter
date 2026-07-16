@@ -215,7 +215,7 @@ export class SessionsService {
     dto: UpdateDishDto,
     ownerId: string,
   ) {
-    await this.getSessionOrThrow(sessionId, ownerId)
+    await this.getSessionOrThrow(sessionId, ownerId);
 
     const dish = await this.dishRepository.findOne({
       where: { id: dishId, sessionId },
@@ -351,5 +351,4 @@ export class SessionsService {
 
     return session;
   }
-
 }

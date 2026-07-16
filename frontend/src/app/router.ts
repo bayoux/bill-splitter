@@ -14,22 +14,21 @@ const routes = [
   {
     path: '/sessions/new',
     component: CreatePage,
-    meta: { showHeader: true, requiresAuth: true },
+    meta: { requiresAuth: true },
   },
   {
     path: '/sessions/:sessionId',
     component: GuestPage,
-    meta: { showHeader: true },
   },
   {
     path: '/dashboard',
     component: AllSessions,
-    meta: { showHeader: true, requiresAuth: true },
+    meta: { requiresAuth: true },
   },
   {
     path: '/sessions/:sessionId/manage',
     component: SessionManage,
-    meta: { showHeader: true, requiresAuth: true },
+    meta: { requiresAuth: true },
   },
   { path: '/', component: StartPage },
   { path: '/register', component: RegisterPage },

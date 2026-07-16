@@ -1,15 +1,26 @@
 <script setup lang="ts">
 defineOptions({ name: 'JoinForm' });
 import { ref } from 'vue';
-import { IconSparkle } from '@tabler/icons-vue';
+import { IconSparkle, IconMoonFilled, IconSunFilled } from '@tabler/icons-vue';
 import BaseButton from '@/shared/ui/BaseButton.vue';
+import { useTheme } from '@/features/toggle-theme';
 
 const name = ref('');
 const emit = defineEmits<{ join: [name: string] }>();
+const { toggleTheme, isDark } = useTheme();
 </script>
 
 <template>
   <div class="join-page">
+    <BaseButton
+      variant="icon"
+      class="join-page__theme-toggle"
+      @click="toggleTheme()"
+    >
+      <IconSunFilled v-if="isDark" />
+      <IconMoonFilled v-else />
+    </BaseButton>
+
     <div class="join-page__logo">
       <IconSparkle class="join-page__icon" />
       <h1 class="join-page__title">Bill Splitter</h1>
@@ -42,6 +53,18 @@ const emit = defineEmits<{ join: [name: string] }>();
   justify-content: center;
   align-items: center;
   gap: 0.2rem;
+
+  &__theme-toggle {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0.6rem;
+    color: var(--color-muted-purple);
+    border: 0.1rem solid var(--color-light-purple-gray);
+    border-radius: var(--border-radius-md);
+  }
 
   &__logo {
     display: flex;
