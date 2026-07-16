@@ -3,7 +3,13 @@ import BaseButton from '@/shared/ui/BaseButton.vue';
 
 defineOptions({ name: 'LoginPage' });
 
-import { IconMoonFilled, IconSparkle, IconSunFilled } from '@tabler/icons-vue';
+import {
+  IconMoonFilled,
+  IconSparkle,
+  IconSunFilled,
+  IconEye,
+  IconEyeOff,
+} from '@tabler/icons-vue';
 import { useTheme } from '@/features/toggle-theme';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -13,6 +19,7 @@ const { toggleTheme, isDark } = useTheme();
 const router = useRouter();
 const { login, loading } = useAuth();
 const email = ref('');
+const showPassword = ref(false);
 const password = ref('');
 
 async function handleSubmit() {
@@ -29,8 +36,6 @@ async function handleSubmit() {
       <IconSparkle class="login-page__icon" />
       <h1 class="login-page__title">Bill Splitter</h1>
     </div>
-
-    <p class="login-page__tagline">Разделите счет честно и без споров</p>
 
     <BaseButton
       variant="icon"
@@ -54,13 +59,18 @@ async function handleSubmit() {
         placeholder="Email"
         required
       />
-      <input
-        v-model="password"
-        class="login-page__input"
-        type="password"
-        placeholder="Пароль"
-        required
-      />
+      <div class="login-page__input login-page__password-field">
+        <input
+          v-model="password"
+          class="login-page__password-input"
+          :type="showPassword ? 'text' : 'password'"
+          placeholder="Пароль"
+        />
+        <button type="button" @click="showPassword = !showPassword">
+          <IconEye v-if="showPassword" />
+          <IconEyeOff v-else />
+        </button>
+      </div>
 
       <BaseButton
         variant="primary"
@@ -160,13 +170,37 @@ async function handleSubmit() {
     max-width: 28rem;
     border-radius: var(--border-radius-md);
     border: 0.1rem solid var(--color-secondary);
-    padding: 0 1rem;
-    color: var(--color-dark);
 
     &:hover,
     &:focus {
       border-color: var(--color-primary);
     }
+  }
+
+  &__password-field {
+    position: relative;
+
+    button {
+      position: absolute;
+      right: 0.8rem;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background: none;
+      cursor: pointer;
+    }
+  }
+  &__password-input {
+    min-height: 3.5rem;
+    height: 100%;
+    width: 100%;
+    max-width: 28rem;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 1rem 2rem;
+    color: var(--color-dark);
+    border-radius: var(--border-radius-md);
   }
 
   &__button {

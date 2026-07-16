@@ -3,7 +3,13 @@ import BaseButton from '@/shared/ui/BaseButton.vue';
 
 defineOptions({ name: 'RegisterPage' });
 
-import { IconMoonFilled, IconSparkle, IconSunFilled } from '@tabler/icons-vue';
+import {
+  IconEye,
+  IconEyeOff,
+  IconMoonFilled,
+  IconSparkle,
+  IconSunFilled,
+} from '@tabler/icons-vue';
 import { useTheme } from '@/features/toggle-theme';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -15,6 +21,7 @@ const { register, loading } = useAuth();
 const email = ref('');
 const name = ref('');
 const password = ref('');
+const showPassword = ref(false);
 
 async function handleSubmit() {
   const ok = await register(email.value, name.value, password.value);
@@ -30,8 +37,6 @@ async function handleSubmit() {
       <IconSparkle class="register-page__icon" />
       <h1 class="register-page__title">Bill Splitter</h1>
     </div>
-
-    <p class="register-page__tagline">Разделите счет честно и без споров</p>
 
     <BaseButton
       variant="icon"
@@ -62,13 +67,19 @@ async function handleSubmit() {
         placeholder="Email"
         required
       />
-      <input
-        v-model="password"
-        class="register-page__input"
-        type="password"
-        placeholder="Пароль"
-        required
-      />
+
+      <div class="login-page__input login-page__password-field">
+        <input
+          v-model="password"
+          class="register-page__input"
+          :type="showPassword ? 'text' : 'password'"
+          placeholder="Пароль"
+        />
+        <button type="button" @click="showPassword = !showPassword">
+          <IconEye v-if="showPassword" />
+          <IconEyeOff v-else />
+        </button>
+      </div>
 
       <BaseButton
         variant="primary"
