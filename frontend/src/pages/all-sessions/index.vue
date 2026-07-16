@@ -37,15 +37,24 @@ async function getSessions() {
   }
 }
 
+const months = [
+  'января',
+  'февраля',
+  'марта',
+  'апреля',
+  'мая',
+  'июня',
+  'июля',
+  'августа',
+  'сентября',
+  'октября',
+  'ноября',
+  'декабря',
+];
+
 function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleString('ru-RU', {
-    timeZone: 'Asia/Bishkek',
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  const date = new Date(dateStr);
+  return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
 }
 
 function isExpired(expiresAt: string) {
