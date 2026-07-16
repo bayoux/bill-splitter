@@ -37,7 +37,7 @@ const { toggleTheme, isDark } = useTheme();
         :disabled="!name.trim()"
         @click="emit('join', name.trim())"
       >
-        Войти
+        Вход
       </BaseButton>
     </div>
   </div>
@@ -112,6 +112,7 @@ const { toggleTheme, isDark } = useTheme();
   &__button-join {
     min-height: 3.2rem;
     max-width: 7.3rem;
+    padding: 0 2rem;
   }
 }
 </style>
