@@ -25,7 +25,7 @@ const router = useRouter();
         <IconSparkle class="start-page__icon" />
         <h1 class="start-page__title">Bill Splitter</h1>
       </div>
-      <p class="start-page__tagline">Разделите счет честно и без споров</p>
+      <p class="start-page__tagline">Разделите счёт честно и без споров</p>
 
       <div class="start-page__actions">
         <BaseButton

@@ -18,7 +18,8 @@
     --color-light-green: #34C75929;
     --color-green: #1BB542;
     --color-icon: #6750A4;
-    --color-toast: #e1e9b7;
+    --color-toast: #ffffff;
+    --color-toast-text: #1a1a1a;
     --border-radius-sm: 1rem;
     --border-radius-md: 2rem;
     --border-radius-lg: 4rem;
@@ -34,6 +35,16 @@
     --font-size-xxl: 6rem;
     --icon-lg: 3.5rem;
     --icon-sm: 1.2rem;
+    --toast-success-bg: #49ff6c;
+    --toast-error-bg: #f8c4c4;
+    --toast-error-icon: #e74c3c;
+    --toast-warning-bg: #f9dfa0;
+    --toast-warning-icon: #f5a623;
+    --toast-info-bg: #b8dcf7;
+    --toast-info-icon: #3498db;
+    --toast-title: #1a1a1a;
+    --toast-desc: #4a4a4a;
+    --toast-close: #8a8a8a;
 }
 
 [data-theme="dark"] {
@@ -49,5 +60,17 @@
     --color-white: #000000;
     --color-dark: #E6E0E9;
     --color-black: #000000;
+    --color-toast: #2a2a2a;
+    --color-toast-text: #f0f0f0;
+    --toast-success-bg: #1f4a37;
+    --toast-error-bg: #4a2323;
+    --toast-error-icon: #ff6b6b;
+    --toast-warning-bg: #4a3a1a;
+    --toast-warning-icon: #f5a623;
+    --toast-info-bg: #1a3a52;
+    --toast-info-icon: #4aa3e0;
+    --toast-title: #f0f0f0;
+    --toast-desc: #c7c7c7;
+    --toast-close: #9a9a9a;
 
 }

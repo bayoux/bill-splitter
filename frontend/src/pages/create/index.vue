@@ -66,6 +66,13 @@ function handleFinish() {
 <template>
   <div class="add-dish-page">
     <AppHeader />
+    <div class="add-dish-page__intro">
+      <h2 class="add-dish-page__heading">Создать новую сессию</h2>
+      <p class="add-dish-page__description">
+        Введите уникальное название, чтобы пригласить друзей и начать делить
+        счёт.
+      </p>
+    </div>
 
     <div class="add-dish-page__content">
       <div v-if="!isSessionStarted" class="add-dish-page__start">
@@ -220,6 +227,26 @@ function handleFinish() {
   max-width: 36rem;
   min-height: 100dvh;
   margin: 0 auto;
+
+  &__intro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 4rem 1rem 0.5rem;
+  }
+
+  &__heading {
+    padding: 1rem;
+    color: var(--color-dark);
+  }
+
+  &__description {
+    text-align: center;
+    font-size: var(--font-size-sm);
+    max-width: 20rem;
+    color: var(--color-muted-purple);
+  }
 
   &__content {
     padding: 1rem;

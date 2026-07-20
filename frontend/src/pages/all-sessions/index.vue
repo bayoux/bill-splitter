@@ -136,14 +136,6 @@ onMounted(() => {
         <p class="all-sessions__empty-description">
           Создайте первую сессию, чтобы разделить счёт с друзьями
         </p>
-        <BaseButton
-          variant="primary"
-          class="all-sessions__button--session-create"
-          @click="router.push('/sessions/new')"
-        >
-          <IconPlus />
-          Создать сессию
-        </BaseButton>
       </div>
 
       <template v-else>
@@ -249,6 +241,14 @@ onMounted(() => {
         </ul>
       </template>
     </div>
+    <BaseButton
+      variant="primary"
+      class="all-sessions__button--session-create"
+      @click="router.push('/sessions/new')"
+    >
+      <IconPlus />
+      Создать сессию
+    </BaseButton>
   </div>
 
   <ConfirmModal

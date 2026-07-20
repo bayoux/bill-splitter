@@ -16,7 +16,7 @@ const { toggleTheme, isDark } = useTheme();
       <h1 class="header__title">Bill Splitter</h1>
     </div>
 
-    <p class="header__tagline">Разделите счет честно и без споров</p>
+    <p class="header__tagline">Разделите счёт честно и без споров</p>
 
     <BaseButton
       variant="icon"

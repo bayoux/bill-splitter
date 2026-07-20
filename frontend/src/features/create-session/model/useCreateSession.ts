@@ -33,17 +33,18 @@ export function useCreateSession(resetDishes: () => void) {
     const createdSessionId = sessionId.value;
 
     toast.success(
-      h('div', [
-        h('span', 'Сессия создана'),
-        h(
-          BaseButton,
-          {
-            onClick: () => copyLink(createdSessionId),
-            class: 'footer__button footer__button--copy',
-            variant: 'toast',
-          },
-          'Скопировать ссылку',
-        ),
+      h('div', { class: 'toast-content-row' }, [
+        h('div', { class: 'toast-content-col' }, [
+          h('span', 'Сессия создана'),
+          h(
+            BaseButton,
+            {
+              onClick: () => copyLink(createdSessionId),
+              variant: 'toast',
+            },
+            'Скопировать ссылку',
+          ),
+        ]),
       ]),
       { timeout: false },
     );

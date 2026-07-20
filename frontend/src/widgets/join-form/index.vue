@@ -26,7 +26,7 @@ const { toggleTheme, isDark } = useTheme();
       <h1 class="join-page__title">Bill Splitter</h1>
     </div>
 
-    <p class="join-page__tagline">Разделите счет честно и без споров</p>
+    <p class="join-page__tagline">Разделите счёт честно и без споров</p>
 
     <div class="join-page__form">
       <input v-model="name" class="join-page__name-input" placeholder="Имя" />

@@ -73,8 +73,9 @@ withDefaults(defineProps<{ variant?: ButtonVariants }>(), {
 
   &--toast {
     background-color: var(--color-toast);
-    color: var(--color-black);
+    color: var(--color-toast-text);
     font-weight: var(--font-weight-medium);
+    border: 0.1rem solid rgba(0, 0, 0, 0.08);
 
     &:hover {
       border-color: var(--color-primary);
