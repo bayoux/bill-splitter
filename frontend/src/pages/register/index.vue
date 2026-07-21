@@ -68,14 +68,18 @@ async function handleSubmit() {
         required
       />
 
-      <div class="login-page__input login-page__password-field">
+      <div class="register-page__password">
         <input
           v-model="password"
-          class="register-page__input"
+          class="register-page__input register-page__input--password"
           :type="showPassword ? 'text' : 'password'"
           placeholder="Пароль"
         />
-        <button type="button" @click="showPassword = !showPassword">
+        <button
+          type="button"
+          class="register-page__eye-btn"
+          @click="showPassword = !showPassword"
+        >
           <IconEye v-if="showPassword" />
           <IconEyeOff v-else />
         </button>
@@ -173,6 +177,12 @@ async function handleSubmit() {
     width: 100%;
   }
 
+  &__password {
+    position: relative;
+    width: 100%;
+    max-width: 28rem;
+  }
+
   &__input {
     min-height: 3.5rem;
     width: 100%;
@@ -186,6 +196,26 @@ async function handleSubmit() {
     &:focus {
       border-color: var(--color-primary);
     }
+
+    &--password {
+      max-width: 100%;
+      padding-right: 3rem;
+    }
+  }
+
+  &__eye-btn {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    color: var(--color-muted-purple);
   }
 
   &__button {
@@ -199,6 +229,14 @@ async function handleSubmit() {
     margin-top: 1rem;
     color: var(--color-primary);
     font-size: var(--font-size-sm);
+    text-decoration: none;
+  }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0px 1000px var(--color-white) inset !important;
+    -webkit-text-fill-color: var(--color-dark) !important;
   }
 }
 </style>

@@ -214,6 +214,14 @@ async function handleSubmit() {
     margin-top: 1rem;
     color: var(--color-primary);
     font-size: var(--font-size-sm);
+    text-decoration: none;
+  }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0px 1000px var(--color-white) inset !important;
+    -webkit-text-fill-color: var(--color-dark) !important;
   }
 }
 </style>
