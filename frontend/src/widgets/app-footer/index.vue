@@ -3,14 +3,16 @@ import { useRoute } from 'vue-router';
 import router from '@/app/router';
 import { IconList, IconPlus } from '@tabler/icons-vue';
 import BaseButton from '@/shared/ui/BaseButton.vue';
+import { computed } from 'vue';
 
 defineOptions({ name: 'AppFooter' });
 
 const route = useRoute();
+const isGuest = computed(() => localStorage.getItem('isGuest') === 'true');
 </script>
 
 <template>
-  <footer class="footer">
+  <footer v-if="!isGuest" class="footer">
     <BaseButton
       v-if="route.path !== '/dashboard'"
       variant="secondary"

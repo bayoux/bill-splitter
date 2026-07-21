@@ -1,12 +1,25 @@
 <script setup lang="ts">
+import { useAuth } from '@/entities/user';
+
 defineOptions({ name: 'StartPage' });
-import { IconMoonFilled, IconSparkle, IconSunFilled } from '@tabler/icons-vue';
+import {
+  IconMoonFilled,
+  IconSparkle,
+  IconSunFilled,
+  IconArrowRight,
+} from '@tabler/icons-vue';
 import { useTheme } from '@/features/toggle-theme';
 import BaseButton from '@/shared/ui/BaseButton.vue';
 import { useRouter } from 'vue-router';
 
 const { toggleTheme, isDark } = useTheme();
 const router = useRouter();
+const { logout } = useAuth();
+
+function continueAsGuest() {
+  logout();
+  localStorage.setItem('isGuest', 'true');
+}
 </script>
 
 <template>
@@ -42,6 +55,14 @@ const router = useRouter();
         >
           Создать аккаунт
         </BaseButton>
+        <RouterLink
+          to="/sessions/new"
+          class="start-page__guest-link"
+          @click="continueAsGuest"
+        >
+          Продолжить как гость
+          <IconArrowRight />
+        </RouterLink>
       </div>
     </div>
   </div>
@@ -110,6 +131,17 @@ const router = useRouter();
     gap: 0.7rem;
     width: 100%;
     margin-top: 2.3rem;
+  }
+
+  &__guest-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1.5rem;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: var(--color-primary);
+    font-size: var(--font-size-sm);
   }
 
   &__button {

@@ -21,9 +21,20 @@ axiosRetry(api, {
 
 api.interceptors.request.use((config) => {
   const { token } = useAuth();
+
   if (token.value) {
     config.headers.Authorization = `Bearer ${token.value}`;
+  } else {
+    const match = config.url?.match(/\/sessions\/([^/]+)/);
+    const sessionId = match?.[1];
+    if (sessionId) {
+      const ownerId = localStorage.getItem(`ownerId:${sessionId}`);
+      if (ownerId) {
+        config.headers['x-owner-id'] = ownerId;
+      }
+    }
   }
+
   return config;
 });
 

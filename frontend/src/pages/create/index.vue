@@ -1,11 +1,14 @@
 <script setup lang="ts">
 defineOptions({ name: 'CreatePage' });
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import {
   IconPlus,
   IconBowlSpoonFilled,
   IconPencilFilled,
   IconTrashFilled,
+  IconUserQuestion,
+  IconExclamationCircle,
+  IconUserCheck,
 } from '@tabler/icons-vue';
 
 import AppHeader from '@/widgets/app-header/index.vue';
@@ -39,6 +42,7 @@ const { editingId, editName, editPrice, startEdit, cancelEdit, handleEdit } =
 const dishName = ref('');
 const price = ref('');
 const qrUrl = ref<string | null>(null);
+const isGuest = computed(() => localStorage.getItem('isGuest') === 'true');
 
 async function handleAdd() {
   const parsedPrice = Number(price.value);
@@ -66,7 +70,13 @@ function handleFinish() {
 <template>
   <div class="add-dish-page">
     <AppHeader />
-    <div class="add-dish-page__intro">
+
+    <div v-if="isGuest && !isSessionStarted" class="add-dish-page__guest-badge">
+      <IconUserQuestion />
+      <p>Режим гостя</p>
+    </div>
+
+    <div v-if="!isSessionStarted" class="add-dish-page__intro">
       <h2 class="add-dish-page__heading">Создать новую сессию</h2>
       <p class="add-dish-page__description">
         Введите уникальное название, чтобы пригласить друзей и начать делить
@@ -91,6 +101,20 @@ function handleFinish() {
         >
           Начать
         </BaseButton>
+
+        <div v-if="isGuest" class="add-dish-page__guest-block">
+          <div class="add-dish-page__guest-hint">
+            <IconExclamationCircle />
+            <p>
+              Сохраните ссылку на сессию — без аккаунта она не появится в вашем
+              списке сессий.
+            </p>
+          </div>
+          <RouterLink to="/register" class="add-dish-page__register-link">
+            <IconUserCheck />
+            Зарегистрироваться, чтобы не терять сессии
+          </RouterLink>
+        </div>
       </div>
 
       <template v-else>
@@ -228,6 +252,19 @@ function handleFinish() {
   min-height: 100dvh;
   margin: 0 auto;
 
+  &__guest-badge {
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    margin: 1rem;
+    border: 0.1rem solid var(--color-primary);
+    border-radius: var(--border-radius-md);
+    color: var(--color-muted-dark);
+    background-color: var(--color-light-purple);
+  }
+
   &__intro {
     display: flex;
     flex-direction: column;
@@ -239,6 +276,7 @@ function handleFinish() {
   &__heading {
     padding: 1rem;
     color: var(--color-dark);
+    font-size: var(--font-size-lg);
   }
 
   &__description {
@@ -257,6 +295,38 @@ function handleFinish() {
     flex-direction: column;
     gap: 0.5rem;
     margin-top: 2rem;
+  }
+
+  &__guest-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 4rem 2rem;
+  }
+
+  &__guest-hint {
+    width: fit-content;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    color: var(--color-dark);
+    background: var(--color-light-lavender);
+    border-radius: var(--border-radius-sm);
+    border: 0.1rem solid var(--color-primary);
+    padding: 0.5rem 1rem;
+  }
+
+  &__register-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    margin-top: 2rem;
+    gap: 0.5rem;
+    color: var(--color-primary);
   }
 
   &__icon {

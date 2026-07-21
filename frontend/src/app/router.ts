@@ -43,7 +43,9 @@ export const router = createRouter({
 
 router.beforeEach((to) => {
   const { isAuthenticated } = useAuth();
-  if (to.meta.requiresAuth && !isAuthenticated()) {
+  const isGuest = localStorage.getItem('isGuest') == 'true';
+
+  if (to.meta.requiresAuth && !isAuthenticated() && !isGuest) {
     return '/';
   }
 });

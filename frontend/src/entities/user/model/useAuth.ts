@@ -19,6 +19,7 @@ export function useAuth() {
   function setToken(newToken: string) {
     token.value = newToken;
     localStorage.setItem(TOKEN_KEY, newToken);
+    localStorage.removeItem('isGuest');
   }
 
   function logout() {

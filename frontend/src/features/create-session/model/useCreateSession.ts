@@ -23,6 +23,7 @@ export function useCreateSession(resetDishes: () => void) {
       });
 
       sessionId.value = data.sessionId;
+      localStorage.setItem(`ownerId:${data.sessionId}`, data.ownerId);
       isSessionStarted.value = true;
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Не удалось создать сессию');
