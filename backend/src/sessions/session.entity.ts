@@ -3,10 +3,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
-  JoinColumn,
 } from 'typeorm';
-import { User } from '../user/user.entity';
 
 @Entity('sessions')
 export class Session {
@@ -24,10 +21,6 @@ export class Session {
 
   @Column()
   ownerId!: string;
-
-  @ManyToOne(() => User, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'ownerId' })
-  owner!: User;
 
   @Column({ type: 'varchar', nullable: true })
   qrUrl!: string | null;

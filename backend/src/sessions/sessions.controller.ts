@@ -26,16 +26,20 @@ import type { RequestWithUser } from '../auth/types/request-with-user';
 import { CreateDishDto } from '../dishes/dto/create-dish.dto';
 import { UpdateDishDto } from '../dishes/dto/update-dish.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { randomUUID } from 'node:crypto';
+import { OptionalJwtAuthGuard } from '../auth/optional-jwt-auth.guard';
+import { GuestOrJwtGuard } from '../auth/guest-or-jwt.guard';
 
 @Controller('sessions')
 export class SessionsController {
   constructor(private sessionService: SessionsService) {}
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(OptionalJwtAuthGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() dto: CreateSessionDto, @Req() req: RequestWithUser) {
-    return this.sessionService.createSession(dto, req.user.userId);
+    const ownerId = req.user?.userId ?? randomUUID();
+    return this.sessionService.createSession(dto, ownerId);
   }
 
   @Get(':sessionId')
@@ -67,14 +71,14 @@ export class SessionsController {
     return this.sessionService.findAll(req.user.userId);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(GuestOrJwtGuard)
   @Delete(':sessionId')
   @HttpCode(HttpStatus.NO_CONTENT)
   delete(@Param('sessionId') sessionId: string, @Req() req: RequestWithUser) {
     return this.sessionService.delete(sessionId, req.user.userId);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(GuestOrJwtGuard)
   @Post(':sessionId/dishes')
   @HttpCode(HttpStatus.CREATED)
   addDish(
@@ -85,7 +89,7 @@ export class SessionsController {
     return this.sessionService.addDish(sessionId, dto, req.user.userId);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(GuestOrJwtGuard)
   @Patch(':sessionId/dishes/:dishId')
   updateDish(
     @Param('sessionId') sessionId: string,
@@ -101,7 +105,7 @@ export class SessionsController {
     );
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(GuestOrJwtGuard)
   @Delete(':sessionId/dishes/:dishId')
   @HttpCode(HttpStatus.NO_CONTENT)
   deleteDish(
@@ -117,7 +121,7 @@ export class SessionsController {
     return this.sessionService.getDishes(sessionId);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(GuestOrJwtGuard)
   @Get(':sessionId/summary')
   getSummary(
     @Param('sessionId') sessionId: string,
@@ -126,7 +130,7 @@ export class SessionsController {
     return this.sessionService.getSummary(sessionId, req.user.userId);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(GuestOrJwtGuard)
   @Patch(':sessionId/finish')
   @HttpCode(HttpStatus.OK)
   finishSession(
@@ -136,7 +140,7 @@ export class SessionsController {
     return this.sessionService.finishSession(sessionId, req.user.userId);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(GuestOrJwtGuard)
   @Post(':sessionId/qr')
   @UseInterceptors(FileInterceptor('file'))
   async uploadQr(
@@ -147,7 +151,7 @@ export class SessionsController {
     return this.sessionService.uploadQr(sessionId, file, req.user.userId);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(GuestOrJwtGuard)
   @Patch(':sessionId/name')
   updateName(
     @Param('sessionId') sessionId: string,

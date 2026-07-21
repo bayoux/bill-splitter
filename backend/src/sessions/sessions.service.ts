@@ -40,7 +40,7 @@ export class SessionsService {
   async createSession(
     dto: CreateSessionDto,
     ownerId: string,
-  ): Promise<{ sessionId: string }> {
+  ): Promise<{ sessionId: string; ownerId: string }> {
     const expiresAt = new Date(
       Date.now() + Number(process.env.SESSION_TTL_HOURS!) * 3600000,
     );
@@ -51,7 +51,7 @@ export class SessionsService {
       ownerId,
     });
 
-    return { sessionId: session.id };
+    return { sessionId: session.id, ownerId };
   }
 
   async getSession(sessionId: string): Promise<{

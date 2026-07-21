@@ -8,6 +8,9 @@ import { SessionsController } from './sessions.controller';
 import { SessionsService } from './sessions.service';
 import { DishesModule } from '../dishes/dishes.module';
 import { ParticipantTokenGuard } from './guards/participant-token.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { OptionalJwtAuthGuard } from '../auth/optional-jwt-auth.guard';
+import { GuestOrJwtGuard } from '../auth/guest-or-jwt.guard';
 
 @Module({
   imports: [
@@ -15,6 +18,12 @@ import { ParticipantTokenGuard } from './guards/participant-token.guard';
     DishesModule,
   ],
   controllers: [SessionsController],
-  providers: [SessionsService, ParticipantTokenGuard],
+  providers: [
+    SessionsService,
+    ParticipantTokenGuard,
+    JwtAuthGuard,
+    OptionalJwtAuthGuard,
+    GuestOrJwtGuard,
+  ],
 })
 export class SessionsModule {}
