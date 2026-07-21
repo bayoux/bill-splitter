@@ -1,20 +1,22 @@
-import { Injectable, ExecutionContext, CanActivate } from '@nestjs/common';
-import { JwtAuthGuard } from './jwt-auth.guard';
+import { ExecutionContext, Injectable } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { Request } from 'express';
 
 @Injectable()
-export class GuestOrJwtGuard implements CanActivate {
-  constructor(private jwtGuard: JwtAuthGuard) {}
-
+export class GuestOrJwtGuard extends AuthGuard('jwt') {
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const req = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest<Request>();
+    const ownerId = request.headers['x-owner-id'];
+
+    if (ownerId && typeof ownerId === 'string') {
+      request.user = { userId: ownerId };
+      return true;
+    }
 
     try {
-      return (await this.jwtGuard.canActivate(context)) as boolean;
+      return (await super.canActivate(context)) as boolean;
     } catch {
-      const ownerId = req.headers['x-owner-id'];
-      if (!ownerId) return false;
-      req.user = { userId: ownerId };
-      return true;
+      return false;
     }
   }
 }
